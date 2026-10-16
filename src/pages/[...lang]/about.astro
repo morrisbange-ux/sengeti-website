@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RedLight from '../../components/RedLight.astro';
+import Icon from '../../components/Icon.astro';
 import { Image } from 'astro:assets';
 import mark from '../../assets/brand/sengeti-mark.png';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
@@ -16,7 +17,9 @@ const { about } = dict;
 <BaseLayout lang={lang} title={about.title} description={about.description} path="/about">
   <section class="page-hero section-hero">
     <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
     <div class="container inner">
+      <span class="eyebrow">{about.storyHeading}</span>
       <h1>{about.heading}</h1>
       <p class="lead">{about.lead}</p>
     </div>
@@ -25,8 +28,7 @@ const { about } = dict;
   <section class="section">
     <div class="container story" data-reveal>
       <div>
-        <h2>{about.storyHeading}</h2>
-        {about.story.map((p) => <p class="muted">{p}</p>)}
+        {about.story.map((p) => <p class="big muted">{p}</p>)}
       </div>
       <div class="mark">
         <Image src={mark} alt="" width={180} densities={[1, 2]} />
@@ -34,15 +36,28 @@ const { about } = dict;
     </div>
   </section>
 
+  <section class="section top0">
+    <div class="container grid grid-2">
+      <div class="card mv" data-reveal>
+        <span class="eyebrow">{about.missionHeading}</span>
+        <p>{about.mission}</p>
+      </div>
+      <div class="card mv" data-reveal style="--d:1">
+        <span class="eyebrow">{about.visionHeading}</span>
+        <p>{about.vision}</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <h2>{about.valuesHeading}</h2>
       </div>
-      <div class="grid grid-2">
+      <div class="grid values">
         {
           about.values.map((v, i) => (
-            <div class="card card-hover" data-reveal style={`--d:${i % 2}`}>
+            <div class="card card-hover" data-reveal style={`--d:${i}`}>
               <span class="num">{i + 1}</span>
               <h3>{v.title}</h3>
               <p class="muted">{v.text}</p>
@@ -60,10 +75,23 @@ const { about } = dict;
         <div>
           <span class="eyebrow">{about.founderHeading}</span>
           <h2>{site.founder}</h2>
-          <p class="muted">{about.founderRole}, {site.name} · {site.country}</p>
+          <p class="muted">{about.founderRole}, {site.name} · {site.city}, {site.country}</p>
           <p>{about.founderText}</p>
           <a class="btn btn-ghost" href={localizePath(lang, '/contact')}>{dict.nav.cta}</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band profile" data-reveal>
+        <h2>{about.profileHeading}</h2>
+        <p>{about.profileText}</p>
+        <a class="btn btn-primary" href={site.profilePdf} download>
+          <Icon name="download" size={20} />
+          {about.profileButton}
+        </a>
       </div>
     </div>
   </section>
@@ -80,10 +108,22 @@ const { about } = dict;
     z-index: 1;
   }
 
+  .inner h1 {
+    max-width: 14ch;
+  }
+
+  .top0 {
+    padding-top: 0;
+  }
+
   .story {
     display: grid;
     gap: 40px;
     align-items: center;
+  }
+
+  .big {
+    font-size: 1.2rem;
   }
 
   .mark {
@@ -94,6 +134,22 @@ const { about } = dict;
   .mark img {
     width: 140px;
     filter: drop-shadow(0 0 40px rgb(255 49 48 / 0.45));
+  }
+
+  .mv p {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.4;
+  }
+
+  .mv {
+    border-top: 3px solid var(--red);
+  }
+
+  .values {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   }
 
   .founder {
@@ -108,6 +164,7 @@ const { about } = dict;
     border-radius: 50%;
     display: grid;
     place-items: center;
+    font-family: var(--font-display);
     font-size: 2.4rem;
     font-weight: 700;
     color: var(--white);

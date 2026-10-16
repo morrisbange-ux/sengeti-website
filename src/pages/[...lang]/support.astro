@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import ContactChannels from '../../components/ContactChannels.astro';
+import { langPaths, t, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { support } = t(lang);
+
+// Lets Google show these questions directly in search results.
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: support.faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<BaseLayout lang={lang} title={support.title} description={support.description} path="/support" schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="container inner">
+      <h1>{support.heading}</h1>
+      <p class="lead">{support.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <h2 class="sr-only">{support.channelsHeading}</h2>
+      <ContactChannels
+        lang={lang}
+        showLocation={false}
+        notes={{ whatsapp: support.whatsappText, email: support.emailText }}
+      />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container layout">
+      <div>
+        <h2 data-reveal>{support.faqHeading}</h2>
+        <div class="faqs">
+          {
+            support.faqs.map((f, i) => (
+              <details class="faq" data-reveal style={`--d:${i % 3}`}>
+                <summary>{f.q}</summary>
+                <p class="muted">{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+      <ContactForm lang={lang} heading={support.formHeading} subjects={support.subjects} emailSubject="Support request" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .top0 {
+    padding-top: 16px;
+    padding-bottom: 0;
+  }
+
+  .top0 :global(.channels) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .layout {
+    display: grid;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .faqs {
+    display: grid;
+    gap: 12px;
+  }
+
+  .faq {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: border-color 0.2s;
+  }
+
+  .faq[open] {
+    border-color: rgb(255 49 48 / 0.45);
+  }
+
+  summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 52px 18px 20px;
+    font-weight: 600;
+    color: var(--white);
+    position: relative;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--red);
+    font-size: 1.5rem;
+    font-weight: 400;
+    transition: transform 0.2s;
+  }
+
+  .faq[open] summary::after {
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .faq p {
+    padding: 0 20px 18px;
+    margin: 0;
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+</style>

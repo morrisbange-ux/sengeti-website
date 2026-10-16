@@ -45,14 +45,17 @@ const qr = Array.from({ length: N * N }, (_, i) => {
         <div class="body">
           <div class="class-card">
             <div class="row">
-              <span class="cls">{m.className}</span>
+              <span class="cls">
+                {m.className}
+                <small>{m.venue}</small>
+              </span>
               <span class="live">
                 <i /> {m.live}
               </span>
             </div>
             <div class="count">
-              <strong>27</strong>
-              <span>/ 30 {m.present}</span>
+              <strong>112</strong>
+              <span>/ 120 {m.present}</span>
             </div>
             <div class="bar">
               <span />
@@ -87,6 +90,10 @@ const qr = Array.from({ length: N * N }, (_, i) => {
             <span class="scanline" />
           </div>
           <p class="hint">{m.scan}</p>
+          <p class="timer">
+            {m.refresh} <strong>15s</strong>
+            <span class="ring" />
+          </p>
           <span class="selfie">{m.selfie}</span>
         </div>
       )
@@ -170,7 +177,7 @@ const qr = Array.from({ length: N * N }, (_, i) => {
   .row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .cls {
@@ -355,6 +362,49 @@ const qr = Array.from({ length: N * N }, (_, i) => {
     background: var(--red);
     box-shadow: 0 0 12px 2px rgb(255 49 48 / 0.7);
     animation: scan 2.6s ease-in-out infinite alternate;
+  }
+
+  .cls small {
+    display: block;
+    font-weight: 500;
+    color: #8a8a94;
+    font-size: 10.5px;
+  }
+
+  .timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px !important;
+    font-size: 11px;
+    color: #55555e;
+  }
+
+  .timer strong {
+    color: var(--red);
+  }
+
+  .ring {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: conic-gradient(var(--red) var(--p, 100%), #ececf0 0);
+    animation: countdown 15s linear infinite;
+  }
+
+  @property --p {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%;
+  }
+
+  @keyframes countdown {
+    from {
+      --p: 100%;
+    }
+    to {
+      --p: 0%;
+    }
   }
 
   .hint {

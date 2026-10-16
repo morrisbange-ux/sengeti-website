@@ -16,17 +16,15 @@ npm run dev      # local preview at http://localhost:4321
 npm run build    # checks types and builds the site into dist/
 ```
 
-## Before going live: replace the placeholders
+## Before going live
 
-Everything is in [`src/config/site.ts`](src/config/site.ts):
+Company details live in [`src/config/site.ts`](src/config/site.ts). The email, phone and
+WhatsApp number come from the company profile. Two things still need filling in:
 
 | Setting | What to put there |
 | --- | --- |
-| `url` | The website's real address (currently `https://sengetitechnologies.com`) |
-| `email` | The email address customers see |
-| `phone` | Phone number as people should read it, e.g. `+263 77 123 4567` |
-| `whatsapp` | Same number, digits only, e.g. `263771234567` |
-| `formEndpoint` | Your Formspree form address (free at https://formspree.io); messages are emailed to you |
+| `formEndpoint` | Your Formspree form address (free at https://formspree.io); contact and support messages are emailed to you |
+| `social` | The address of each social media page; leave an `href` empty to hide that icon |
 
 ## Common changes
 
@@ -36,7 +34,8 @@ its own page at `/products/sengeti-pay`. Set `status: coming-soon` for products 
 `featured: true` to show it on the home page, and `order` to control its position.
 
 **Add a news post or case study.** Copy `src/content/news/en/example.md` to a new file name,
-write the post and delete the `draft: true` line. The News page, its menu link and the home
+write the post and delete the `draft: true` line. Add translated copies with the same file name
+under `fr/` and `pt/`. The News page, its menu link and the home
 page "Case studies" section appear automatically once the first post is published.
 
 **Add a testimonial or client logo.** Copy `src/content/testimonials/example.md` or
@@ -50,6 +49,16 @@ or photo file next to it. These sections stay hidden until there is at least one
 starting point but should be reviewed by a lawyer before launch.
 
 **Change page text.** All wording is in `src/i18n/en.ts`.
+
+**Languages.** The site is in English (`/`), French (`/fr/`) and Portuguese (`/pt/`), with a
+language switcher in the header. The translations should be checked by a native speaker.
+
+**Chat assistant.** The chat button answers common questions from the `chat` section of each
+language file in `src/i18n/` and passes anything else to WhatsApp. To teach it a new answer, add
+an entry with some keywords. It runs in the visitor's browser, so it needs no server or API key.
+
+**Company profile.** The PDF is `public/sengeti-technologies-company-profile.pdf`. Replace the
+file (same name) to update it.
 
 **Add a language.** Follow the steps at the top of `src/i18n/index.ts`: copy `en.ts`, translate
 it, register it, and copy the product files into a folder for that language. English stays at

@@ -5,7 +5,8 @@ import poppins700 from '@fontsource/poppins/files/poppins-latin-700-normal.woff2
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { site } from '../config/site';
+import ChatWidget from '../components/ChatWidget.astro';
+import { site, socialProfiles } from '../config/site';
 import { defaultLang, langs, localizePath, t, type Lang } from '../i18n';
 
 interface Props {
@@ -36,8 +37,10 @@ const organization = {
   email: site.email,
   telephone: site.phone,
   founder: { '@type': 'Person', name: site.founder },
-  address: { '@type': 'PostalAddress', addressCountry: site.countryCode },
-  sameAs: site.social.map((s) => s.href),
+  address: { '@type': 'PostalAddress', addressLocality: site.city, addressCountry: site.countryCode },
+  areaServed: site.areaServed,
+  knowsLanguage: langs.map((l) => t(l).langCode),
+  sameAs: socialProfiles().map((s) => s.href),
 };
 const jsonLd = [organization, ...schema];
 ---
@@ -76,6 +79,7 @@ const jsonLd = [organization, ...schema];
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={dict.locale} />
+    {langs.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={t(l).locale} />)}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -90,6 +94,7 @@ const jsonLd = [organization, ...schema];
       <slot />
     </main>
     <Footer lang={lang} />
+    <ChatWidget lang={lang} />
     <script>
       // Fades sections in as they scroll into view.
       const items = document.querySelectorAll('[data-reveal]');

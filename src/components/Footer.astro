@@ -4,6 +4,7 @@ import logo from '../assets/brand/sengeti-logo-white.png';
 import { localizePath, t, type Lang } from '../i18n';
 import { phoneLink, site, whatsappLink } from '../config/site';
 import { getNews } from '../lib/content';
+import SocialIcons from './SocialIcons.astro';
 
 interface Props {
   lang: Lang;
@@ -19,6 +20,7 @@ const hasNews = (await getNews(lang)).length > 0;
     <div class="about">
       <Image src={logo} alt={site.name} width={150} densities={[1, 2]} />
       <p class="muted">{footer.tagline}</p>
+      <SocialIcons />
     </div>
     <div>
       <h2>{footer.company}</h2>
@@ -26,8 +28,10 @@ const hasNews = (await getNews(lang)).length > 0;
         <li><a href={localizePath(lang, '/about')}>{nav.about}</a></li>
         <li><a href={localizePath(lang, '/products')}>{nav.products}</a></li>
         <li><a href={localizePath(lang, '/services')}>{nav.services}</a></li>
+        <li><a href={localizePath(lang, '/support')}>{nav.support}</a></li>
         {hasNews && <li><a href={localizePath(lang, '/news')}>{nav.news}</a></li>}
         <li><a href={localizePath(lang, '/contact')}>{nav.contact}</a></li>
+        <li><a href={site.profilePdf} download>{footer.profile}</a></li>
       </ul>
     </div>
     <div>
@@ -36,7 +40,7 @@ const hasNews = (await getNews(lang)).length > 0;
         <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
         <li><a href={whatsappLink()} rel="noopener" target="_blank">WhatsApp</a></li>
         <li><a href={phoneLink()}>{site.phone}</a></li>
-        {site.social.map((s) => <li><a href={s.href} rel="noopener me" target="_blank">{s.label}</a></li>)}
+        <li class="muted">{site.city}, {site.country}</li>
       </ul>
     </div>
   </div>
@@ -71,6 +75,7 @@ const hasNews = (await getNews(lang)).length > 0;
 
   .about p {
     max-width: 320px;
+    margin-bottom: 20px;
   }
 
   h2 {

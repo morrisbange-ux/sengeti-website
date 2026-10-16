@@ -1,7 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/brand/sengeti-logo-white.png';
-import { localizePath, t, type Lang } from '../i18n';
+import Icon from './Icon.astro';
+import { langs, localizePath, t, type Lang } from '../i18n';
 import { site } from '../config/site';
 import { getNews } from '../lib/content';
 
@@ -17,10 +18,13 @@ const links = [
   { href: '/about', label: nav.about },
   { href: '/products', label: nav.products },
   { href: '/services', label: nav.services },
+  { href: '/support', label: nav.support },
   // The News link appears once the first post is published.
   ...((await getNews(lang)).length ? [{ href: '/news', label: nav.news }] : []),
   { href: '/contact', label: nav.contact },
 ];
+// Pages that exist in every language keep their place when switching; the 404 page goes home.
+const switchPath = path === '/404' ? '/' : path;
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
 ---
 
@@ -44,6 +48,26 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
       </ul>
       <a class="btn btn-primary btn-sm" href={localizePath(lang, '/contact')}>{nav.cta}</a>
     </nav>
+
+    {
+      langs.length > 1 && (
+        <details class="lang">
+          <summary aria-label={nav.language}>
+            <Icon name="globe" size={18} />
+            <span>{lang.toUpperCase()}</span>
+          </summary>
+          <ul>
+            {langs.map((l) => (
+              <li>
+                <a href={localizePath(l, switchPath)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+                  {t(l).langName}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )
+    }
 
     <details class="nav-mobile">
       <summary>
@@ -82,8 +106,71 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
   .bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 12px;
     min-height: 68px;
+  }
+
+  .brand {
+    margin-right: auto;
+  }
+
+  .lang {
+    position: relative;
+  }
+
+  .lang summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .lang summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .lang summary:hover,
+  .lang[open] summary {
+    color: var(--white);
+    border-color: rgb(255 255 255 / 0.3);
+  }
+
+  .lang ul {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 160px;
+    padding: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+    z-index: 60;
+  }
+
+  .lang a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .lang a:hover {
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .lang a[aria-current] {
+    color: var(--red);
+    font-weight: 700;
   }
 
   .brand {
@@ -124,12 +211,12 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
   .nav-desktop {
     display: none;
     align-items: center;
-    gap: 32px;
+    gap: 24px;
   }
 
   .nav-desktop ul {
     display: flex;
-    gap: 28px;
+    gap: 22px;
   }
 
   .btn-sm {
@@ -217,7 +304,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
     margin-top: 20px;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 1100px) {
     .nav-desktop {
       display: flex;
     }

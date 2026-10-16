@@ -1,16 +1,18 @@
 import en from './en';
+import fr from './fr';
+import pt from './pt';
 
 /**
  * Languages the site is published in.
  *
  * To add a language (for example Shona, "sn"):
  *   1. Copy src/i18n/en.ts to src/i18n/sn.ts and translate the text.
- *   2. Import it below and add it to `dictionaries` and `languageNames`.
- *   3. Copy src/content/products/en/ to src/content/products/sn/ and translate.
+ *   2. Import it below and add it to `dictionaries`.
+ *   3. Copy the en/ folders in src/content/products, legal and news to sn/ and
+ *      translate them (anything not translated falls back to English).
  * The new language is then served under /sn/ (English stays at the root).
  */
-export const dictionaries = { en } as const;
-export const languageNames: Record<Lang, string> = { en: 'English' };
+export const dictionaries = { en, fr, pt } as const;
 
 export type Lang = keyof typeof dictionaries;
 export type Dict = typeof en;
