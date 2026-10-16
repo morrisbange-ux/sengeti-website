@@ -1,0 +1,145 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RedLight from '../../../components/RedLight.astro';
+import Icon from '../../../components/Icon.astro';
+import { defaultLang, langs, localizePath, t, type Lang } from '../../../i18n';
+import { getProducts, type Product } from '../../../lib/products';
+import { site, whatsappLink } from '../../../config/site';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of langs) {
+    for (const product of await getProducts(lang)) {
+      paths.push({
+        params: { lang: lang === defaultLang ? undefined : lang, slug: product.slug },
+        props: { lang, product },
+      });
+    }
+  }
+  return paths;
+}
+
+const { lang, product } = Astro.props as { lang: Lang; product: Product };
+const dict = t(lang);
+const copy = dict.products;
+const { data } = product;
+const { Content } = await render(product);
+const path = `/products/${product.slug}`;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: data.name,
+    description: data.summary,
+    applicationCategory: data.category,
+    operatingSystem: data.platforms.join(', '),
+    url: new URL(localizePath(lang, path), site.url).href,
+    publisher: { '@id': `${site.url}/#organization` },
+  },
+];
+---
+
+<BaseLayout lang={lang} title={`${data.name} | ${site.name}`} description={data.summary} path={path} schema={schema}>
+  <section class="page-hero hero">
+    <RedLight />
+    <div class="container inner">
+      <a class="back" href={localizePath(lang, '/products')}>← {copy.backToProducts}</a>
+      <h1>{data.name}</h1>
+      <p class="lead">{data.tagline} {data.summary}</p>
+      {data.platforms.length > 0 && (
+        <p class="platforms"><strong>{copy.platforms}:</strong> {data.platforms.join(' · ')}</p>
+      )}
+      <div class="btn-row">
+        <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{copy.requestDemo}</a>
+        <a class="btn btn-ghost" href={whatsappLink(`${copy.whatsappMessage} ${data.name}.`)} target="_blank" rel="noopener">
+          {copy.askOnWhatsApp}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {data.features.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><h2>{copy.features}</h2></div>
+        <div class="grid grid-3">
+          {data.features.map((f) => (
+            <div class="card">
+              <span class="tick"><Icon name="shield" size={20} /></span>
+              <h3>{f.title}</h3>
+              <p class="muted">{f.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section body">
+    <div class="container">
+      <div class="prose"><Content /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>{data.name}</h2>
+        <p>{data.tagline}</p>
+        <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{copy.requestDemo}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 72px;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .back {
+    display: inline-block;
+    margin-bottom: 24px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .back:hover {
+    color: var(--white);
+  }
+
+  .platforms {
+    color: var(--muted);
+    margin-bottom: 1.8rem;
+  }
+
+  .tick {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--red-soft);
+    color: var(--red);
+    margin-bottom: 14px;
+  }
+
+  .body {
+    padding-top: 0;
+  }
+
+  .prose {
+    max-width: 760px;
+    font-size: 1.15rem;
+    color: var(--muted);
+  }
+</style>

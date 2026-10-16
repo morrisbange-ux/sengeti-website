@@ -1,0 +1,96 @@
+---
+import Icon from './Icon.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import type { Product } from '../lib/products';
+
+interface Props {
+  product: Product;
+  lang: Lang;
+}
+const { product, lang } = Astro.props;
+const dict = t(lang).products;
+const { data } = product;
+const href = localizePath(lang, `/products/${product.slug}`);
+---
+
+<article class="product card">
+  <div class="top">
+    <span class:list={['status', data.status]}>{data.status === 'available' ? dict.available : dict.comingSoon}</span>
+    {data.platforms.length > 0 && <span class="platforms">{data.platforms.join(' · ')}</span>}
+  </div>
+  <h3><a href={href}>{data.name}</a></h3>
+  <p class="tagline">{data.tagline}</p>
+  <p class="muted">{data.summary}</p>
+  <span class="more" aria-hidden="true">{dict.viewDetails} <Icon name="arrow" size={18} /></span>
+</article>
+
+<style>
+  .product {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .product:hover {
+    border-color: rgb(255 49 48 / 0.6);
+    transform: translateY(-2px);
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 18px;
+    font-size: 0.85rem;
+  }
+
+  .status {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    background: var(--red-soft);
+    color: var(--red);
+  }
+
+  .status.coming-soon {
+    background: rgb(255 255 255 / 0.08);
+    color: var(--muted);
+  }
+
+  .platforms {
+    color: var(--muted);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3em;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  /* Makes the whole card clickable while keeping one real link. */
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+
+  .tagline {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--red);
+    font-weight: 700;
+  }
+</style>

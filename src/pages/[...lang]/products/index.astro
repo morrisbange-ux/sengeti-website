@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RedLight from '../../../components/RedLight.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { langPaths, localizePath, t, type Lang } from '../../../i18n';
+import { getProducts } from '../../../lib/products';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const dict = t(lang);
+const { products: copy } = dict;
+const products = await getProducts(lang);
+---
+
+<BaseLayout lang={lang} title={copy.title} description={copy.description} path="/products">
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="container inner">
+      <h1>{copy.heading}</h1>
+      <p class="lead">{copy.lead}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2">
+      {products.map((p) => <ProductCard product={p} lang={lang} />)}
+      <div class="card soon">
+        <h3>{copy.moreSoonHeading}</h3>
+        <p class="muted">{copy.moreSoonText}</p>
+        <a class="btn btn-ghost" href={localizePath(lang, '/contact')}>{dict.nav.cta}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .soon {
+    border-style: dashed;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+</style>

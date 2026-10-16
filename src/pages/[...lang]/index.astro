@@ -1,0 +1,153 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Icon from '../../components/Icon.astro';
+import { langPaths, localizePath, t, type Lang } from '../../i18n';
+import { getProducts } from '../../lib/products';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const dict = t(lang);
+const { home, services } = dict;
+const products = await getProducts(lang);
+const featured = products.filter((p) => p.data.featured);
+const shown = featured.length ? featured : products.slice(0, 1);
+const serviceIcons = { 'custom-software': 'code', 'web-mobile': 'web-mobile', cloud: 'cloud' } as const;
+const whyIcons = ['shield', 'wallet', 'signal'] as const;
+---
+
+<BaseLayout lang={lang} title={home.title} description={home.description} path="/">
+  <section class="hero">
+    <RedLight />
+    <div class="container hero-inner">
+      <span class="eyebrow">{home.eyebrow}</span>
+      <h1>{home.heading}</h1>
+      <p class="lead">{home.lead}</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={localizePath(lang, '/products')}>{home.primaryCta}</a>
+        <a class="btn btn-ghost" href={localizePath(lang, '/contact')}>{home.secondaryCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>{home.servicesHeading}</h2>
+        <p class="lead">{home.servicesLead}</p>
+      </div>
+      <div class="grid grid-3">
+        {
+          services.items.map((s) => (
+            <a class="card service" href={`${localizePath(lang, '/services')}#${s.id}`}>
+              <span class="icon">
+                <Icon name={serviceIcons[s.id as keyof typeof serviceIcons] ?? 'code'} />
+              </span>
+              <h3>{s.title}</h3>
+              <p class="muted">{s.text}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    shown.length > 0 && (
+      <section class="section product-section">
+        <div class="container">
+          <div class="section-head">
+            <h2>{home.productHeading}</h2>
+          </div>
+          <div class="grid grid-2">
+            {shown.map((p) => (
+              <ProductCard product={p} lang={lang} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>{home.whyHeading}</h2>
+      </div>
+      <div class="grid grid-3">
+        {
+          home.why.map((w, i) => (
+            <div class="card">
+              <span class="icon">
+                <Icon name={whyIcons[i % whyIcons.length]} />
+              </span>
+              <h3>{w.title}</h3>
+              <p class="muted">{w.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>{home.ctaHeading}</h2>
+        <p>{home.ctaText}</p>
+        <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{home.ctaButton}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: min(88vh, 760px);
+    display: flex;
+    align-items: center;
+    padding-block: 96px 72px;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 16ch;
+  }
+
+  .hero .lead {
+    margin-bottom: 2rem;
+  }
+
+  .service {
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .service:hover {
+    border-color: rgb(255 49 48 / 0.6);
+    transform: translateY(-2px);
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--red-soft);
+    color: var(--red);
+    margin-bottom: 18px;
+  }
+
+  .product-section {
+    background: linear-gradient(180deg, transparent, rgb(255 49 48 / 0.06), transparent);
+  }
+</style>

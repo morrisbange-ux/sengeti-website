@@ -1,0 +1,114 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/sengeti-logo-white.png';
+import { localizePath, t, type Lang } from '../i18n';
+import { phoneLink, site, whatsappLink } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { nav, footer } = t(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container cols">
+    <div class="about">
+      <Image src={logo} alt={site.name} width={150} densities={[1, 2]} />
+      <p class="muted">{footer.tagline}</p>
+    </div>
+    <div>
+      <h2>{footer.company}</h2>
+      <ul>
+        <li><a href={localizePath(lang, '/about')}>{nav.about}</a></li>
+        <li><a href={localizePath(lang, '/products')}>{nav.products}</a></li>
+        <li><a href={localizePath(lang, '/services')}>{nav.services}</a></li>
+        <li><a href={localizePath(lang, '/contact')}>{nav.contact}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>{footer.getInTouch}</h2>
+      <ul>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a href={whatsappLink()} rel="noopener" target="_blank">WhatsApp</a></li>
+        <li><a href={phoneLink()}>{site.phone}</a></li>
+        {site.social.map((s) => <li><a href={s.href} rel="noopener me" target="_blank">{s.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+  <div class="container legal">
+    <p>© {year} {site.name}. {footer.rights} {footer.madeIn}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background: #08080a;
+    padding-top: 56px;
+    font-size: 0.97rem;
+  }
+
+  .cols {
+    display: grid;
+    gap: 36px;
+    grid-template-columns: 1fr;
+  }
+
+  .about img {
+    width: 150px;
+    height: auto;
+    margin-bottom: 14px;
+  }
+
+  .about p {
+    max-width: 320px;
+  }
+
+  h2 {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 8px;
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  a:hover {
+    color: var(--red);
+  }
+
+  .legal {
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    padding-block: 20px;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .legal p {
+    margin: 0;
+  }
+
+  @media (min-width: 760px) {
+    .cols {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+</style>

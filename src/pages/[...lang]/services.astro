@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import Icon from '../../components/Icon.astro';
+import { langPaths, localizePath, t, type Lang } from '../../i18n';
+import { site } from '../../config/site';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { services } = t(lang);
+const icons = { 'custom-software': 'code', 'web-mobile': 'web-mobile', cloud: 'cloud' } as const;
+
+const schema = services.items.map((s) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: s.title,
+  description: s.text,
+  provider: { '@id': `${site.url}/#organization` },
+  areaServed: site.country,
+}));
+---
+
+<BaseLayout lang={lang} title={services.title} description={services.description} path="/services" schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="container inner">
+      <h1>{services.heading}</h1>
+      <p class="lead">{services.lead}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container list">
+      {
+        services.items.map((s) => (
+          <article class="card service" id={s.id}>
+            <span class="icon">
+              <Icon name={icons[s.id as keyof typeof icons] ?? 'code'} size={28} />
+            </span>
+            <div>
+              <h2>{s.title}</h2>
+              <p class="muted">{s.text}</p>
+              <ul class="ticks">
+                {s.points.map((p) => (
+                  <li>{p}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>{services.processHeading}</h2></div>
+      <ol class="grid grid-process">
+        {
+          services.process.map((step, i) => (
+            <li class="card">
+              <span class="num">{i + 1}</span>
+              <h3>{step.title}</h3>
+              <p class="muted">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>{services.ctaHeading}</h2>
+        <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{services.ctaButton}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .list {
+    display: grid;
+    gap: 20px;
+  }
+
+  .service {
+    display: grid;
+    gap: 20px;
+    scroll-margin-top: 90px;
+  }
+
+  .service h2 {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--red-soft);
+    color: var(--red);
+  }
+
+  .ticks {
+    display: grid;
+    gap: 2px 24px;
+  }
+
+  .grid-process {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  @media (min-width: 760px) {
+    .service {
+      grid-template-columns: auto 1fr;
+      gap: 32px;
+    }
+    .ticks {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,133 @@
+---
+/**
+ * The flowing red light behind the page, drawn with SVG so it costs a few
+ * hundred bytes instead of a large image.
+ */
+interface Props {
+  variant?: 'hero' | 'subtle';
+}
+const { variant = 'hero' } = Astro.props;
+---
+
+<div class:list={['redlight', variant]} aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="rl-stroke" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#ff3130" stop-opacity="0"></stop>
+        <stop offset="0.35" stop-color="#ff3130" stop-opacity="0.9"></stop>
+        <stop offset="0.7" stop-color="#ff6a4d" stop-opacity="1"></stop>
+        <stop offset="1" stop-color="#ff3130" stop-opacity="0"></stop>
+      </linearGradient>
+      <filter id="rl-glow" x="-20%" y="-50%" width="140%" height="200%">
+        <feGaussianBlur stdDeviation="26"></feGaussianBlur>
+      </filter>
+      <filter id="rl-soft" x="-20%" y="-50%" width="140%" height="200%">
+        <feGaussianBlur stdDeviation="4"></feGaussianBlur>
+      </filter>
+    </defs>
+    <g class="flow flow-a">
+      <path
+        d="M-100 720 C 260 560, 420 820, 760 600 S 1180 260, 1560 360"
+        stroke="url(#rl-stroke)"
+        stroke-width="70"
+        fill="none"
+        filter="url(#rl-glow)"></path>
+      <path
+        d="M-100 720 C 260 560, 420 820, 760 600 S 1180 260, 1560 360"
+        stroke="url(#rl-stroke)"
+        stroke-width="5"
+        fill="none"
+        filter="url(#rl-soft)"></path>
+    </g>
+    <g class="flow flow-b">
+      <path
+        d="M-120 520 C 300 420, 520 700, 880 480 S 1260 160, 1580 220"
+        stroke="url(#rl-stroke)"
+        stroke-width="40"
+        stroke-opacity="0.55"
+        fill="none"
+        filter="url(#rl-glow)"></path>
+      <path
+        d="M-120 520 C 300 420, 520 700, 880 480 S 1260 160, 1580 220"
+        stroke="url(#rl-stroke)"
+        stroke-width="2"
+        stroke-opacity="0.8"
+        fill="none"></path>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .redlight {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 85% 20%, rgb(255 49 48 / 0.22), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 5% 95%, rgb(255 49 48 / 0.14), transparent 70%);
+  }
+
+  /* Keeps text readable where it sits over the light. */
+  .redlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(90deg, rgb(11 11 12 / 0.75) 0%, rgb(11 11 12 / 0.35) 45%, transparent 70%);
+  }
+
+  .redlight::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    background: linear-gradient(transparent, var(--black));
+  }
+
+  svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 700px) {
+    .redlight::before {
+      background: linear-gradient(180deg, rgb(11 11 12 / 0.05) 0%, rgb(11 11 12 / 0.55) 50%, rgb(11 11 12 / 0.15) 100%);
+    }
+    svg {
+      transform: translateY(4%) scale(1.9);
+    }
+  }
+
+  .subtle {
+    opacity: 0.45;
+  }
+
+  .flow {
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  .flow-a {
+    animation: drift-a 18s ease-in-out infinite alternate;
+  }
+
+  .flow-b {
+    animation: drift-b 24s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift-a {
+    to {
+      transform: translate3d(-40px, 24px, 0) scaleY(1.08);
+    }
+  }
+
+  @keyframes drift-b {
+    to {
+      transform: translate3d(50px, -20px, 0) scaleY(0.92);
+    }
+  }
+</style>

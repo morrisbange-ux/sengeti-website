@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../config/site';
+import { defaultLang, langs, localizePath, t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Site path without language prefix, e.g. "/about". Used for canonical and language links. */
+  path: string;
+  image?: string;
+  /** Extra structured data (JSON-LD) for this page. */
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { lang, title, description, path, image = '/og-image.png', schema = [], noindex = false } = Astro.props;
+const dict = t(lang);
+const canonical = new URL(localizePath(lang, path), site.url).href;
+const imageUrl = new URL(image, site.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${site.url}/#organization`,
+  name: site.name,
+  url: site.url,
+  logo: new URL('/icon-512.png', site.url).href,
+  description: dict.home.description,
+  email: site.email,
+  telephone: site.phone,
+  founder: { '@type': 'Person', name: site.founder },
+  address: { '@type': 'PostalAddress', addressCountry: site.countryCode },
+  sameAs: site.social.map((s) => s.href),
+};
+const jsonLd = [organization, ...schema];
+---
+
+<!doctype html>
+<html lang={dict.langCode}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {
+      langs.length > 1 &&
+        langs.map((l) => (
+          <link rel="alternate" hreflang={t(l).langCode} href={new URL(localizePath(l, path), site.url).href} />
+        ))
+    }
+    {langs.length > 1 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(defaultLang, path), site.url).href} />}
+
+    <meta name="theme-color" content="#0b0b0c" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={dict.locale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{dict.nav.skip}</a>
+    <Header lang={lang} path={path} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>
