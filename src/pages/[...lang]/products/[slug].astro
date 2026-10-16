@@ -28,6 +28,8 @@ const copy = dict.products;
 const { data } = product;
 const { Content } = await render(product);
 const path = `/products/${product.slug}`;
+// `?? []` guards against an older cached copy of the content made before screenshots existed.
+const screenshots = data.screenshots ?? [];
 
 const schema = [
   {
@@ -62,9 +64,9 @@ const schema = [
         </a>
       </div>
       </div>
-      {data.screenshots.length > 0 ? (
+      {screenshots.length > 0 ? (
         <div class="shots">
-          {data.screenshots.slice(0, 2).map((shot) => (
+          {screenshots.slice(0, 2).map((shot) => (
             <div class="shot">
               <Image src={shot.src} alt={shot.alt} width={300} densities={[1, 2]} />
             </div>
