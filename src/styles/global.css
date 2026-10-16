@@ -1,6 +1,7 @@
 :root {
   --red: #ff3130;
   --red-soft: rgb(255 49 48 / 0.14);
+  --red-text: #ff3130;
   --black: #0b0b0c;
   --surface: #141416;
   --surface-2: #1c1c1f;
@@ -37,6 +38,8 @@
   --text: #26262b;
   --muted: #5b5b64;
   --red-soft: rgb(255 49 48 / 0.1);
+  /* Brand red is too light for small text on white; this darker red keeps it readable. */
+  --red-text: #d11f1f;
   --tint: 11 11 12;
   --bg-rgb: 246 246 247;
   --shade: 255 255 255;
@@ -61,6 +64,7 @@
   --shade: 0 0 0;
   --green: #6ee7a0;
   --red-soft: rgb(255 49 48 / 0.14);
+  --red-text: #ff3130;
   color: var(--text);
   color-scheme: dark;
 }
@@ -132,7 +136,9 @@ h2 {
   font-weight: 700;
 }
 
-h3 {
+/* .h3 gives an h2 the look of an h3 where the outline needs an h2. */
+h3,
+.h3 {
   font-size: 1.2rem;
   font-weight: 600;
 }
@@ -166,7 +172,7 @@ p {
 
 .eyebrow {
   display: inline-block;
-  color: var(--red);
+  color: var(--red-text);
   font-weight: 700;
   font-size: 0.85rem;
   letter-spacing: 0.14em;
@@ -181,7 +187,7 @@ p {
 }
 
 .accent {
-  color: var(--red);
+  color: var(--red-text);
 }
 
 .btn {
@@ -292,7 +298,7 @@ p {
   height: 36px;
   border-radius: 50%;
   background: var(--red-soft);
-  color: var(--red);
+  color: var(--red-text);
   font-weight: 700;
   margin-bottom: 14px;
 }
@@ -356,7 +362,8 @@ p {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: shimmer 6s linear infinite;
+  /* Plays once: a looping text shimmer repaints every frame and slows phones down. */
+  animation: shimmer 2.4s 0.4s ease-out both;
 }
 
 @keyframes shimmer {
@@ -368,19 +375,16 @@ p {
 /* Scroll reveal: only applies when JavaScript has run, so content is never hidden without it. */
 .js [data-reveal] {
   opacity: 0;
-  transform: translateY(28px) scale(0.98);
-  filter: blur(6px);
+  transform: translateY(20px);
   transition:
-    opacity 0.8s ease,
-    filter 0.8s ease,
-    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: calc(var(--d, 0) * 100ms);
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--d, 0) * 60ms);
 }
 
 .js [data-reveal].is-visible {
   opacity: 1;
   transform: none;
-  filter: none;
 }
 
 /* Section headings draw a short red line under themselves as they appear. */
@@ -402,26 +406,25 @@ p {
 
 /* Hero text rises in, one line after another, when a page opens. */
 .hero :is(.eyebrow, h1, .lead, .btn-row) {
-  animation: hero-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: hero-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .hero h1 {
-  animation-delay: 0.08s;
+  animation-delay: 0.04s;
 }
 
 .hero .lead {
-  animation-delay: 0.18s;
+  animation-delay: 0.08s;
 }
 
 .hero .btn-row {
-  animation-delay: 0.28s;
+  animation-delay: 0.12s;
 }
 
 @keyframes hero-in {
   from {
     opacity: 0;
-    transform: translateY(24px);
-    filter: blur(8px);
+    transform: translateY(12px);
   }
 }
 
@@ -447,30 +450,29 @@ p {
   opacity: 1;
 }
 
-/* Smooth fade between pages in browsers that support it; the header stays still. */
+/* Quick fade between pages in browsers that support it; the header stays still.
+   Kept short so a click feels instant. */
 @view-transition {
   navigation: auto;
 }
 
 ::view-transition-old(root) {
-  animation: page-out 0.25s ease both;
+  animation: page-out 0.12s ease-out both;
 }
 
 ::view-transition-new(root) {
-  animation: page-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: page-in 0.2s ease-out both;
 }
 
 @keyframes page-out {
   to {
     opacity: 0;
-    transform: translateY(-8px);
   }
 }
 
 @keyframes page-in {
   from {
     opacity: 0;
-    transform: translateY(14px);
   }
 }
 
@@ -556,7 +558,7 @@ p {
 }
 
 .prose a {
-  color: var(--red);
+  color: var(--red-text);
 }
 
 .prose ul {
@@ -680,7 +682,7 @@ p {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--red);
+  color: var(--red-text);
   font-size: 1.5rem;
   font-weight: 400;
   transition: transform 0.2s;

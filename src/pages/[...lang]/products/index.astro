@@ -28,9 +28,9 @@ const roadmap = all.filter((p) => p.data.status === 'coming-soon');
 
   <section class="section">
     <div class="container grid grid-2">
-      {products.map((p) => <ProductCard product={p} lang={lang} />)}
+      {products.map((p) => <ProductCard product={p} lang={lang} level={2} />)}
       <div class="card soon">
-        <h3>{copy.moreSoonHeading}</h3>
+        <h2 class="h3">{copy.moreSoonHeading}</h2>
         <p class="muted">{copy.moreSoonText}</p>
         <a class="btn btn-ghost" href={localizePath(lang, '/start-project')}>{dict.nav.cta}</a>
         {
@@ -103,12 +103,12 @@ const roadmap = all.filter((p) => p.data.status === 'coming-soon');
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--red);
+    color: var(--red-text);
     background: var(--red-soft);
   }
 
   .more {
-    color: var(--red);
+    color: var(--red-text);
     font-weight: 700;
     text-decoration: none;
   }

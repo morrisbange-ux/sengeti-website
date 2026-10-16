@@ -412,7 +412,7 @@ const schema = [
     margin-bottom: 6px;
     border-radius: 10px;
     background: var(--red-soft);
-    color: var(--red);
+    color: var(--red-text);
   }
 
   input:checked + .type-box {
@@ -478,12 +478,18 @@ const schema = [
     background: rgb(var(--tint) / 0.05);
   }
 
+  /* A deeper red so the small white text stays readable. */
   .seg input:checked + span {
-    background: var(--red);
+    background: #d11f1f;
+    color: #fff;
+  }
+
+  .seg input:checked + span strong {
+    color: #fff;
   }
 
   .seg input:checked + span small {
-    color: rgb(var(--tint) / 0.85);
+    color: #fff;
   }
 
   @media (max-width: 480px) {
@@ -597,7 +603,7 @@ const schema = [
   }
 
   .dash {
-    color: var(--red);
+    color: var(--red-text);
   }
 
   .weeks {
@@ -627,7 +633,7 @@ const schema = [
 
   .note :global(svg) {
     flex: none;
-    color: var(--red);
+    color: var(--red-text);
     margin-top: 2px;
   }
 

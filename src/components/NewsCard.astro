@@ -8,8 +8,11 @@ interface Props {
   post: NewsPost;
   lang: Lang;
   index?: number;
+  /** 2 on pages where the cards sit straight under the page title. */
+  level?: 2 | 3;
 }
-const { post, lang, index = 0 } = Astro.props;
+const { post, lang, index = 0, level = 3 } = Astro.props;
+const Heading = `h${level}` as const;
 const dict = t(lang);
 const { data } = post;
 ---
@@ -20,7 +23,7 @@ const { data } = post;
     <span class:list={['tag', data.type]}>{newsTypeLabel(data.type, dict.news)}</span>
     <time datetime={data.date.toISOString()}>{formatDate(data.date, dict.locale)}</time>
   </p>
-  <h3><a href={localizePath(lang, `/news/${post.slug}`)}>{data.title}</a></h3>
+  <Heading class="title h3"><a href={localizePath(lang, `/news/${post.slug}`)}>{data.title}</a></Heading>
   <p class="muted">{data.description}</p>
   <span class="more" aria-hidden="true">{dict.news.readMore} <Icon name="arrow" size={18} /></span>
 </article>
@@ -55,14 +58,14 @@ const { data } = post;
 
   .tag.case-study {
     background: var(--red-soft);
-    color: var(--red);
+    color: var(--red-text);
   }
 
-  h3 a {
+  .title a {
     text-decoration: none;
   }
 
-  h3 a::after {
+  .title a::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -73,7 +76,7 @@ const { data } = post;
     display: inline-flex;
     gap: 6px;
     align-items: center;
-    color: var(--red);
+    color: var(--red-text);
     font-weight: 700;
   }
 </style>

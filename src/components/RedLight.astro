@@ -10,7 +10,9 @@ const { variant = 'hero' } = Astro.props;
 ---
 
 <div class:list={['redlight', variant]} aria-hidden="true">
-  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+  <!-- Each flow is its own SVG so the browser can slide it as one ready-made layer, instead of
+       redrawing the blurred glow on every frame (that redraw made clicks feel slow). -->
+  <svg class="flow flow-a" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
     <defs>
       <linearGradient id="rl-stroke" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0" stop-color="#ff3130" stop-opacity="0"></stop>
@@ -25,7 +27,7 @@ const { variant = 'hero' } = Astro.props;
         <feGaussianBlur stdDeviation="4"></feGaussianBlur>
       </filter>
     </defs>
-    <g class="flow flow-a">
+    <g>
       <path
         d="M-100 720 C 260 560, 420 820, 760 600 S 1180 260, 1560 360"
         stroke="url(#rl-stroke)"
@@ -39,7 +41,9 @@ const { variant = 'hero' } = Astro.props;
         fill="none"
         filter="url(#rl-soft)"></path>
     </g>
-    <g class="flow flow-b">
+  </svg>
+  <svg class="flow flow-b" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <g>
       <path
         d="M-120 520 C 300 420, 520 700, 880 480 S 1260 160, 1580 220"
         stroke="url(#rl-stroke)"
@@ -98,7 +102,9 @@ const { variant = 'hero' } = Astro.props;
       background: linear-gradient(180deg, rgb(var(--bg-rgb) / 0.05) 0%, rgb(var(--bg-rgb) / 0.55) 50%, rgb(var(--bg-rgb) / 0.15) 100%);
     }
     svg {
-      transform: translateY(4%) scale(1.9);
+      /* translate and scale combine with the drift animation's transform. */
+      translate: 0 4%;
+      scale: 1.9;
     }
   }
 
@@ -108,7 +114,6 @@ const { variant = 'hero' } = Astro.props;
 
   .flow {
     transform-origin: center;
-    will-change: transform;
   }
 
   .flow-a {

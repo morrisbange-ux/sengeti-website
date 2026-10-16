@@ -27,7 +27,7 @@ const posts = await getNews(lang);
   </section>
   <section class="section">
     <div class="container grid grid-3">
-      {posts.map((post, i) => <NewsCard post={post} lang={lang} index={i} />)}
+      {posts.map((post, i) => <NewsCard post={post} lang={lang} index={i} level={2} />)}
     </div>
   </section>
 </BaseLayout>
