@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { localizePath, t, type Lang } from '../i18n';
-import { formatDate, type NewsPost } from '../lib/content';
+import { formatDate, newsTypeLabel, type NewsPost } from '../lib/content';
 
 interface Props {
   post: NewsPost;
@@ -17,7 +17,7 @@ const { data } = post;
 <article class="card card-hover post" data-reveal style={`--d:${index}`}>
   {data.cover && <Image src={data.cover} alt={data.coverAlt} width={600} class="cover" />}
   <p class="meta">
-    <span class:list={['tag', data.type]}>{data.type === 'case-study' ? dict.news.caseStudy : dict.news.news}</span>
+    <span class:list={['tag', data.type]}>{newsTypeLabel(data.type, dict.news)}</span>
     <time datetime={data.date.toISOString()}>{formatDate(data.date, dict.locale)}</time>
   </p>
   <h3><a href={localizePath(lang, `/news/${post.slug}`)}>{data.title}</a></h3>
@@ -49,7 +49,7 @@ const { data } = post;
   .tag {
     padding: 2px 10px;
     border-radius: 999px;
-    background: rgb(255 255 255 / 0.08);
+    background: rgb(var(--tint) / 0.08);
     font-weight: 700;
   }
 

@@ -30,7 +30,7 @@ const products = defineCollection({
     }),
 });
 
-/** News posts and case studies: src/content/news/<language>/<post>.md */
+/** News posts, case studies and insight articles: src/content/news/<language>/<post>.md */
 const news = defineCollection({
   loader: glob({ pattern: pattern('md'), base: './src/content/news' }),
   schema: ({ image }) =>
@@ -38,7 +38,7 @@ const news = defineCollection({
       title: z.string(),
       description: z.string(),
       date: z.coerce.date(),
-      type: z.enum(['news', 'case-study']).default('news'),
+      type: z.enum(['news', 'case-study', 'article']).default('news'),
       client: z.string().optional(),
       cover: image().optional(),
       coverAlt: z.string().default(''),
@@ -84,4 +84,34 @@ const clients = defineCollection({
     }),
 });
 
-export const collections = { products, news, legal, testimonials, clients };
+/**
+ * Portfolio projects for the "Our work" page: src/content/projects/<language>/<project>.md
+ * Copy example.md, fill it in and delete the `draft: true` line.
+ */
+const projects = defineCollection({
+  loader: glob({ pattern: pattern('md'), base: './src/content/projects' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      client: z.string(),
+      sector: z.string(),
+      summary: z.string(),
+      year: z.number(),
+      services: z.array(z.string()).default([]),
+      tech: z.array(z.string()).default([]),
+      results: z.array(z.string()).default([]),
+      // A real screenshot. Without one, a drawn illustration is shown.
+      cover: image().optional(),
+      coverAlt: z.string().default(''),
+      // Drawn illustration used when there is no cover: attendance, website, dashboard or workflow.
+      visual: z.enum(['attendance', 'website', 'dashboard', 'workflow']).default('dashboard'),
+      // Optional links: a case study slug in news, a product slug, or a live address.
+      caseStudy: z.string().optional(),
+      product: z.string().optional(),
+      url: z.url().optional(),
+      order: z.number().default(100),
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { products, news, legal, testimonials, clients, projects };

@@ -12,10 +12,21 @@ interface Props {
   showLocation?: boolean;
 }
 const { lang, notes = {}, showLocation = true } = Astro.props;
-const { contact } = t(lang);
+const { contact, extras } = t(lang);
 ---
 
 <div class="channels">
+  {
+    site.bookingUrl && (
+      <div class="card">
+        <h2>{extras.bookCall}</h2>
+        <p class="muted note">{extras.bookCallText}</p>
+        <a class="btn btn-primary" href={site.bookingUrl} target="_blank" rel="noopener">
+          {extras.bookCall}
+        </a>
+      </div>
+    )
+  }
   <div class="card">
     <h2>{contact.phoneHeading}</h2>
     {notes.whatsapp && <p class="muted note">{notes.whatsapp}</p>}
@@ -38,7 +49,11 @@ const { contact } = t(lang);
     showLocation && (
       <div class="card">
         <h2>{contact.locationHeading}</h2>
-        <p class="muted">{site.city}, {site.country}</p>
+        <p class="muted">
+          <a class="map" href={site.mapUrl} target="_blank" rel="noopener">
+            {site.city}, {site.country}
+          </a>
+        </p>
       </div>
     )
   }
@@ -75,6 +90,10 @@ const { contact } = t(lang);
     font-weight: 600;
     text-decoration: none;
     word-break: break-word;
+  }
+
+  .map {
+    color: inherit;
   }
 
   .big:hover {

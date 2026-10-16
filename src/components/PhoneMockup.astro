@@ -33,7 +33,7 @@ const qr = Array.from({ length: N * N }, (_, i) => {
 });
 ---
 
-<div class="phone" role="img" aria-label={label}>
+<div class="phone force-dark" role="img" aria-label={label}>
   <div class="notch" aria-hidden="true"></div>
   <div class="screen" aria-hidden="true">
     <div class="appbar">
@@ -110,7 +110,7 @@ const qr = Array.from({ length: N * N }, (_, i) => {
     padding: 12px;
     background: linear-gradient(145deg, #2a2a2e, #0e0e10 60%);
     box-shadow:
-      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 0 0 1px rgb(var(--tint) / 0.08),
       0 30px 80px -20px rgb(255 49 48 / 0.45),
       0 20px 40px rgb(0 0 0 / 0.6);
     animation: float 7s ease-in-out infinite;

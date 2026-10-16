@@ -12,6 +12,8 @@ export const getStaticPaths = langPaths;
 
 const { lang } = Astro.props as { lang: Lang };
 const { services, home } = t(lang);
+// Industry page for each sector card, in the order of `services.sectors`.
+const sectorPages = ['universities', 'retail', 'finance', 'ngos', 'healthcare', 'government'];
 
 const schema = services.items.map((s) => ({
   '@context': 'https://schema.org',
@@ -105,6 +107,9 @@ const schema = services.items.map((s) => ({
                   <li>{p}</li>
                 ))}
               </ul>
+              <a class="more sector-link" href={localizePath(lang, `/industries/${sectorPages[i]}`)}>
+                {t(lang).solutions.learnMore} <Icon name="arrow" size={18} />
+              </a>
             </div>
           ))
         }
@@ -155,6 +160,11 @@ const schema = services.items.map((s) => ({
     flex-direction: column;
   }
 
+  .sector-link {
+    margin-top: 14px;
+    text-decoration: none;
+  }
+
   .service .more {
     text-decoration: none;
   }
@@ -170,7 +180,7 @@ const schema = services.items.map((s) => ({
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 1.6rem;
-    color: rgb(255 255 255 / 0.12);
+    color: rgb(var(--tint) / 0.12);
   }
 
   .service h2 {

@@ -1,0 +1,587 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RedLight from '../../../components/RedLight.astro';
+import Icon from '../../../components/Icon.astro';
+import { langPaths, localizePath, t, type Lang } from '../../../i18n';
+import { site } from '../../../config/site';
+import text from '../../../i18n/pages/guide';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const page = text[lang];
+const { contact, nav } = t(lang);
+const total = page.groups.reduce((n, g) => n + g.items.length, 0);
+const countHtml = (x: number) => page.countText.replace('{x}', `<strong data-count>${x}</strong>`).replace('{n}', String(total));
+const siteHost = site.url.replace(/^https?:\/\//, '');
+let itemNumber = 0;
+---
+
+<BaseLayout lang={lang} title={page.title} description={page.description} path="/guides/automation-checklist">
+  <section class="page-hero hero screen-only">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <div>
+        <span class="eyebrow">{page.eyebrow}</span>
+        <h1>{page.heading} <span class="gradient-text">{page.headingAccent}</span></h1>
+        <p class="lead">{page.lead}</p>
+        <ul class="chips topics">{page.groups.map((g) => <li>{g.title}</li>)}</ul>
+      </div>
+
+      <form
+        class="card form"
+        action={site.formEndpoint}
+        method="POST"
+        data-guide-form
+        data-sending={contact.sending}
+        data-success={page.formSuccess}
+        data-error={page.formError}>
+        <h2>{page.formHeading}</h2>
+        <p class="muted small">{page.formText}</p>
+        <input type="hidden" name="_subject" value="Guide download: Automation checklist" />
+        <input type="hidden" name="language" value={lang} />
+        <label>
+          <span>{contact.name}</span>
+          <input name="name" type="text" autocomplete="name" required />
+        </label>
+        <label>
+          <span>{contact.email}</span>
+          <input name="email" type="email" autocomplete="email" inputmode="email" required />
+        </label>
+        <label>
+          <span>{contact.organisation}</span>
+          <input name="organisation" type="text" autocomplete="organization" />
+        </label>
+        <!-- Spam trap: people never see or fill this field. -->
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true" />
+        <button class="btn btn-primary" type="submit"><Icon name="download" size={18} /> <span>{page.formButton}</span></button>
+        <p class="status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="section checklist" id="checklist" data-checklist data-locked>
+    <div class="container narrow">
+      <div class="print-only print-head">
+        <strong>{site.name}</strong>
+        <span>{siteHost}</span>
+      </div>
+      <h2>{page.checklistHeading}</h2>
+      <p class="muted">{page.checklistIntro}</p>
+
+      <div class="counter" aria-live="polite">
+        <p class="count-text" set:html={countHtml(0)} />
+        <div class="meter" aria-hidden="true"><span data-meter></span></div>
+      </div>
+
+      {
+        page.groups.map((g) => (
+          <fieldset class="group">
+            <legend>{g.title}</legend>
+            <ul>
+              {g.items.map((item, i) => {
+                itemNumber += 1;
+                const id = `${g.id}-${i + 1}`;
+                return (
+                  <li>
+                    <input type="checkbox" id={`chk-${id}`} value={id} data-tick />
+                    <label for={`chk-${id}`}>
+                      <span class="item-title">
+                        <span class="n">{itemNumber}.</span> {item.title}
+                      </span>
+                      <span class="why muted">{item.why}</span>
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+          </fieldset>
+        ))
+      }
+
+      <div class="btn-row actions screen-only">
+        <button class="btn btn-primary js-only" type="button" data-print><Icon name="doc" size={18} /> {page.printButton}</button>
+        <button class="btn btn-ghost js-only" type="button" data-reset>{page.resetButton}</button>
+      </div>
+
+      <p class="print-only print-foot">
+        {page.printFooter} {site.email} · {site.phone} · {siteHost}
+      </p>
+    </div>
+  </section>
+
+  <section class="section screen-only">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{page.ctaHeading}</h2>
+        <p>{page.ctaText}</p>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{nav.cta}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Remembers the visitor's ticks in this browser only; nothing is sent anywhere.
+  const UNLOCK_KEY = 'sengeti-guide-unlocked';
+  const TICKS_KEY = 'sengeti-guide-ticks';
+  const read = (key: string) => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+  const write = (key: string, value: string) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      /* storage unavailable: ticks just will not be remembered */
+    }
+  };
+
+  const checklist = document.querySelector<HTMLElement>('[data-checklist]');
+  const form = document.querySelector<HTMLFormElement>('[data-guide-form]');
+
+  if (checklist) {
+    const boxes = [...checklist.querySelectorAll<HTMLInputElement>('[data-tick]')];
+    const count = checklist.querySelector<HTMLElement>('[data-count]');
+    const meter = checklist.querySelector<HTMLElement>('[data-meter]');
+
+    const update = () => {
+      const ticked = boxes.filter((b) => b.checked);
+      if (count) count.textContent = String(ticked.length);
+      if (meter) meter.style.transform = `scaleX(${boxes.length ? ticked.length / boxes.length : 0})`;
+      write(TICKS_KEY, JSON.stringify(ticked.map((b) => b.value)));
+    };
+
+    try {
+      const saved = JSON.parse(read(TICKS_KEY) ?? '[]');
+      if (Array.isArray(saved)) boxes.forEach((b) => (b.checked = saved.includes(b.value)));
+    } catch {
+      /* ignore damaged saved data */
+    }
+    update();
+    boxes.forEach((b) => b.addEventListener('change', update));
+
+    checklist.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+    checklist.querySelector('[data-reset]')?.addEventListener('click', () => {
+      boxes.forEach((b) => (b.checked = false));
+      update();
+    });
+
+    const unlock = (scroll: boolean) => {
+      checklist.removeAttribute('data-locked');
+      write(UNLOCK_KEY, '1');
+      if (scroll) {
+        const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+        checklist.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+      }
+    };
+
+    if (read(UNLOCK_KEY) === '1') unlock(false);
+
+    // Sends the form without leaving the page, then opens the checklist.
+    // Without JavaScript the form posts normally and the checklist is always visible.
+    if (form) {
+      const status = form.querySelector<HTMLElement>('.status')!;
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      const label = button.querySelector('span')!;
+      const original = label.textContent;
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        button.disabled = true;
+        label.textContent = form.dataset.sending ?? '';
+        status.className = 'status';
+        status.textContent = '';
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' },
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          form.reset();
+          status.classList.add('ok');
+          status.textContent = form.dataset.success ?? '';
+        } catch {
+          // Our form service failing should not stop the visitor getting the guide.
+          status.classList.add('err');
+          status.textContent = form.dataset.error ?? '';
+        } finally {
+          button.disabled = false;
+          label.textContent = original;
+          unlock(true);
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .hero h1 {
+    max-width: 16ch;
+  }
+
+  .topics {
+    margin-top: 1.5rem;
+  }
+
+  .small {
+    font-size: 0.95rem;
+    margin: -8px 0 0;
+  }
+
+  /* Form, matching the site's contact form. */
+  .form {
+    display: grid;
+    gap: 16px;
+  }
+
+  .form h2 {
+    font-size: 1.35rem;
+    margin: 0;
+  }
+
+  .form label {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .form input {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--white);
+    background: var(--black);
+    border: 1px solid rgb(var(--tint) / 0.18);
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-height: 48px;
+  }
+
+  .form input:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgb(255 49 48 / 0.25);
+  }
+
+  .trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .form .btn {
+    justify-self: start;
+  }
+
+  button:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .status {
+    margin: 0;
+    min-height: 1.5em;
+  }
+
+  .status:global(.ok) {
+    color: var(--green);
+  }
+
+  .status:global(.err) {
+    color: #ffb36b;
+  }
+
+  /* Checklist */
+  .narrow {
+    max-width: 820px;
+  }
+
+  .checklist {
+    scroll-margin-top: 72px;
+  }
+
+  :global(.js) .checklist[data-locked] {
+    display: none;
+  }
+
+  .checklist:not([data-locked]) .container {
+    animation: open 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes open {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  .counter {
+    position: sticky;
+    top: 12px;
+    z-index: 2;
+    margin: 24px 0 28px;
+    padding: 14px 18px;
+    border: 1px solid rgb(255 49 48 / 0.35);
+    border-radius: var(--radius);
+    background: rgb(20 20 22 / 0.92);
+    backdrop-filter: blur(8px);
+  }
+
+  .count-text {
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+
+  .count-text :global(strong) {
+    color: var(--red);
+    font-size: 1.2em;
+  }
+
+  .meter {
+    height: 6px;
+    border-radius: 3px;
+    background: rgb(var(--tint) / 0.08);
+    overflow: hidden;
+  }
+
+  .meter span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), #ff7a5c);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .group {
+    border: 0;
+    padding: 0;
+    margin: 0 0 28px;
+    min-width: 0;
+  }
+
+  .group legend {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--white);
+    padding: 0;
+    margin-bottom: 12px;
+  }
+
+  .group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .group li {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    transition:
+      border-color 0.2s,
+      background-color 0.2s;
+  }
+
+  .group li:has(input:checked) {
+    border-color: rgb(255 49 48 / 0.55);
+    background: rgb(255 49 48 / 0.07);
+  }
+
+  .group input {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin: 2px 0 0;
+    accent-color: var(--red);
+    cursor: pointer;
+  }
+
+  .group label {
+    display: grid;
+    gap: 2px;
+    cursor: pointer;
+    min-width: 0;
+  }
+
+  .item-title {
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .n {
+    color: var(--red);
+  }
+
+  .why {
+    font-size: 0.95rem;
+  }
+
+  .actions {
+    margin-top: 8px;
+  }
+
+  .js-only {
+    display: none;
+  }
+
+  :global(.js) .js-only {
+    display: inline-flex;
+  }
+
+  .print-only {
+    display: none;
+  }
+
+  @media (min-width: 960px) {
+    .inner {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  /* Printing: the checklist only, black on white, with the company name and website. */
+  @media print {
+    :global(html),
+    :global(body) {
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    :global(.site-header),
+    :global(.site-footer),
+    :global(.chat),
+    :global(.scroll-progress),
+    :global(.skip-link),
+    .screen-only {
+      display: none !important;
+    }
+
+    .print-only {
+      display: block;
+    }
+
+    :global(.js) .checklist[data-locked] {
+      display: block;
+    }
+
+    .checklist {
+      padding: 0;
+    }
+
+    .checklist .container {
+      max-width: none;
+      padding: 0;
+      animation: none;
+    }
+
+    .print-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      font-size: 11pt;
+    }
+
+    .checklist h2,
+    .group legend,
+    .item-title,
+    .n,
+    .muted,
+    .count-text,
+    .count-text :global(strong) {
+      color: #000 !important;
+    }
+
+    .checklist h2 {
+      font-size: 18pt;
+      margin: 0 0 6px;
+    }
+
+    .counter {
+      position: static;
+      background: none;
+      border: 1px solid #000;
+      backdrop-filter: none;
+      padding: 8px 12px;
+      margin: 12px 0 16px;
+    }
+
+    .meter {
+      display: none;
+    }
+
+    .group {
+      margin-bottom: 14px;
+      break-inside: avoid;
+    }
+
+    .group legend {
+      font-size: 13pt;
+      margin-bottom: 6px;
+    }
+
+    .group ul {
+      gap: 4px;
+    }
+
+    .group li,
+    .group li:has(input:checked) {
+      background: none;
+      border: 0;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0;
+      padding: 6px 0;
+      break-inside: avoid;
+    }
+
+    .group input {
+      accent-color: #000;
+      width: 14px;
+      height: 14px;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .why {
+      font-size: 10pt;
+    }
+
+    .print-foot {
+      margin-top: 16px;
+      padding-top: 8px;
+      border-top: 2px solid #000;
+      font-size: 10pt;
+    }
+  }
+</style>

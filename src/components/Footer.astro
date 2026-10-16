@@ -1,10 +1,12 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/brand/sengeti-logo-white.png';
+import logoDark from '../assets/brand/sengeti-logo-dark.png';
 import { localizePath, t, type Lang } from '../i18n';
 import { phoneLink, site, whatsappLink } from '../config/site';
 import { getNews } from '../lib/content';
 import SocialIcons from './SocialIcons.astro';
+import NewsletterForm from './NewsletterForm.astro';
 
 interface Props {
   lang: Lang;
@@ -16,27 +18,50 @@ const hasNews = (await getNews(lang)).length > 0;
 ---
 
 <footer class="site-footer">
+  <div class="container signup">
+    <NewsletterForm lang={lang} />
+  </div>
   <div class="container cols">
     <div class="about">
-      <Image src={logo} alt={site.name} width={150} densities={[1, 2]} />
+      <Image class="logo-on-dark" src={logo} alt={site.name} width={150} densities={[1, 2]} />
+      <Image class="logo-on-light" src={logoDark} alt={site.name} width={150} densities={[1, 2]} />
       <p class="muted">{footer.tagline}</p>
       <SocialIcons />
     </div>
     <div>
       <h2>{footer.company}</h2>
       <ul>
-        <li><a href={localizePath(lang, '/about')}>{nav.about}</a></li>
-        <li><a href={localizePath(lang, '/products')}>{nav.products}</a></li>
-        <li><a href={localizePath(lang, '/services')}>{nav.services}</a></li>
+        <li><a href={localizePath(lang, '/about')}>{nav.aboutUs}</a></li>
+        <li><a href={localizePath(lang, '/work')}>{nav.work}</a></li>
+        <li><a href={localizePath(lang, '/careers')}>{nav.careers}</a></li>
+        <li><a href={localizePath(lang, '/security')}>{nav.security}</a></li>
+        <li><a href={localizePath(lang, '/technology')}>{nav.technology}</a></li>
+        <li><a href={localizePath(lang, '/contact')}>{nav.contact}</a></li>
+        <li><a href={site.profilePdf} download>{footer.profile}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>{nav.services}</h2>
+      <ul>
+        <li><a href={localizePath(lang, '/services')}>{nav.allServices}</a></li>
         <li><a href={localizePath(lang, '/automation')}>{nav.automation}</a></li>
         <li><a href={localizePath(lang, '/software')}>{nav.software}</a></li>
         <li><a href={localizePath(lang, '/ai')}>{nav.ai}</a></li>
         <li><a href={localizePath(lang, '/erp')}>{nav.erp}</a></li>
+        <li><a href={localizePath(lang, '/industries')}>{nav.industries}</a></li>
+        <li><a href={localizePath(lang, '/products')}>{nav.products}</a></li>
+        <li><a href={localizePath(lang, '/demo')}>{nav.demo}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>{nav.resources}</h2>
+      <ul>
+        {hasNews && <li><a href={localizePath(lang, '/news')}>{nav.insights}</a></li>}
+        <li><a href={localizePath(lang, '/savings-calculator')}>{nav.calculator}</a></li>
+        <li><a href={localizePath(lang, '/estimate')}>{nav.estimate}</a></li>
+        <li><a href={localizePath(lang, '/guides/automation-checklist')}>{nav.guide}</a></li>
         <li><a href={localizePath(lang, '/support')}>{nav.support}</a></li>
-        {hasNews && <li><a href={localizePath(lang, '/news')}>{nav.news}</a></li>}
-        <li><a href={localizePath(lang, '/contact')}>{nav.contact}</a></li>
         <li><a href={localizePath(lang, '/start-project')}>{nav.cta}</a></li>
-        <li><a href={site.profilePdf} download>{footer.profile}</a></li>
       </ul>
     </div>
     <div>
@@ -59,11 +84,27 @@ const hasNews = (await getNews(lang)).length > 0;
 </footer>
 
 <style>
+  .logo-on-light {
+    display: none;
+  }
+
+  :global([data-theme='light']) .logo-on-dark {
+    display: none;
+  }
+
+  :global([data-theme='light']) .logo-on-light {
+    display: block;
+  }
+
   .site-footer {
     border-top: 1px solid var(--border);
-    background: #08080a;
+    background: var(--footer-bg);
     padding-top: 56px;
     font-size: 0.97rem;
+  }
+
+  .signup {
+    margin-bottom: 48px;
   }
 
   .cols {
@@ -143,9 +184,22 @@ const hasNews = (await getNews(lang)).length > 0;
     color: var(--white);
   }
 
-  @media (min-width: 760px) {
+  /* Phones: the four link lists sit two by two under the logo. */
+  @media (min-width: 480px) {
     .cols {
-      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+    }
+    .about {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .cols {
+      grid-template-columns: 1.6fr repeat(4, 1fr);
+    }
+    .about {
+      grid-column: auto;
     }
   }
 </style>

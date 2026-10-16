@@ -182,7 +182,7 @@ const data = {
     cursor: pointer;
     display: grid;
     place-items: center;
-    color: var(--white);
+    color: var(--on-red);
     background: var(--red);
     box-shadow:
       0 10px 30px -6px rgb(255 49 48 / 0.7),
@@ -245,7 +245,7 @@ const data = {
     align-items: center;
     gap: 12px;
     padding: 14px 14px 14px 16px;
-    background: linear-gradient(120deg, #2a0b0b, var(--surface-2) 60%);
+    background: linear-gradient(120deg, var(--glow), var(--surface-2) 60%);
     border-bottom: 1px solid var(--border);
   }
 
@@ -258,7 +258,7 @@ const data = {
 
   .status {
     font-size: 0.8rem;
-    color: #6ee7a0;
+    color: var(--green);
   }
 
   .avatar {
@@ -268,7 +268,7 @@ const data = {
     display: grid;
     place-items: center;
     background: var(--red);
-    color: var(--white);
+    color: var(--on-red);
     font-family: var(--font-display);
     font-weight: 700;
   }
@@ -287,7 +287,7 @@ const data = {
   }
 
   .x:hover {
-    background: rgb(255 255 255 / 0.08);
+    background: rgb(var(--tint) / 0.08);
     color: var(--white);
   }
 
@@ -323,7 +323,7 @@ const data = {
   .log :global(li.me) {
     align-self: flex-end;
     background: var(--red);
-    color: var(--white);
+    color: var(--on-red);
     border-bottom-right-radius: 4px;
   }
 
@@ -372,7 +372,7 @@ const data = {
     font-size: 16px;
     color: var(--white);
     background: var(--black);
-    border: 1px solid rgb(255 255 255 / 0.15);
+    border: 1px solid rgb(var(--tint) / 0.15);
     border-radius: 999px;
     padding: 10px 16px;
   }
@@ -389,7 +389,7 @@ const data = {
     border: 0;
     border-radius: 50%;
     background: var(--red);
-    color: var(--white);
+    color: var(--on-red);
     display: grid;
     place-items: center;
     cursor: pointer;

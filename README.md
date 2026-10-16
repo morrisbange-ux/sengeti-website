@@ -24,6 +24,14 @@ WhatsApp number come from the company profile. Two things still need filling in:
 | Setting | What to put there |
 | --- | --- |
 | `formEndpoint` | Your Formspree form address (free at https://formspree.io); contact and support messages are emailed to you |
+| `bookingUrl` | Optional: your Calendly or Cal.com link; "Book a call" buttons appear when set |
+| `whatsappCatalogue` | Optional: your WhatsApp Business catalogue link, shown on the Products page |
+| `introVideo` | Optional: a YouTube video ID for the home page |
+| `analytics` | Optional: a Plausible domain or Cloudflare Web Analytics token to see visitor statistics |
+| `stats` | Optional: real headline numbers (projects, users...) for the home page |
+| `responseTimes` | The reply times promised on the Support page; confirm them |
+| `mapUrl` | The share link of your Google Business Profile once it exists |
+| `src/config/pricing.ts` | The price and timeline ranges used by the cost estimator; replace the placeholder figures |
 | `social` | Instagram is set. LinkedIn currently points to a search; put the company page address in its `href` and set `profile: true` |
 
 ## Common changes
@@ -47,6 +55,26 @@ or photo file next to it. These sections stay hidden until there is at least one
 
 **Privacy Policy and Terms.** These live in `src/content/legal/en/`. They are a sensible
 starting point but should be reviewed by a lawyer before launch.
+
+**Add a portfolio project.** Copy `src/content/projects/en/example.md`, fill it in and delete
+the `draft: true` line. Add a `cover` screenshot if you have one; otherwise a drawn screen is
+shown. Translated copies go in `fr/` and `pt/` with the same file name.
+
+**Write an article.** Add a file to `src/content/news/en/` with `type: article`. Articles,
+news and case studies all appear on the News page.
+
+**Add a job.** Fill in the `roles` list at the top of `src/i18n/pages/careers.ts`.
+
+**Add a product to the roadmap.** Create the product file with `status: coming-soon`. It then
+appears under "Coming next" on the Products page.
+
+**Pages with their own text file.** Industries, portfolio, careers, security, technology, the
+automation checklist, savings calculator, cost estimator and live demo keep their text in
+`src/i18n/pages/`, one file per page with English, French and Portuguese side by side.
+
+**Light and dark mode.** The site opens in the dark brand theme. Visitors can switch with the
+sun/moon button; their choice is remembered. Colours are set at the top of
+`src/styles/global.css`.
 
 **Change page text.** All wording is in `src/i18n/en.ts`.
 
@@ -74,5 +102,17 @@ social share image). The original uploads are kept in `design/brand-originals/`.
 
 ## Hosting
 
-The `dist/` folder can be hosted on any static host. Cloudflare Pages and Netlify are free:
-connect this repository, set the build command to `npm run build` and the output folder to `dist`.
+The `dist/` folder can be hosted on any static host. Cloudflare Pages and Netlify are free and
+include an SSL certificate:
+
+1. Create an account and choose "Import from GitHub", then pick this repository.
+2. Build command `npm run build`, output folder `dist`, Node version 22.
+3. Add your domain (sengetitechnologies.com) in the host's domain settings and follow its DNS steps.
+
+`public/_headers` adds security headers and long-term caching on both hosts.
+
+**After going live:**
+- Add the site to [Google Search Console](https://search.google.com/search-console) and submit
+  `https://sengetitechnologies.com/sitemap-index.xml`.
+- Create a [Google Business Profile](https://business.google.com) for the Mutare office, add the
+  website address, then paste the profile's share link into `mapUrl`.

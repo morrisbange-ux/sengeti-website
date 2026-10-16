@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import Icon from '../../components/Icon.astro';
+import DemoAttendance from '../../components/DemoAttendance.astro';
+import { langPaths, localizePath, t, type Lang } from '../../i18n';
+import { site } from '../../config/site';
+import pages from '../../i18n/pages/demo';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const d = pages[lang];
+const icons = ['lock', 'signal', 'doc'] as const;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: d.appName,
+    description: d.description,
+    url: `${site.url}${localizePath(lang, '/demo')}`,
+    applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript',
+    inLanguage: t(lang).langCode,
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
+    provider: { '@id': `${site.url}/#organization` },
+  },
+];
+---
+
+<BaseLayout lang={lang} title={d.title} description={d.description} path="/demo" schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <span class="eyebrow">{d.eyebrow}</span>
+      <h1>{d.heading} <span class="gradient-text">{d.headingAccent}</span></h1>
+      <p class="lead">{d.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container" data-reveal>
+      <DemoAttendance lang={lang} />
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2>{d.howHeading}</h2>
+      </div>
+      <div class="grid grid-3">
+        {
+          d.how.map((item, i) => (
+            <div class="card card-hover" data-reveal style={`--d:${i}`}>
+              <span class="ico">
+                <Icon name={icons[i]} size={22} />
+              </span>
+              <h3>{item.title}</h3>
+              <p class="muted">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{d.ctaHeading}</h2>
+        <p>{d.ctaText}</p>
+        <div class="btn-row center">
+          <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{d.ctaButton}</a>
+          <a class="btn btn-ghost" href={localizePath(lang, '/products/attendance')}>{d.ctaProduct}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 20ch;
+  }
+
+  .top0 {
+    padding-top: 24px;
+  }
+
+  .ico {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    background: var(--red-soft);
+    color: var(--red);
+  }
+
+  .center {
+    justify-content: center;
+  }
+</style>

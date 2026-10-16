@@ -4,11 +4,12 @@ import RedLight from '../../components/RedLight.astro';
 import ContactForm from '../../components/ContactForm.astro';
 import ContactChannels from '../../components/ContactChannels.astro';
 import { langPaths, t, type Lang } from '../../i18n';
+import { site } from '../../config/site';
 
 export const getStaticPaths = langPaths;
 
 const { lang } = Astro.props as { lang: Lang };
-const { support } = t(lang);
+const { support, extras } = t(lang);
 
 // Lets Google show these questions directly in search results.
 const schema = [
@@ -41,6 +42,22 @@ const schema = [
         showLocation={false}
         notes={{ whatsapp: support.whatsappText, email: support.emailText }}
       />
+      <div class="response" data-reveal>
+        <h2>{extras.responseHeading}</h2>
+        <ul>
+          <li>
+            <span class="dot urgent"></span>
+            {extras.responseUrgent.replace('{n}', String(site.responseTimes.urgentHours))}
+          </li>
+          <li>
+            <span class="dot"></span>
+            {(site.responseTimes.normalDays === 1 ? extras.responseNormal : extras.responseNormalMany).replace(
+              '{n}',
+              String(site.responseTimes.normalDays),
+            )}
+          </li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -65,6 +82,44 @@ const schema = [
 </BaseLayout>
 
 <style>
+  .response {
+    margin-top: 16px;
+    padding: 20px 24px;
+    border-left: 3px solid var(--red);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: linear-gradient(90deg, var(--red-soft), transparent);
+  }
+
+  .response h2 {
+    font-size: 1.2rem;
+  }
+
+  .response ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .response li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  .dot.urgent {
+    background: var(--red);
+  }
+
   .hero {
     position: relative;
     overflow: hidden;

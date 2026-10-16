@@ -24,6 +24,34 @@ export const site = {
   // Create a free form at https://formspree.io and paste its endpoint here.
   formEndpoint: 'https://formspree.io/f/YOUR_FORM_ID',
 
+  // Google Maps link for the office. Once the Google Business Profile exists, paste its
+  // "Share" link here so visitors land on the profile with reviews and directions.
+  mapUrl: 'https://www.google.com/maps/search/?api=1&query=Sengeti+Technologies+Mutare+Zimbabwe',
+
+  // Online booking page (Calendly, Cal.com, Google Calendar booking...). When set, "Book a call"
+  // buttons appear on Contact and Start a project. Leave empty to hide them.
+  bookingUrl: '',
+
+  // WhatsApp Business catalogue link (wa.me/c/...). When set, the Products page links to it.
+  whatsappCatalogue: '',
+
+  // YouTube video ID of a short intro or explainer video (the part after v= in the address).
+  // When set, it appears on the home page. The video only loads when a visitor presses play.
+  introVideo: '',
+
+  // Privacy-friendly visitor statistics. Fill in ONE of these to switch statistics on:
+  // - Plausible: your site domain as registered at plausible.io, e.g. 'sengetitechnologies.com'
+  // - Cloudflare Web Analytics (free): the token from the Cloudflare dashboard
+  analytics: { plausibleDomain: '', cloudflareToken: '' },
+
+  // PLACEHOLDER: headline numbers for the home page, e.g. { value: 12, suffix: '+', label: 'projects delivered' }.
+  // Use real figures only. The section stays hidden while this list is empty.
+  // Labels are written in each language: { en: '...', fr: '...', pt: '...' }.
+  stats: [] as { value: number; suffix?: string; label: { en: string; fr: string; pt: string } }[],
+
+  // How quickly the team replies, shown on the Support page. Confirm these before launch.
+  responseTimes: { urgentHours: 4, normalDays: 1 },
+
   // The downloadable company profile in public/.
   profilePdf: '/sengeti-technologies-company-profile.pdf',
 

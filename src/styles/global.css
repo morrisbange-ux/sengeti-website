@@ -4,7 +4,7 @@
   --black: #0b0b0c;
   --surface: #141416;
   --surface-2: #1c1c1f;
-  --border: rgb(255 255 255 / 0.1);
+  --border: rgb(var(--tint) / 0.1);
   --white: #ffffff;
   --text: #f4f4f5;
   --muted: #a8a8b0;
@@ -13,7 +13,65 @@
   --gutter: clamp(16px, 4vw, 32px);
   --font-display: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Channels of the colour used for faint lines and fills: white on dark, near-black on light. */
+  --tint: 255 255 255;
+  /* The page background as channels, for see-through overlays. */
+  --bg-rgb: 11 11 12;
+  /* Channels for darker inset panels: black on dark, white on light. */
+  --shade: 0 0 0;
+  --on-red: #ffffff;
+  --green: #6ee7a0;
+  --header-bg: rgb(11 11 12 / 0.82);
+  --footer-bg: #08080a;
+  --glow: #2a0b0b;
   color-scheme: dark;
+}
+
+/* Light theme, chosen with the switch in the header. --white is the strongest text colour. */
+:root[data-theme='light'] {
+  --black: #f6f6f7;
+  --surface: #ffffff;
+  --surface-2: #f1f1f3;
+  --border: rgb(11 11 12 / 0.1);
+  --white: #0b0b0c;
+  --text: #26262b;
+  --muted: #5b5b64;
+  --red-soft: rgb(255 49 48 / 0.1);
+  --tint: 11 11 12;
+  --bg-rgb: 246 246 247;
+  --shade: 255 255 255;
+  --green: #15803d;
+  --header-bg: rgb(255 255 255 / 0.86);
+  --footer-bg: #ececef;
+  --glow: #ffe3e3;
+  color-scheme: light;
+}
+
+/* App screens drawn on the page (code editor, demo app) keep the dark look in both themes. */
+.force-dark {
+  --black: #0b0b0c;
+  --surface: #141416;
+  --surface-2: #1c1c1f;
+  --border: rgb(255 255 255 / 0.1);
+  --white: #ffffff;
+  --text: #f4f4f5;
+  --muted: #a8a8b0;
+  --tint: 255 255 255;
+  --bg-rgb: 11 11 12;
+  --shade: 0 0 0;
+  --green: #6ee7a0;
+  --red-soft: rgb(255 49 48 / 0.14);
+  color: var(--text);
+  color-scheme: dark;
+}
+
+/* Smooth colour change when switching theme. */
+.theme-switching,
+.theme-switching * {
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease !important;
 }
 
 *,
@@ -153,7 +211,7 @@ p {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.25) 50%, transparent 70%);
+  background: linear-gradient(110deg, transparent 30%, rgb(var(--tint) / 0.25) 50%, transparent 70%);
   transform: translateX(-120%);
   transition: transform 0.6s ease;
 }
@@ -168,7 +226,7 @@ p {
 
 .btn-primary {
   background: var(--red);
-  color: var(--white);
+  color: var(--on-red);
 }
 
 .btn-primary:hover {
@@ -177,9 +235,9 @@ p {
 }
 
 .btn-ghost {
-  border-color: rgb(255 255 255 / 0.28);
+  border-color: rgb(var(--tint) / 0.28);
   color: var(--white);
-  background: rgb(255 255 255 / 0.04);
+  background: rgb(var(--tint) / 0.04);
 }
 
 .btn-ghost:hover {
@@ -286,7 +344,7 @@ p {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px);
+  background-image: radial-gradient(rgb(var(--tint) / 0.09) 1px, transparent 1px);
   background-size: 26px 26px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
@@ -487,7 +545,7 @@ p {
   padding: 7px 14px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: rgb(255 255 255 / 0.03);
+  background: rgb(var(--tint) / 0.03);
   color: var(--muted);
   font-size: 0.9rem;
 }
@@ -532,7 +590,7 @@ p {
   top: -60px;
   z-index: 100;
   background: var(--red);
-  color: var(--white);
+  color: var(--on-red);
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 700;

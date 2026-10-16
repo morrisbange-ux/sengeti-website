@@ -28,7 +28,8 @@ const imageUrl = new URL(image, site.url).href;
 
 const organization = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  // ProfessionalService lets Google show the business locally (Maps, local search).
+  '@type': ['Organization', 'ProfessionalService'],
   '@id': `${site.url}/#organization`,
   name: site.name,
   url: site.url,
@@ -41,6 +42,8 @@ const organization = {
   areaServed: site.areaServed,
   knowsLanguage: langs.map((l) => t(l).langCode),
   sameAs: socialProfiles().map((s) => s.href),
+  image: new URL('/og-image.png', site.url).href,
+  hasMap: site.mapUrl,
 };
 const jsonLd = [organization, ...schema];
 ---
@@ -50,7 +53,14 @@ const jsonLd = [organization, ...schema];
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Apply a saved light/dark choice before the page paints, so it never flashes.
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
     <link rel="preload" href={poppins700} as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -86,6 +96,21 @@ const jsonLd = [organization, ...schema];
     <meta name="twitter:image" content={imageUrl} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {
+      site.analytics.plausibleDomain && (
+        <script is:inline defer data-domain={site.analytics.plausibleDomain} src="https://plausible.io/js/script.js" />
+      )
+    }
+    {
+      site.analytics.cloudflareToken && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: site.analytics.cloudflareToken })}
+        />
+      )
+    }
   </head>
   <body>
     <div class="scroll-progress" aria-hidden="true"></div>

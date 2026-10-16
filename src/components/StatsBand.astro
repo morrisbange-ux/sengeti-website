@@ -1,0 +1,95 @@
+---
+/**
+ * Headline numbers that count up as they scroll into view. The figures come from
+ * `stats` in src/config/site.ts; the section is hidden until that list has entries.
+ */
+import { t, type Lang } from '../i18n';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { extras, locale } = t(lang);
+const fmt = new Intl.NumberFormat(locale.replace('_', '-'));
+---
+
+{
+  site.stats.length > 0 && (
+    <section class="section stats">
+      <div class="container">
+        <h2 class="sr-only">{extras.statsHeading}</h2>
+        <ul data-reveal>
+          {site.stats.map((s) => (
+            <li>
+              <strong>
+                <span data-count={s.value}>{fmt.format(s.value)}</span>
+                {s.suffix}
+              </strong>
+              <span>{s.label[lang]}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  // Counts each number up from zero the first time it appears.
+  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
+  if (nums.length && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const fmt = new Intl.NumberFormat(document.documentElement.lang);
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        const el = e.target as HTMLElement;
+        const end = Number(el.dataset.count);
+        const start = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - start) / 1400);
+          el.textContent = fmt.format(Math.round(end * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    });
+    nums.forEach((n) => io.observe(n));
+  }
+</script>
+
+<style>
+  .stats {
+    padding-block: 24px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: clamp(22px, 3vw, 32px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    text-align: center;
+  }
+
+  strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    line-height: 1.1;
+    background: linear-gradient(90deg, var(--red), #ff7a5c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  li > span {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+</style>

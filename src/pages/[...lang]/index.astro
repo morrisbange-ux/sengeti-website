@@ -7,6 +7,8 @@ import PhoneMockup from '../../components/PhoneMockup.astro';
 import SocialProof from '../../components/SocialProof.astro';
 import NewsCard from '../../components/NewsCard.astro';
 import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
+import StatsBand from '../../components/StatsBand.astro';
+import IntroVideo from '../../components/IntroVideo.astro';
 import { getNews } from '../../lib/content';
 import { serviceIcon, servicePage } from '../../lib/services';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
@@ -64,6 +66,8 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
     </div>
   </section>
 
+  <StatsBand lang={lang} />
+
   <section class="section">
     <div class="container problems">
       <div data-reveal>
@@ -113,6 +117,8 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
   </section>
 
   <SolutionsTeaser lang={lang} />
+
+  <IntroVideo lang={lang} />
 
   {
     shown.length > 0 && (
