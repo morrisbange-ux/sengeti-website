@@ -13,7 +13,7 @@ const { data } = product;
 const href = localizePath(lang, `/products/${product.slug}`);
 ---
 
-<article class="product card">
+<article class="product card card-hover">
   <div class="top">
     <span class:list={['status', data.status]}>{data.status === 'available' ? dict.available : dict.comingSoon}</span>
     {data.platforms.length > 0 && <span class="platforms">{data.platforms.join(' · ')}</span>}
@@ -29,12 +29,6 @@ const href = localizePath(lang, `/products/${product.slug}`);
     position: relative;
     display: flex;
     flex-direction: column;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-
-  .product:hover {
-    border-color: rgb(255 49 48 / 0.6);
-    transform: translateY(-2px);
   }
 
   .top {

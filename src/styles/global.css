@@ -11,6 +11,7 @@
   --radius: 14px;
   --max: 1160px;
   --gutter: clamp(16px, 4vw, 32px);
+  --font-display: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   color-scheme: dark;
 }
@@ -56,6 +57,7 @@ a {
 h1,
 h2,
 h3 {
+  font-family: var(--font-display);
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin: 0 0 0.6em;
@@ -64,17 +66,17 @@ h3 {
 
 h1 {
   font-size: clamp(2.2rem, 6vw, 4rem);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 h2 {
   font-size: clamp(1.7rem, 3.6vw, 2.5rem);
-  font-weight: 750;
+  font-weight: 700;
 }
 
 h3 {
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 p {
@@ -134,11 +136,30 @@ p {
   border-radius: 999px;
   border: 1px solid transparent;
   font: inherit;
-  font-weight: 650;
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+/* A light sweep across buttons on hover. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.25) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+}
+
+.btn:hover::after {
+  transform: translateX(120%);
 }
 
 .btn:hover {
@@ -152,6 +173,7 @@ p {
 
 .btn-primary:hover {
   background: #ff4c4b;
+  box-shadow: 0 8px 28px -6px rgb(255 49 48 / 0.65);
 }
 
 .btn-ghost {
@@ -190,6 +212,17 @@ p {
   padding: clamp(22px, 3vw, 32px);
 }
 
+/* Cards light up with a red edge glow on hover. */
+.card-hover {
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.card-hover:hover {
+  border-color: rgb(255 49 48 / 0.55);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -18px rgb(255 49 48 / 0.45);
+}
+
 .card p:last-child {
   margin-bottom: 0;
 }
@@ -202,7 +235,7 @@ p {
   border-radius: 50%;
   background: var(--red-soft);
   color: var(--red);
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 14px;
 }
 
@@ -248,6 +281,82 @@ p {
   margin-bottom: 1.5rem;
 }
 
+/* Faint dot grid used behind hero areas. */
+.dot-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgb(255 255 255 / 0.09) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #ff3130, #ff7a5c, #ff3130);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Scroll reveal: only applies when JavaScript has run, so content is never hidden without it. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chips li {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgb(255 255 255 / 0.03);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.prose h2 {
+  font-size: 1.4rem;
+  margin-top: 2em;
+}
+
+.prose a {
+  color: var(--red);
+}
+
+.prose ul {
+  padding-left: 1.2em;
+}
+
+.prose li {
+  margin-bottom: 0.4em;
+}
+
 .page-hero {
   padding-top: clamp(48px, 9vw, 112px);
   padding-bottom: clamp(16px, 4vw, 40px);
@@ -290,5 +399,9 @@ p {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
   }
 }

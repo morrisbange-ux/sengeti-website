@@ -1,0 +1,408 @@
+---
+/**
+ * A phone drawn in HTML and CSS showing Sengeti Attendance. It weighs far less
+ * than a screenshot. Replace it with real screenshots by adding `screenshots`
+ * to the product's Markdown file.
+ */
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  screen?: 'live' | 'checkin';
+  label: string;
+}
+const { lang, screen = 'live', label } = Astro.props;
+const m = t(lang).mockup;
+const states = ['in', 'in', 'late', 'in', 'absent'] as const;
+const methods = ['QR', 'Selfie', 'QR', 'QR', ''];
+// A QR-like pattern (decorative only): three corner squares plus fixed noise.
+const N = 21;
+const finder = (r: number, c: number) => {
+  for (const [fr, fc] of [[0, 0], [0, N - 7], [N - 7, 0]]) {
+    const y = r - fr, x = c - fc;
+    if (y >= 0 && y < 7 && x >= 0 && x < 7) {
+      return y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4);
+    }
+    if (y >= -1 && y <= 7 && x >= -1 && x <= 7) return false;
+  }
+  return null;
+};
+const qr = Array.from({ length: N * N }, (_, i) => {
+  const r = Math.floor(i / N), c = i % N;
+  return finder(r, c) ?? (((r * 73856093) ^ (c * 19349663) ^ (r * c * 83492791)) >>> 0) % 7 < 3;
+});
+---
+
+<div class="phone" role="img" aria-label={label}>
+  <div class="notch" aria-hidden="true"></div>
+  <div class="screen" aria-hidden="true">
+    <div class="appbar">
+      <span class="dot"></span>
+      <span class="appname">{m.app}</span>
+    </div>
+    {
+      screen === 'live' ? (
+        <div class="body">
+          <div class="class-card">
+            <div class="row">
+              <span class="cls">{m.className}</span>
+              <span class="live">
+                <i /> {m.live}
+              </span>
+            </div>
+            <div class="count">
+              <strong>27</strong>
+              <span>/ 30 {m.present}</span>
+            </div>
+            <div class="bar">
+              <span />
+            </div>
+          </div>
+          <ul class="list">
+            {m.students.map((name, i) => (
+              <li class={states[i]} style={`--i:${i}`}>
+                <span class="avatar">{name.slice(0, 1)}</span>
+                <span class="name">{name}</span>
+                {methods[i] && <span class="method">{methods[i]}</span>}
+                <span class="state">
+                  {states[i] === 'in' ? m.checkedIn : states[i] === 'late' ? m.late : m.absent}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <nav class="tabs">
+            {m.tabs.map((tab, i) => (
+              <span class:list={{ active: i === 0 }}>{tab}</span>
+            ))}
+          </nav>
+        </div>
+      ) : (
+        <div class="body checkin">
+          <p class="title">{m.checkIn}</p>
+          <p class="cls">{m.className}</p>
+          <div class="qr">
+            {qr.map((on) => (
+              <span class={on ? 'on' : undefined} />
+            ))}
+            <span class="scanline" />
+          </div>
+          <p class="hint">{m.scan}</p>
+          <span class="selfie">{m.selfie}</span>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .phone {
+    position: relative;
+    width: min(290px, 66vw);
+    aspect-ratio: 9 / 18.5;
+    border-radius: 42px;
+    padding: 12px;
+    background: linear-gradient(145deg, #2a2a2e, #0e0e10 60%);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 30px 80px -20px rgb(255 49 48 / 0.45),
+      0 20px 40px rgb(0 0 0 / 0.6);
+    animation: float 7s ease-in-out infinite;
+  }
+
+  .notch {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 84px;
+    height: 22px;
+    margin-left: -42px;
+    border-radius: 999px;
+    background: #000;
+    z-index: 2;
+  }
+
+  .screen {
+    height: 100%;
+    border-radius: 32px;
+    overflow: hidden;
+    background: #f6f6f8;
+    color: #16161a;
+    font-size: 12px;
+    line-height: 1.35;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .appbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 50px 18px 14px;
+    background: var(--black);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  .body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .class-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.06);
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cls {
+    font-weight: 600;
+    color: #55555e;
+  }
+
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--red);
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .live i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 1.6s ease-out infinite;
+  }
+
+  .count {
+    margin: 8px 0 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    color: #55555e;
+  }
+
+  .count strong {
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: 1;
+    color: #16161a;
+  }
+
+  .bar {
+    height: 8px;
+    border-radius: 999px;
+    background: #ececf0;
+    overflow: hidden;
+  }
+
+  .bar span {
+    display: block;
+    height: 100%;
+    width: 90%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff3130, #ff6a4d);
+    animation: grow 1.6s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 8px 10px;
+    animation: slide 0.5s calc(0.6s + var(--i) * 0.12s) both;
+  }
+
+  .avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #1c1c20;
+    color: #fff;
+    font-weight: 700;
+    font-size: 11px;
+    flex: none;
+  }
+
+  .name {
+    font-weight: 600;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .method {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: #f0f0f3;
+    color: #55555e;
+  }
+
+  .state {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #e3f7ea;
+    color: #13803d;
+  }
+
+  .late .state {
+    background: #fff3dc;
+    color: #a15c00;
+  }
+
+  .absent .state {
+    background: #ffe5e5;
+    color: #c41d1c;
+  }
+
+  .absent .avatar {
+    background: #bdbdc4;
+  }
+
+  .tabs {
+    margin: auto -14px -14px;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 8px 18px;
+    background: #fff;
+    border-top: 1px solid #ececf0;
+    font-size: 11px;
+    font-weight: 600;
+    color: #8a8a94;
+  }
+
+  .tabs .active {
+    color: var(--red);
+  }
+
+  .checkin {
+    align-items: center;
+    text-align: center;
+    padding-top: 22px;
+  }
+
+  .checkin p {
+    margin: 0;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .qr {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(21, 1fr);
+    width: 72%;
+    aspect-ratio: 1;
+    padding: 10px;
+    margin: 14px 0 6px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 0 0 2px var(--red), 0 8px 24px rgb(255 49 48 / 0.25);
+    overflow: hidden;
+  }
+
+  .qr .on {
+    background: #16161a;
+  }
+
+  .scanline {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    top: 10%;
+    height: 2px;
+    background: var(--red);
+    box-shadow: 0 0 12px 2px rgb(255 49 48 / 0.7);
+    animation: scan 2.6s ease-in-out infinite alternate;
+  }
+
+  .hint {
+    color: #55555e;
+  }
+
+  .selfie {
+    margin-top: auto;
+    margin-bottom: 12px;
+    width: 100%;
+    padding: 11px;
+    border-radius: 999px;
+    background: var(--black);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  @keyframes float {
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgb(255 49 48 / 0.6);
+    }
+    100% {
+      box-shadow: 0 0 0 7px rgb(255 49 48 / 0);
+    }
+  }
+
+  @keyframes grow {
+    from {
+      width: 0;
+    }
+  }
+
+  @keyframes slide {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+  }
+
+  @keyframes scan {
+    to {
+      top: 88%;
+    }
+  }
+</style>

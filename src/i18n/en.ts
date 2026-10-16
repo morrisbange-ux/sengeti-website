@@ -12,6 +12,7 @@ const en = {
     products: 'Products',
     services: 'Services',
     contact: 'Contact',
+    news: 'News',
     menu: 'Menu',
     cta: 'Talk to us',
     skip: 'Skip to content',
@@ -23,6 +24,9 @@ const en = {
     getInTouch: 'Get in touch',
     madeIn: 'Built in Zimbabwe.',
     rights: 'All rights reserved.',
+    legal: 'Legal',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Use',
   },
 
   home: {
@@ -30,13 +34,21 @@ const en = {
     description:
       'Sengeti Technologies builds reliable, affordable software: web, mobile and cloud solutions made for real-world needs. Based in Zimbabwe.',
     eyebrow: 'Web · Mobile · Cloud',
-    heading: 'Reliable, affordable software for real-world needs.',
+    heading: 'Reliable, affordable software for',
+    headingAccent: 'real-world needs.',
     lead: 'Sengeti Technologies builds web, mobile and cloud solutions that are dependable, fairly priced and designed around the way people actually work.',
     primaryCta: 'See our products',
     secondaryCta: 'Talk to us',
     servicesHeading: 'What we do',
     servicesLead: 'From a single app to a complete system, we design, build and look after software that does its job.',
     productHeading: 'Our first product',
+    stackLabel: 'What we work with',
+    stack: ['Android apps', 'Web applications', 'Cloud hosting', 'APIs and integrations', 'Secure sign-in', 'Automatic backups'],
+    mockupLabel: 'Illustration of the Sengeti Attendance app showing a live class register',
+    testimonialsHeading: 'What our clients say',
+    clientsHeading: 'Trusted by',
+    caseStudiesHeading: 'Case studies',
+    readCaseStudy: 'Read the case study',
     whyHeading: 'Why Sengeti',
     why: [
       {
@@ -156,6 +168,70 @@ const en = {
     whatsappButton: 'Chat on WhatsApp',
     whatsappMessage: 'Hello Sengeti Technologies,',
     locationHeading: 'Location',
+  },
+
+  build: {
+    heading: 'How we build',
+    lead: 'The engineering choices behind every Sengeti product and client project.',
+    pillars: [
+      {
+        icon: 'phone',
+        title: 'Mobile first',
+        text: 'Designed for the phones people really use, with native Android apps where they make sense.',
+      },
+      {
+        icon: 'cloud',
+        title: 'Cloud native',
+        text: 'Hosted on modern cloud infrastructure that scales from one school or office to many.',
+      },
+      {
+        icon: 'lock',
+        title: 'Secure by design',
+        text: 'Encrypted connections, careful access control and regular backups protect your data.',
+      },
+      {
+        icon: 'signal',
+        title: 'Light on data',
+        text: 'Small, efficient apps and pages that stay quick on slow or expensive connections.',
+      },
+    ],
+    highlights: [
+      { value: 'Android', label: 'and web apps' },
+      { value: 'Cloud', label: 'hosted and backed up' },
+      { value: 'HTTPS', label: 'encrypted everywhere' },
+      { value: 'Local', label: 'support in Zimbabwe' },
+    ],
+  },
+
+  mockup: {
+    app: 'Sengeti Attendance',
+    className: 'Form 3A · Mathematics',
+    live: 'Live',
+    present: 'present',
+    checkIn: 'Check in',
+    scan: 'Scan the class QR code',
+    selfie: 'Take a selfie instead',
+    checkedIn: 'Checked in',
+    late: 'Late',
+    absent: 'Absent',
+    tabs: ['Register', 'Reports', 'Gradebook', 'Schools'],
+    students: ['Tendai M.', 'Rudo C.', 'Tatenda N.', 'Chipo K.', 'Farai D.'],
+  },
+
+  news: {
+    title: 'News | Sengeti Technologies',
+    description: 'News, product updates and case studies from Sengeti Technologies.',
+    heading: 'News and case studies',
+    lead: 'Product updates, stories from our clients and what we are working on.',
+    caseStudy: 'Case study',
+    news: 'News',
+    readMore: 'Read more',
+    back: 'All news',
+    client: 'Client',
+  },
+
+  legal: {
+    lastUpdated: 'Last updated',
   },
 
   notFound: {

@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RedLight from '../../components/RedLight.astro';
 import Icon from '../../components/Icon.astro';
+import BuildSection from '../../components/BuildSection.astro';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
 import { site } from '../../config/site';
 
@@ -34,7 +35,7 @@ const schema = services.items.map((s) => ({
     <div class="container list">
       {
         services.items.map((s) => (
-          <article class="card service" id={s.id}>
+          <article class="card card-hover service" id={s.id} data-reveal>
             <span class="icon">
               <Icon name={icons[s.id as keyof typeof icons] ?? 'code'} size={28} />
             </span>
@@ -53,13 +54,15 @@ const schema = services.items.map((s) => ({
     </div>
   </section>
 
+  <BuildSection lang={lang} />
+
   <section class="section">
     <div class="container">
-      <div class="section-head"><h2>{services.processHeading}</h2></div>
+      <div class="section-head" data-reveal><h2>{services.processHeading}</h2></div>
       <ol class="grid grid-process">
         {
           services.process.map((step, i) => (
-            <li class="card">
+            <li class="card" data-reveal style={`--d:${i}`}>
               <span class="num">{i + 1}</span>
               <h3>{step.title}</h3>
               <p class="muted">{step.text}</p>
@@ -72,7 +75,7 @@ const schema = services.items.map((s) => ({
 
   <section class="section">
     <div class="container">
-      <div class="cta-band">
+      <div class="cta-band" data-reveal>
         <h2>{services.ctaHeading}</h2>
         <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{services.ctaButton}</a>
       </div>

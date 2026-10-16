@@ -3,6 +3,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import RedLight from '../../components/RedLight.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import Icon from '../../components/Icon.astro';
+import PhoneMockup from '../../components/PhoneMockup.astro';
+import BuildSection from '../../components/BuildSection.astro';
+import SocialProof from '../../components/SocialProof.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { getNews } from '../../lib/content';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
 import { getProducts } from '../../lib/products';
 
@@ -16,32 +21,47 @@ const featured = products.filter((p) => p.data.featured);
 const shown = featured.length ? featured : products.slice(0, 1);
 const serviceIcons = { 'custom-software': 'code', 'web-mobile': 'web-mobile', cloud: 'cloud' } as const;
 const whyIcons = ['shield', 'wallet', 'signal'] as const;
+const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-study').slice(0, 3);
 ---
 
 <BaseLayout lang={lang} title={home.title} description={home.description} path="/">
   <section class="hero">
     <RedLight />
+    <div class="dot-grid" aria-hidden="true"></div>
     <div class="container hero-inner">
-      <span class="eyebrow">{home.eyebrow}</span>
-      <h1>{home.heading}</h1>
-      <p class="lead">{home.lead}</p>
-      <div class="btn-row">
-        <a class="btn btn-primary" href={localizePath(lang, '/products')}>{home.primaryCta}</a>
-        <a class="btn btn-ghost" href={localizePath(lang, '/contact')}>{home.secondaryCta}</a>
+      <div class="hero-copy">
+        <span class="eyebrow">{home.eyebrow}</span>
+        <h1>{home.heading} <span class="gradient-text">{home.headingAccent}</span></h1>
+        <p class="lead">{home.lead}</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={localizePath(lang, '/products')}>{home.primaryCta}</a>
+          <a class="btn btn-ghost" href={localizePath(lang, '/contact')}>{home.secondaryCta}</a>
+        </div>
       </div>
+      <div class="hero-visual">
+        <PhoneMockup lang={lang} label={home.mockupLabel} />
+      </div>
+    </div>
+  </section>
+
+  <section class="stack" aria-label={home.stackLabel}>
+    <div class="container">
+      <ul class="chips">
+        {home.stack.map((item) => <li>{item}</li>)}
+      </ul>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <h2>{home.servicesHeading}</h2>
         <p class="lead">{home.servicesLead}</p>
       </div>
       <div class="grid grid-3">
         {
-          services.items.map((s) => (
-            <a class="card service" href={`${localizePath(lang, '/services')}#${s.id}`}>
+          services.items.map((s, i) => (
+            <a class="card card-hover service" data-reveal style={`--d:${i}`} href={`${localizePath(lang, '/services')}#${s.id}`}>
               <span class="icon">
                 <Icon name={serviceIcons[s.id as keyof typeof serviceIcons] ?? 'code'} />
               </span>
@@ -58,10 +78,10 @@ const whyIcons = ['shield', 'wallet', 'signal'] as const;
     shown.length > 0 && (
       <section class="section product-section">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head" data-reveal>
             <h2>{home.productHeading}</h2>
           </div>
-          <div class="grid grid-2">
+          <div class="grid grid-2" data-reveal>
             {shown.map((p) => (
               <ProductCard product={p} lang={lang} />
             ))}
@@ -71,15 +91,17 @@ const whyIcons = ['shield', 'wallet', 'signal'] as const;
     )
   }
 
+  <BuildSection lang={lang} />
+
   <section class="section">
     <div class="container">
-      <div class="section-head">
+      <div class="section-head" data-reveal>
         <h2>{home.whyHeading}</h2>
       </div>
       <div class="grid grid-3">
         {
           home.why.map((w, i) => (
-            <div class="card">
+            <div class="card card-hover" data-reveal style={`--d:${i}`}>
               <span class="icon">
                 <Icon name={whyIcons[i % whyIcons.length]} />
               </span>
@@ -92,9 +114,28 @@ const whyIcons = ['shield', 'wallet', 'signal'] as const;
     </div>
   </section>
 
+  <SocialProof lang={lang} />
+
+  {
+    caseStudies.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <div class="section-head" data-reveal>
+            <h2>{home.caseStudiesHeading}</h2>
+          </div>
+          <div class="grid grid-3">
+            {caseStudies.map((post, i) => (
+              <NewsCard post={post} lang={lang} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   <section class="section">
     <div class="container">
-      <div class="cta-band">
+      <div class="cta-band" data-reveal>
         <h2>{home.ctaHeading}</h2>
         <p>{home.ctaText}</p>
         <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{home.ctaButton}</a>
@@ -116,10 +157,28 @@ const whyIcons = ['shield', 'wallet', 'signal'] as const;
   .hero-inner {
     position: relative;
     z-index: 1;
+    display: grid;
+    gap: 56px;
+    align-items: center;
   }
 
   .hero h1 {
     max-width: 16ch;
+  }
+
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .stack {
+    padding-block: 8px 24px;
+  }
+
+  @media (min-width: 960px) {
+    .hero-inner {
+      grid-template-columns: 1.25fr 1fr;
+    }
   }
 
   .hero .lead {
@@ -128,12 +187,6 @@ const whyIcons = ['shield', 'wallet', 'signal'] as const;
 
   .service {
     text-decoration: none;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-
-  .service:hover {
-    border-color: rgb(255 49 48 / 0.6);
-    transform: translateY(-2px);
   }
 
   .icon {

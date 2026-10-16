@@ -1,0 +1,79 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import { formatDate, type NewsPost } from '../lib/content';
+
+interface Props {
+  post: NewsPost;
+  lang: Lang;
+  index?: number;
+}
+const { post, lang, index = 0 } = Astro.props;
+const dict = t(lang);
+const { data } = post;
+---
+
+<article class="card card-hover post" data-reveal style={`--d:${index}`}>
+  {data.cover && <Image src={data.cover} alt={data.coverAlt} width={600} class="cover" />}
+  <p class="meta">
+    <span class:list={['tag', data.type]}>{data.type === 'case-study' ? dict.news.caseStudy : dict.news.news}</span>
+    <time datetime={data.date.toISOString()}>{formatDate(data.date, dict.locale)}</time>
+  </p>
+  <h3><a href={localizePath(lang, `/news/${post.slug}`)}>{data.title}</a></h3>
+  <p class="muted">{data.description}</p>
+  <span class="more" aria-hidden="true">{dict.news.readMore} <Icon name="arrow" size={18} /></span>
+</article>
+
+<style>
+  .post {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cover {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 18px;
+  }
+
+  .meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .tag {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.08);
+    font-weight: 700;
+  }
+
+  .tag.case-study {
+    background: var(--red-soft);
+    color: var(--red);
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .more {
+    margin-top: auto;
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    color: var(--red);
+    font-weight: 700;
+  }
+</style>

@@ -3,6 +3,8 @@ import { render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import RedLight from '../../../components/RedLight.astro';
 import Icon from '../../../components/Icon.astro';
+import PhoneMockup from '../../../components/PhoneMockup.astro';
+import { Image } from 'astro:assets';
 import { defaultLang, langs, localizePath, t, type Lang } from '../../../i18n';
 import { getProducts, type Product } from '../../../lib/products';
 import { site, whatsappLink } from '../../../config/site';
@@ -44,7 +46,9 @@ const schema = [
 <BaseLayout lang={lang} title={`${data.name} | ${site.name}`} description={data.summary} path={path} schema={schema}>
   <section class="page-hero hero">
     <RedLight />
+    <div class="dot-grid" aria-hidden="true"></div>
     <div class="container inner">
+      <div>
       <a class="back" href={localizePath(lang, '/products')}>← {copy.backToProducts}</a>
       <h1>{data.name}</h1>
       <p class="lead">{data.tagline} {data.summary}</p>
@@ -57,17 +61,33 @@ const schema = [
           {copy.askOnWhatsApp}
         </a>
       </div>
+      </div>
+      {data.screenshots.length > 0 ? (
+        <div class="shots">
+          {data.screenshots.slice(0, 2).map((shot) => (
+            <div class="shot">
+              <Image src={shot.src} alt={shot.alt} width={300} densities={[1, 2]} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        data.mockup && (
+          <div class="shots">
+            <PhoneMockup lang={lang} screen="checkin" label={`${data.name}: ${dict.mockup.scan}`} />
+          </div>
+        )
+      )}
     </div>
   </section>
 
   {data.features.length > 0 && (
     <section class="section">
       <div class="container">
-        <div class="section-head"><h2>{copy.features}</h2></div>
+        <div class="section-head" data-reveal><h2>{copy.features}</h2></div>
         <div class="grid grid-3">
-          {data.features.map((f) => (
-            <div class="card">
-              <span class="tick"><Icon name="shield" size={20} /></span>
+          {data.features.map((f, i) => (
+            <div class="card card-hover" data-reveal style={`--d:${i % 3}`}>
+              <span class="tick"><Icon name="check" size={20} /></span>
               <h3>{f.title}</h3>
               <p class="muted">{f.text}</p>
             </div>
@@ -85,7 +105,7 @@ const schema = [
 
   <section class="section">
     <div class="container">
-      <div class="cta-band">
+      <div class="cta-band" data-reveal>
         <h2>{data.name}</h2>
         <p>{data.tagline}</p>
         <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{copy.requestDemo}</a>
@@ -104,6 +124,34 @@ const schema = [
   .inner {
     position: relative;
     z-index: 1;
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .shots {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .shot {
+    width: min(260px, 70vw);
+    padding: 10px;
+    border-radius: 36px;
+    background: linear-gradient(145deg, #2a2a2e, #0e0e10 60%);
+    box-shadow: 0 30px 80px -20px rgb(255 49 48 / 0.45);
+  }
+
+  .shot img {
+    width: 100%;
+    border-radius: 28px;
+  }
+
+  @media (min-width: 960px) {
+    .inner {
+      grid-template-columns: 1.3fr 1fr;
+    }
   }
 
   .back {

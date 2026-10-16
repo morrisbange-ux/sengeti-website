@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import logo from '../assets/brand/sengeti-logo-white.png';
 import { localizePath, t, type Lang } from '../i18n';
 import { site } from '../config/site';
+import { getNews } from '../lib/content';
 
 interface Props {
   lang: Lang;
@@ -16,6 +17,8 @@ const links = [
   { href: '/about', label: nav.about },
   { href: '/products', label: nav.products },
   { href: '/services', label: nav.services },
+  // The News link appears once the first post is published.
+  ...((await getNews(lang)).length ? [{ href: '/news', label: nav.news }] : []),
   { href: '/contact', label: nav.contact },
 ];
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));

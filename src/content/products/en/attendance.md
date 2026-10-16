@@ -5,6 +5,7 @@ summary: Take attendance in seconds with QR and selfie check-in, follow classes 
 status: available
 order: 1
 featured: true
+mockup: true
 category: EducationalApplication
 platforms:
   - Android app

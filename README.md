@@ -35,6 +35,20 @@ Everything is in [`src/config/site.ts`](src/config/site.ts):
 its own page at `/products/sengeti-pay`. Set `status: coming-soon` for products not yet released,
 `featured: true` to show it on the home page, and `order` to control its position.
 
+**Add a news post or case study.** Copy `src/content/news/en/example.md` to a new file name,
+write the post and delete the `draft: true` line. The News page, its menu link and the home
+page "Case studies" section appear automatically once the first post is published.
+
+**Add a testimonial or client logo.** Copy `src/content/testimonials/example.md` or
+`src/content/clients/example.md`, fill it in and delete the `draft: true` line. Put the logo
+or photo file next to it. These sections stay hidden until there is at least one entry.
+
+**Use real app screenshots.** Add a `screenshots` list to the product's Markdown file
+(see the comment in `src/content.config.ts`). They replace the drawn phone mockup.
+
+**Privacy Policy and Terms.** These live in `src/content/legal/en/`. They are a sensible
+starting point but should be reviewed by a lawyer before launch.
+
 **Change page text.** All wording is in `src/i18n/en.ts`.
 
 **Add a language.** Follow the steps at the top of `src/i18n/index.ts`: copy `en.ts`, translate
