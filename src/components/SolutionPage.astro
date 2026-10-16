@@ -1,7 +1,7 @@
 ---
 /**
- * Layout shared by the solution pages (AI and ERP). All the text comes from
- * `solutions.ai` or `solutions.erp` in each language file.
+ * Layout shared by the solution pages (automation, custom software, AI and
+ * ERP). All the text comes from `solutions.<kind>` in each language file.
  */
 import type { ComponentProps } from 'astro/types';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -15,7 +15,7 @@ type IconName = ComponentProps<typeof Icon>['name'];
 
 interface Props {
   lang: Lang;
-  kind: 'ai' | 'erp';
+  kind: 'ai' | 'erp' | 'automation' | 'software';
 }
 const { lang, kind } = Astro.props;
 const { solutions, contact } = t(lang);

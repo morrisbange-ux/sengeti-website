@@ -310,16 +310,168 @@ p {
 /* Scroll reveal: only applies when JavaScript has run, so content is never hidden without it. */
 .js [data-reveal] {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(28px) scale(0.98);
+  filter: blur(6px);
   transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
-  transition-delay: calc(var(--d, 0) * 90ms);
+    opacity 0.8s ease,
+    filter 0.8s ease,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--d, 0) * 100ms);
 }
 
 .js [data-reveal].is-visible {
   opacity: 1;
   transform: none;
+  filter: none;
+}
+
+/* Section headings draw a short red line under themselves as they appear. */
+.section-head h2::after {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin-top: 14px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--red), #ff7a5c);
+  transform-origin: left;
+  transition: transform 0.9s 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js .section-head[data-reveal]:not(.is-visible) h2::after {
+  transform: scaleX(0);
+}
+
+/* Hero text rises in, one line after another, when a page opens. */
+.hero :is(.eyebrow, h1, .lead, .btn-row) {
+  animation: hero-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero h1 {
+  animation-delay: 0.08s;
+}
+
+.hero .lead {
+  animation-delay: 0.18s;
+}
+
+.hero .btn-row {
+  animation-delay: 0.28s;
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(8px);
+  }
+}
+
+/* Cards: a soft red spotlight follows the pointer (position set in BaseLayout). */
+.card-hover {
+  position: relative;
+  isolation: isolate;
+}
+
+.card-hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgb(255 49 48 / 0.14), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.card-hover:hover::before {
+  opacity: 1;
+}
+
+/* Smooth fade between pages in browsers that support it; the header stays still. */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: page-out 0.25s ease both;
+}
+
+::view-transition-new(root) {
+  animation: page-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* A thin red bar at the top shows how far down the page you are. */
+.scroll-progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: block;
+    position: fixed;
+    inset: 0 0 auto;
+    height: 3px;
+    z-index: 100;
+    background: linear-gradient(90deg, var(--red), #ff7a5c);
+    transform-origin: left;
+    animation: progress linear both;
+    animation-timeline: scroll(root);
+    pointer-events: none;
+  }
+}
+
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* An endless ribbon of items, used for the technology list. */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee .chips {
+  flex: none;
+  flex-wrap: nowrap;
+  padding-right: 10px;
+  animation: marquee 32s linear infinite;
+}
+
+.marquee:hover .chips {
+  animation-play-state: paused;
+}
+
+.marquee .chips li {
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 .chips {
@@ -403,6 +555,34 @@ p {
   .js [data-reveal] {
     opacity: 1;
     transform: none;
+    filter: none;
+  }
+
+  .hero :is(.eyebrow, h1, .lead, .btn-row),
+  .marquee .chips {
+    animation: none;
+  }
+
+  .marquee .chips[aria-hidden] {
+    display: none;
+  }
+
+  .marquee {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .marquee .chips {
+    flex-wrap: wrap;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  .scroll-progress {
+    display: none;
   }
 }
 

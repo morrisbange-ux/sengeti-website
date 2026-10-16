@@ -5,7 +5,7 @@ import Icon from '../../components/Icon.astro';
 import BuildSection from '../../components/BuildSection.astro';
 import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
-import { serviceIcon } from '../../lib/services';
+import { serviceIcon, servicePage } from '../../lib/services';
 import { site } from '../../config/site';
 
 export const getStaticPaths = langPaths;
@@ -46,6 +46,11 @@ const schema = services.items.map((s) => ({
             </div>
             <h2>{s.title}</h2>
             <p class="muted">{s.text}</p>
+            {servicePage(s.id) && (
+              <a class="more" href={localizePath(lang, servicePage(s.id))}>
+                {t(lang).solutions.learnMore} <Icon name="arrow" size={18} />
+              </a>
+            )}
           </article>
         ))
       }
@@ -146,6 +151,12 @@ const schema = services.items.map((s) => ({
 
   .service {
     scroll-margin-top: 90px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service .more {
+    text-decoration: none;
   }
 
   .head {

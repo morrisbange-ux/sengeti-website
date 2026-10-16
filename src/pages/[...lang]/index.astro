@@ -8,7 +8,7 @@ import SocialProof from '../../components/SocialProof.astro';
 import NewsCard from '../../components/NewsCard.astro';
 import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
 import { getNews } from '../../lib/content';
-import { serviceIcon } from '../../lib/services';
+import { serviceIcon, servicePage } from '../../lib/services';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
 import { getProducts } from '../../lib/products';
 
@@ -47,9 +47,20 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
   <section class="stack">
     <div class="container">
       <p class="stack-label">{home.stackLabel}</p>
-      <ul class="chips">
-        {home.stack.map((item) => <li>{item}</li>)}
-      </ul>
+      <div class="marquee">
+        <ul class="chips">
+          {home.stack.map((item) => <li>{item}</li>)}
+        </ul>
+        {
+          [1, 2, 3].map(() => (
+            <ul class="chips" aria-hidden="true">
+              {home.stack.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          ))
+        }
+      </div>
     </div>
   </section>
 
@@ -88,7 +99,7 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
       <div class="grid grid-3">
         {
           services.items.map((s, i) => (
-            <a class="card card-hover service" data-reveal style={`--d:${i % 3}`} href={`${localizePath(lang, '/services')}#${s.id}`}>
+            <a class="card card-hover service" data-reveal style={`--d:${i % 3}`} href={servicePage(s.id) ? localizePath(lang, servicePage(s.id)) : `${localizePath(lang, '/services')}#${s.id}`}>
               <span class="icon">
                 <Icon name={serviceIcon(s.id)} />
               </span>

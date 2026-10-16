@@ -23,6 +23,8 @@ const links: NavLink[] = [
     label: nav.services,
     children: [
       { href: '/services', label: nav.allServices },
+      { href: '/automation', label: nav.automation },
+      { href: '/software', label: nav.software },
       { href: '/ai', label: nav.ai },
       { href: '/erp', label: nav.erp },
     ],
@@ -137,6 +139,7 @@ const inSection = (l: NavLink) => isCurrent(l.href) || !!l.children?.some((c) =>
 
 <style>
   .site-header {
+    view-transition-name: site-header;
     position: sticky;
     top: 0;
     z-index: 50;

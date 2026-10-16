@@ -1,21 +1,37 @@
 ---
 /**
  * Illustrations for the solution pages, drawn in HTML and CSS so they cost no
- * image downloads. "ai" shows a document being read into data; "erp" shows a
- * live dashboard.
+ * image downloads. "ai" shows a document being read into data, "erp" a live
+ * dashboard, "automation" a workflow running step by step and "software" code
+ * being written and shipped.
  */
 import Icon from './Icon.astro';
 import { t, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
-  kind: 'ai' | 'erp';
+  kind: 'ai' | 'erp' | 'automation' | 'software';
 }
 const { lang, kind } = Astro.props;
 const { solutions } = t(lang);
 const ai = solutions.ai.visual;
 const erp = solutions.erp.visual;
+const auto = solutions.automation.visual;
+const soft = solutions.software.visual;
 const bars = [46, 62, 54, 78, 70, 92];
+
+// Code shown in the software illustration: [indent, [class, text][]].
+const code: [number, [string, string][]][] = [
+  [0, [['k', 'const '], ['v', 'session'], ['p', ' = '], ['k', 'await '], ['f', 'createSession'], ['p', '({']]],
+  [1, [['v', 'course'], ['p', ': '], ['s', "'CS 201'"], ['p', ',']]],
+  [1, [['v', 'qr'], ['p', ': '], ['f', 'rotating'], ['p', '({ '], ['v', 'every'], ['p', ': '], ['n', '15'], ['p', ' }),']]],
+  [0, [['p', '});']]],
+  [0, []],
+  [0, [['v', 'session'], ['p', '.'], ['f', 'on'], ['p', '('], ['s', "'check-in'"], ['p', ', ('], ['v', 'student'], ['p', ') => {']]],
+  [1, [['v', 'roster'], ['p', '.'], ['f', 'mark'], ['p', '('], ['v', 'student'], ['p', ', '], ['s', "'present'"], ['p', ');']]],
+  [1, [['f', 'notify'], ['p', '('], ['v', 'student'], ['p', '.'], ['v', 'phone'], ['p', ');']]],
+  [0, [['p', '});']]],
+];
 ---
 
 <div class={`visual ${kind}`} aria-hidden="true">
@@ -52,6 +68,50 @@ const bars = [46, 62, 54, 78, 70, 92];
           ))}
           <p class="done">
             <Icon name="check" size={16} /> {ai.done}
+          </p>
+        </div>
+      </div>
+    ) : kind === 'automation' ? (
+      <div class="flow">
+        <div class="trigger">
+          <span class="spark">
+            <Icon name="bolt" size={16} />
+          </span>
+          {auto.trigger}
+        </div>
+        <ol class="flow-steps">
+          <span class="pulse" />
+          {auto.steps.map((step, i) => (
+            <li style={`--i:${i}`}>
+              <span class="node">
+                <Icon name="check" size={14} />
+              </span>
+              {step}
+            </li>
+          ))}
+        </ol>
+        <div class="saved">
+          <span>{auto.saved}</span>
+          <strong>{auto.savedValue}</strong>
+        </div>
+      </div>
+    ) : kind === 'software' ? (
+      <div class="editor">
+        <div class="win-bar">
+          <i />
+          <i />
+          <i />
+          <span class="tab">{soft.file}</span>
+        </div>
+        <pre class="code"><code>{code.map(([indent, tokens], i) => (
+          <span class="ln" style={`--i:${i};--w:${Math.max(1, indent * 2 + tokens.reduce((n, [, t]) => n + t.length, 0))}ch;--steps:${Math.max(1, tokens.reduce((n, [, t]) => n + t.length, 0))}`}><span class="no">{i + 1}</span>{'  '.repeat(indent)}{tokens.map(([c, t]) => <span class={c}>{t}</span>)}</span>
+        ))}<span class="caret" /></code></pre>
+        <div class="term">
+          <p class="t1">
+            <Icon name="check" size={14} /> {soft.status}
+          </p>
+          <p class="t2">
+            <span class="live" /> {soft.deployed}
           </p>
         </div>
       </div>
@@ -328,6 +388,302 @@ const bars = [46, 62, 54, 78, 70, 92];
     flex: none;
   }
 
+  /* Automation: a workflow running step by step. */
+  .trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgb(255 49 48 / 0.12);
+    border: 1px solid rgb(255 49 48 / 0.4);
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .flow-steps {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 14px 0 6px 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  /* The line joining the steps, with a pulse travelling down it. */
+  .flow-steps::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 0;
+    bottom: 22px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .pulse {
+    position: absolute;
+    left: 14px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 14px 4px rgb(255 49 48 / 0.7);
+    animation: travel 6s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+  }
+
+  .flow-steps li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px 10px 4px;
+    border-radius: 10px;
+    color: var(--muted);
+    animation: step 6s calc(0.9s + var(--i) * 1s) infinite;
+  }
+
+  .node {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: transparent;
+    animation: node 6s calc(0.9s + var(--i) * 1s) infinite;
+  }
+
+  .saved {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgb(0 0 0 / 0.25);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .saved strong {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: #6ee7a0;
+  }
+
+  /* Software: code being written, tested and shipped. */
+  .editor {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0d0d10;
+    border: 1px solid var(--border);
+  }
+
+  .win-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgb(255 255 255 / 0.04);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .win-bar i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3f3f46;
+  }
+
+  .win-bar i:first-child {
+    background: var(--red);
+  }
+
+  .tab {
+    margin-left: 10px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgb(255 255 255 / 0.06);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .code {
+    margin: 0;
+    padding: 14px 14px 10px 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: clamp(0.66rem, 1.7vw, 0.76rem);
+    line-height: 1.7;
+    color: #d4d4d8;
+    overflow: hidden;
+  }
+
+  .ln {
+    display: block;
+    white-space: pre;
+    overflow: hidden;
+    width: calc(var(--w) + 5ch);
+    max-width: 100%;
+    animation: type calc(var(--steps) * 28ms) steps(var(--steps)) calc(0.3s + var(--i) * 0.42s) both;
+  }
+
+  .no {
+    display: inline-block;
+    width: 3ch;
+    margin-right: 1.4ch;
+    text-align: right;
+    color: #52525b;
+  }
+
+  .k {
+    color: #ff6b6b;
+  }
+
+  .f {
+    color: #fbbf24;
+  }
+
+  .s {
+    color: #6ee7a0;
+  }
+
+  .n {
+    color: #c4b5fd;
+  }
+
+  .v {
+    color: #e4e4e7;
+  }
+
+  .p {
+    color: #a1a1aa;
+  }
+
+  .caret {
+    display: inline-block;
+    width: 7px;
+    height: 1.1em;
+    margin-left: 4.4ch;
+    vertical-align: -0.2em;
+    background: var(--red);
+    animation: blink 1s steps(1) infinite;
+  }
+
+  .term {
+    padding: 10px 14px 14px;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+
+  .term p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    animation: rise 0.5s both;
+  }
+
+  .t1 {
+    color: #6ee7a0;
+    animation-delay: 4.4s !important;
+  }
+
+  .t2 {
+    margin-top: 6px !important;
+    color: var(--white);
+    animation-delay: 5s !important;
+  }
+
+  .live {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6ee7a0;
+    box-shadow: 0 0 0 0 rgb(110 231 160 / 0.6);
+    animation: ping 1.8s ease-out infinite;
+  }
+
+  @keyframes travel {
+    0% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    80% {
+      transform: translateY(200px);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(200px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes step {
+    0% {
+      color: var(--muted);
+      background: transparent;
+    }
+    6%,
+    70% {
+      color: var(--white);
+      background: rgb(255 255 255 / 0.04);
+    }
+    90%,
+    100% {
+      color: var(--muted);
+      background: transparent;
+    }
+  }
+
+  @keyframes node {
+    0% {
+      background: var(--surface-2);
+      color: transparent;
+      border-color: var(--border);
+    }
+    6%,
+    70% {
+      background: var(--red);
+      color: var(--white);
+      border-color: var(--red);
+    }
+    90%,
+    100% {
+      background: var(--surface-2);
+      color: transparent;
+      border-color: var(--border);
+    }
+  }
+
+  @keyframes type {
+    from {
+      width: 4.4ch;
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes ping {
+    70%,
+    100% {
+      box-shadow: 0 0 0 8px rgb(110 231 160 / 0);
+    }
+  }
+
   @keyframes scan {
     0%,
     100% {
@@ -363,8 +719,25 @@ const bars = [46, 62, 54, 78, 70, 92];
   @media (prefers-reduced-motion: reduce) {
     .scan,
     .field,
-    .bar i {
+    .bar i,
+    .pulse,
+    .ln,
+    .caret,
+    .term p,
+    .live {
       animation: none;
+    }
+    .flow-steps li,
+    .node {
+      animation: none;
+    }
+    .flow-steps li {
+      color: var(--white);
+    }
+    .node {
+      background: var(--red);
+      border-color: var(--red);
+      color: var(--white);
     }
   }
 </style>

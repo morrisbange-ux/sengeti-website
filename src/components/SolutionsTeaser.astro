@@ -1,5 +1,5 @@
 ---
-/** Cards linking to the AI and ERP pages, shown on Home and Services. */
+/** Cards linking to the solution pages, shown on Home and Services. */
 import Icon from './Icon.astro';
 import { localizePath, t, type Lang } from '../i18n';
 
@@ -9,7 +9,9 @@ interface Props {
 const { lang } = Astro.props;
 const { solutions } = t(lang);
 const cards = [
-  { href: '/ai', icon: 'bolt', page: solutions.ai },
+  { href: '/automation', icon: 'bolt', page: solutions.automation },
+  { href: '/software', icon: 'code', page: solutions.software },
+  { href: '/ai', icon: 'chat', page: solutions.ai },
   { href: '/erp', icon: 'flow', page: solutions.erp },
 ] as const;
 ---
@@ -20,7 +22,7 @@ const cards = [
       <h2>{solutions.teaserHeading}</h2>
       <p class="lead">{solutions.teaserLead}</p>
     </div>
-    <div class="grid grid-2">
+    <div class="grid cards">
       {
         cards.map((c, i) => (
           <a class="card card-hover teaser" href={localizePath(lang, c.href)} data-reveal style={`--d:${i}`}>
@@ -43,6 +45,17 @@ const cards = [
 </section>
 
 <style>
+  /* Two by two on wider screens, one column on phones. */
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 760px) {
+    .cards {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
   .teaser {
     position: relative;
     overflow: hidden;

@@ -88,6 +88,7 @@ const jsonLd = [organization, ...schema];
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
+    <div class="scroll-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#main">{dict.nav.skip}</a>
     <Header lang={lang} path={path} />
     <main id="main">
@@ -113,6 +114,17 @@ const jsonLd = [organization, ...schema];
         items.forEach((el) => io.observe(el));
       } else {
         items.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // Moves the spotlight on cards with the pointer (mouse and trackpad only).
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.addEventListener('pointermove', (e) => {
+          const card = (e.target as Element).closest?.<HTMLElement>('.card-hover');
+          if (!card) return;
+          const r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+          card.style.setProperty('--my', `${e.clientY - r.top}px`);
+        });
       }
     </script>
   </body>
