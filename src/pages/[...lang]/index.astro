@@ -6,6 +6,7 @@ import Icon from '../../components/Icon.astro';
 import PhoneMockup from '../../components/PhoneMockup.astro';
 import SocialProof from '../../components/SocialProof.astro';
 import NewsCard from '../../components/NewsCard.astro';
+import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
 import { getNews } from '../../lib/content';
 import { serviceIcon } from '../../lib/services';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
@@ -100,6 +101,8 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
     </div>
   </section>
 
+  <SolutionsTeaser lang={lang} />
+
   {
     shown.length > 0 && (
       <section class="section product-section">
@@ -162,7 +165,7 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
       <div class="cta-band" data-reveal>
         <h2>{home.ctaHeading}</h2>
         <p>{home.ctaText}</p>
-        <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{home.ctaButton}</a>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{home.ctaButton}</a>
       </div>
     </div>
   </section>

@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import ContactChannels from '../../components/ContactChannels.astro';
+import { langPaths, t, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { project } = t(lang);
+---
+
+<BaseLayout lang={lang} title={project.title} description={project.description} path="/start-project">
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <span class="eyebrow">{project.eyebrow}</span>
+      <h1>{project.heading} <span class="gradient-text">{project.headingAccent}</span></h1>
+      <p class="lead">{project.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <h2 class="steps-heading" data-reveal>{project.stepsHeading}</h2>
+      <ol class="steps">
+        {
+          project.steps.map((step, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <span class="num">{i + 1}</span>
+              <h3>{step.title}</h3>
+              <p class="muted">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section top0" id="form">
+    <div class="container layout">
+      <ContactForm
+        lang={lang}
+        heading={project.formHeading}
+        subjectLabel={project.typeLabel}
+        subjects={project.types}
+        extraSelects={[
+          { name: 'budget', label: project.budgetLabel, options: project.budgets },
+          { name: 'timeline', label: project.timelineLabel, options: project.timelines },
+        ]}
+        messageLabel={project.messageLabel}
+        emailSubject="New project enquiry"
+      />
+      <aside class="details">
+        <h2 class="aside-heading">{project.preferWhatsApp}</h2>
+        <ContactChannels lang={lang} showLocation={false} />
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 20ch;
+  }
+
+  .top0 {
+    padding-top: 24px;
+  }
+
+  .steps-heading,
+  .aside-heading {
+    font-size: 1.3rem;
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    counter-reset: step;
+  }
+
+  .steps li {
+    position: relative;
+    padding: 20px 20px 20px 0;
+    border-top: 2px solid var(--border);
+  }
+
+  .steps li:first-child {
+    border-top-color: var(--red);
+  }
+
+  .steps h3 {
+    margin-bottom: 0.3em;
+  }
+
+  .steps p {
+    margin: 0;
+  }
+
+  .num {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--red-soft);
+    color: var(--red);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .layout {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .aside-heading {
+    margin-bottom: 16px;
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 1.6fr 1fr;
+    }
+  }
+</style>

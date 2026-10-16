@@ -1,0 +1,370 @@
+---
+/**
+ * Illustrations for the solution pages, drawn in HTML and CSS so they cost no
+ * image downloads. "ai" shows a document being read into data; "erp" shows a
+ * live dashboard.
+ */
+import Icon from './Icon.astro';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  kind: 'ai' | 'erp';
+}
+const { lang, kind } = Astro.props;
+const { solutions } = t(lang);
+const ai = solutions.ai.visual;
+const erp = solutions.erp.visual;
+const bars = [46, 62, 54, 78, 70, 92];
+---
+
+<div class={`visual ${kind}`} aria-hidden="true">
+  {
+    kind === 'ai' ? (
+      <div class="ai-wrap">
+        <div class="doc">
+          <div class="doc-head">
+            <Icon name="doc" size={18} />
+            <span>{ai.file}</span>
+          </div>
+          <div class="lines">
+            <i style="width:62%" />
+            <i style="width:88%" />
+            <i style="width:74%" />
+            <i style="width:80%" />
+            <i style="width:46%" />
+            <i style="width:70%" />
+          </div>
+          <span class="scan" />
+        </div>
+        <div class="fields">
+          <p class="reading">
+            <span class="spark">
+              <Icon name="bolt" size={16} />
+            </span>
+            {ai.reading}
+          </p>
+          {ai.fields.map((f, i) => (
+            <div class="field" style={`--i:${i}`}>
+              <span>{f.label}</span>
+              <strong>{f.value}</strong>
+            </div>
+          ))}
+          <p class="done">
+            <Icon name="check" size={16} /> {ai.done}
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div class="dash">
+        <p class="dash-title">
+          <Icon name="chart" size={18} /> {erp.title}
+        </p>
+        <div class="kpis">
+          {erp.kpis.map((k) => (
+            <div class="kpi">
+              <span>{k.label}</span>
+              <strong>{k.value}</strong>
+            </div>
+          ))}
+        </div>
+        <div class="chart">
+          <span class="label">{erp.chart}</span>
+          <div class="bars">
+            {bars.map((h, i) => (
+              <div class="bar">
+                <i style={`--h:${h}%;--i:${i}`} />
+                <span>{erp.days[i]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="approvals">
+          <span class="label">{erp.approvals}</span>
+          {erp.items.map((item) => (
+            <p>
+              <span class="dot" />
+              {item}
+              <span class="ok">
+                <Icon name="check" size={14} />
+              </span>
+            </p>
+          ))}
+        </div>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .visual {
+    width: 100%;
+    max-width: 460px;
+    margin-inline: auto;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(ellipse 90% 70% at 80% 0%, rgb(255 49 48 / 0.18), transparent 70%),
+      linear-gradient(180deg, var(--surface-2), var(--surface));
+    box-shadow: 0 30px 70px -30px rgb(255 49 48 / 0.45);
+    font-size: 0.88rem;
+  }
+
+  .label,
+  .kpi span,
+  .field span {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  /* AI: a document being read into fields. */
+  .ai-wrap {
+    display: grid;
+    grid-template-columns: 0.9fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .doc {
+    position: relative;
+    overflow: hidden;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f4f4f5;
+    color: #3f3f46;
+    min-height: 210px;
+  }
+
+  .doc-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--red);
+    margin-bottom: 14px;
+    word-break: break-all;
+  }
+
+  .lines i {
+    display: block;
+    height: 7px;
+    margin-bottom: 11px;
+    border-radius: 4px;
+    background: #d4d4d8;
+  }
+
+  .scan {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 36px;
+    background: linear-gradient(180deg, transparent, rgb(255 49 48 / 0.35), transparent);
+    border-bottom: 2px solid var(--red);
+    animation: scan 3.2s ease-in-out infinite;
+  }
+
+  .fields {
+    display: grid;
+    gap: 8px;
+  }
+
+  .reading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 2px;
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .spark {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .field {
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.04);
+    border: 1px solid var(--border);
+    animation: rise 0.5s calc(0.25s * var(--i)) both;
+  }
+
+  .field span,
+  .kpi span {
+    display: block;
+  }
+
+  .field strong {
+    color: var(--white);
+  }
+
+  .done {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0 0;
+    color: #6ee7a0;
+    font-weight: 600;
+  }
+
+  /* ERP: a live dashboard. */
+  .dash-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .dash-title :global(svg) {
+    color: var(--red);
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .kpi {
+    padding: 10px;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.04);
+    border: 1px solid var(--border);
+  }
+
+  .kpi strong {
+    display: block;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+  }
+
+  .kpi:first-child strong {
+    color: var(--red);
+  }
+
+  .chart,
+  .approvals {
+    padding: 12px;
+    border-radius: 12px;
+    background: rgb(0 0 0 / 0.25);
+    border: 1px solid var(--border);
+  }
+
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 110px;
+    margin-top: 10px;
+  }
+
+  .bar {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .bar i {
+    display: block;
+    width: 100%;
+    height: var(--h);
+    border-radius: 6px 6px 2px 2px;
+    background: linear-gradient(180deg, #ff7a5c, var(--red));
+    transform-origin: bottom;
+    animation: grow 0.8s calc(0.1s * var(--i)) both;
+  }
+
+  .bar span {
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .approvals {
+    margin-top: 10px;
+  }
+
+  .approvals p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0;
+    color: var(--text);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fbbf24;
+    flex: none;
+  }
+
+  .ok {
+    margin-left: auto;
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgb(110 231 160 / 0.15);
+    color: #6ee7a0;
+    flex: none;
+  }
+
+  @keyframes scan {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(180px);
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes grow {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  @media (max-width: 420px) {
+    .ai-wrap {
+      grid-template-columns: 1fr;
+    }
+    .doc {
+      min-height: 150px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scan,
+    .field,
+    .bar i {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+/** Cards linking to the AI and ERP pages, shown on Home and Services. */
+import Icon from './Icon.astro';
+import { localizePath, t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { solutions } = t(lang);
+const cards = [
+  { href: '/ai', icon: 'bolt', page: solutions.ai },
+  { href: '/erp', icon: 'flow', page: solutions.erp },
+] as const;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <h2>{solutions.teaserHeading}</h2>
+      <p class="lead">{solutions.teaserLead}</p>
+    </div>
+    <div class="grid grid-2">
+      {
+        cards.map((c, i) => (
+          <a class="card card-hover teaser" href={localizePath(lang, c.href)} data-reveal style={`--d:${i}`}>
+            <span class="icon">
+              <Icon name={c.icon} size={26} />
+            </span>
+            <span class="eyebrow">{c.page.eyebrow}</span>
+            <h3>
+              {c.page.heading} <span class="gradient-text">{c.page.headingAccent}</span>
+            </h3>
+            <p class="muted">{c.page.teaser}</p>
+            <span class="more">
+              {solutions.learnMore} <Icon name="arrow" size={18} />
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .teaser {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .teaser::after {
+    content: '';
+    position: absolute;
+    right: -80px;
+    top: -80px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(255 49 48 / 0.25), transparent 70%);
+    pointer-events: none;
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--red);
+    color: var(--white);
+    margin-bottom: 18px;
+  }
+
+  .eyebrow {
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: clamp(1.3rem, 2.6vw, 1.65rem);
+    line-height: 1.2;
+  }
+
+  .more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--red);
+    font-weight: 700;
+  }
+</style>

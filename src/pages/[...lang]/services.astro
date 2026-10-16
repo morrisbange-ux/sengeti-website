@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import RedLight from '../../components/RedLight.astro';
 import Icon from '../../components/Icon.astro';
 import BuildSection from '../../components/BuildSection.astro';
+import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
 import { serviceIcon } from '../../lib/services';
 import { site } from '../../config/site';
@@ -50,6 +51,8 @@ const schema = services.items.map((s) => ({
       }
     </div>
   </section>
+
+  <SolutionsTeaser lang={lang} />
 
   <section class="section tools">
     <div class="container" data-reveal>
@@ -116,7 +119,7 @@ const schema = services.items.map((s) => ({
       <div class="cta-band" data-reveal>
         <h2>{services.ctaHeading}</h2>
         <p>{home.ctaText}</p>
-        <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{services.ctaButton}</a>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{t(lang).nav.cta}</a>
       </div>
     </div>
   </section>

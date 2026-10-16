@@ -24,7 +24,7 @@ WhatsApp number come from the company profile. Two things still need filling in:
 | Setting | What to put there |
 | --- | --- |
 | `formEndpoint` | Your Formspree form address (free at https://formspree.io); contact and support messages are emailed to you |
-| `social` | The address of each social media page; leave an `href` empty to hide that icon |
+| `social` | Instagram is set. LinkedIn currently points to a search; put the company page address in its `href` and set `profile: true` |
 
 ## Common changes
 
@@ -49,6 +49,11 @@ or photo file next to it. These sections stay hidden until there is at least one
 starting point but should be reviewed by a lawyer before launch.
 
 **Change page text.** All wording is in `src/i18n/en.ts`.
+
+**AI, ERP and "Start a project" pages.** Their text is in the `solutions` and `project`
+sections of each language file. The project form uses the same Formspree address as the
+contact form and arrives with the subject "New project enquiry", including the type of
+project, budget and timeline the visitor picked.
 
 **Languages.** The site is in English (`/`), French (`/fr/`) and Portuguese (`/pt/`), with a
 language switcher in the header. The translations should be checked by a native speaker.

@@ -8,8 +8,14 @@ interface Props {
   subjects: string[];
   /** Subject line of the email the form service sends you. */
   emailSubject: string;
+  /** Label above the subject list (defaults to "Subject"). */
+  subjectLabel?: string;
+  /** Extra optional drop-downs, such as budget and timeline. */
+  extraSelects?: { name: string; label: string; options: string[] }[];
+  /** Label above the message box (defaults to "Message"). */
+  messageLabel?: string;
 }
-const { lang, heading, subjects, emailSubject } = Astro.props;
+const { lang, heading, subjects, emailSubject, subjectLabel, extraSelects = [], messageLabel } = Astro.props;
 const { contact } = t(lang);
 ---
 
@@ -45,13 +51,29 @@ const { contact } = t(lang);
     </label>
   </div>
   <label>
-    <span>{contact.subject}</span>
+    <span>{subjectLabel ?? contact.subject}</span>
     <select name="subject">
       {subjects.map((s) => <option>{s}</option>)}
     </select>
   </label>
+  {
+    extraSelects.length > 0 && (
+      <div class="row">
+        {extraSelects.map((sel) => (
+          <label>
+            <span>{sel.label}</span>
+            <select name={sel.name}>
+              {sel.options.map((o) => (
+                <option>{o}</option>
+              ))}
+            </select>
+          </label>
+        ))}
+      </div>
+    )
+  }
   <label>
-    <span>{contact.message}</span>
+    <span>{messageLabel ?? contact.message}</span>
     <textarea name="message" rows="6" required></textarea>
   </label>
   <!-- Spam trap: people never see or fill this field. -->

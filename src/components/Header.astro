@@ -13,11 +13,20 @@ interface Props {
 const { lang, path } = Astro.props;
 const { nav } = t(lang);
 
-const links = [
+type NavLink = { href: string; label: string; children?: { href: string; label: string }[] };
+const links: NavLink[] = [
   { href: '/', label: nav.home },
   { href: '/about', label: nav.about },
   { href: '/products', label: nav.products },
-  { href: '/services', label: nav.services },
+  {
+    href: '/services',
+    label: nav.services,
+    children: [
+      { href: '/services', label: nav.allServices },
+      { href: '/ai', label: nav.ai },
+      { href: '/erp', label: nav.erp },
+    ],
+  },
   { href: '/support', label: nav.support },
   // The News link appears once the first post is published.
   ...((await getNews(lang)).length ? [{ href: '/news', label: nav.news }] : []),
@@ -26,6 +35,7 @@ const links = [
 // Pages that exist in every language keep their place when switching; the 404 page goes home.
 const switchPath = path === '/404' ? '/' : path;
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
+const inSection = (l: NavLink) => isCurrent(l.href) || !!l.children?.some((c) => isCurrent(c.href));
 ---
 
 <header class="site-header">
@@ -37,16 +47,36 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
     <nav class="nav-desktop" aria-label="Main">
       <ul>
         {
-          links.map((l) => (
-            <li>
-              <a href={localizePath(lang, l.href)} aria-current={isCurrent(l.href) ? 'page' : undefined}>
-                {l.label}
-              </a>
-            </li>
-          ))
+          links.map((l) =>
+            l.children ? (
+              <li class="has-sub">
+                <a href={localizePath(lang, l.href)} aria-current={inSection(l) ? 'page' : undefined} aria-haspopup="true">
+                  {l.label}
+                  <svg class="caret" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                  </svg>
+                </a>
+                <ul class="sub">
+                  {l.children.map((c) => (
+                    <li>
+                      <a href={localizePath(lang, c.href)} aria-current={path === c.href ? 'page' : undefined}>
+                        {c.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li>
+                <a href={localizePath(lang, l.href)} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+                  {l.label}
+                </a>
+              </li>
+            ),
+          )
         }
       </ul>
-      <a class="btn btn-primary btn-sm" href={localizePath(lang, '/contact')}>{nav.cta}</a>
+      <a class="btn btn-primary btn-sm" href={localizePath(lang, '/start-project')}>{nav.cta}</a>
     </nav>
 
     {
@@ -82,11 +112,24 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
                 <a href={localizePath(lang, l.href)} aria-current={isCurrent(l.href) ? 'page' : undefined}>
                   {l.label}
                 </a>
+                {l.children && (
+                  <ul class="sub-mobile">
+                    {l.children
+                      .filter((c) => c.href !== l.href)
+                      .map((c) => (
+                        <li>
+                          <a href={localizePath(lang, c.href)} aria-current={isCurrent(c.href) ? 'page' : undefined}>
+                            {c.label}
+                          </a>
+                        </li>
+                      ))}
+                  </ul>
+                )}
               </li>
             ))
           }
         </ul>
-        <a class="btn btn-primary" href={localizePath(lang, '/contact')}>{nav.cta}</a>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{nav.cta}</a>
       </nav>
     </details>
   </div>
@@ -112,6 +155,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
 
   .brand {
     margin-right: auto;
+    flex: none;
   }
 
   .lang {
@@ -219,6 +263,10 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
     gap: 22px;
   }
 
+  .nav-desktop a {
+    white-space: nowrap;
+  }
+
   .btn-sm {
     min-height: 40px;
     padding: 0.5em 1.1em;
@@ -297,6 +345,86 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
     padding: 14px 0;
     font-size: 1.15rem;
     border-bottom: 1px solid var(--border);
+  }
+
+  .nav-mobile .sub-mobile a {
+    padding: 11px 0 11px 18px;
+    font-size: 1rem;
+  }
+
+  .has-sub {
+    position: relative;
+  }
+
+  .has-sub > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .caret {
+    transition: transform 0.2s;
+  }
+
+  .nav-desktop .sub {
+    display: block;
+  }
+
+  .sub {
+    position: absolute;
+    left: -14px;
+    top: 100%;
+    min-width: 200px;
+    padding: 6px;
+    margin-top: 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+    z-index: 60;
+  }
+
+  /* Keeps the menu open while the pointer crosses the gap below the link. */
+  .sub::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -16px;
+    height: 16px;
+  }
+
+  .has-sub:hover .sub,
+  .has-sub:focus-within .sub {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .has-sub:hover .caret,
+  .has-sub:focus-within .caret {
+    transform: rotate(180deg);
+  }
+
+  .nav-desktop .sub a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .nav-desktop .sub a:hover {
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .nav-desktop .sub a[aria-current='page'] {
+    color: var(--red);
+    text-decoration: none;
   }
 
   .nav-mobile .btn {

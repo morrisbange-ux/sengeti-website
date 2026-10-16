@@ -28,15 +28,17 @@ export const site = {
   profilePdf: '/sengeti-technologies-company-profile.pdf',
 
   // Social media profiles, shown as icons in the footer and on the Contact page.
-  // PLACEHOLDER: replace each href with the address of your own page. Leave an href
-  // empty ('') to hide that network.
+  // Set `profile: true` once an href points at your own page, so Google links it to the company.
   social: [
-    { network: 'facebook', label: 'Facebook', href: 'https://www.facebook.com/' },
-    { network: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-    { network: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/' },
-    { network: 'x', label: 'X (Twitter)', href: 'https://x.com/' },
-    { network: 'youtube', label: 'YouTube', href: 'https://www.youtube.com/' },
-  ] as { network: SocialNetwork; label: string; href: string }[],
+    { network: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/sengeti.technologies/', profile: true },
+    // PLACEHOLDER: replace with the LinkedIn company page address, then set profile: true.
+    {
+      network: 'linkedin',
+      label: 'LinkedIn',
+      href: 'https://www.linkedin.com/search/results/companies/?keywords=Sengeti%20Technologies',
+      profile: false,
+    },
+  ] as { network: SocialNetwork; label: string; href: string; profile: boolean }[],
 };
 
 export type SocialNetwork = 'facebook' | 'linkedin' | 'instagram' | 'x' | 'youtube' | 'tiktok';
@@ -44,8 +46,8 @@ export type SocialNetwork = 'facebook' | 'linkedin' | 'instagram' | 'x' | 'youtu
 /** Social links that have been filled in. */
 export const socialLinks = () => site.social.filter((s) => s.href);
 
-/** Social links that point at a real profile rather than a network's home page (for Google). */
-export const socialProfiles = () => socialLinks().filter((s) => new URL(s.href).pathname.length > 1);
+/** Social links confirmed as the company's own pages (given to Google). */
+export const socialProfiles = () => socialLinks().filter((s) => s.profile);
 
 export const whatsappLink = (text?: string) =>
   `https://wa.me/${site.whatsapp}${text ? `?text=${encodeURIComponent(text)}` : ''}`;

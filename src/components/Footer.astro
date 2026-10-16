@@ -28,9 +28,12 @@ const hasNews = (await getNews(lang)).length > 0;
         <li><a href={localizePath(lang, '/about')}>{nav.about}</a></li>
         <li><a href={localizePath(lang, '/products')}>{nav.products}</a></li>
         <li><a href={localizePath(lang, '/services')}>{nav.services}</a></li>
+        <li><a href={localizePath(lang, '/ai')}>{nav.ai}</a></li>
+        <li><a href={localizePath(lang, '/erp')}>{nav.erp}</a></li>
         <li><a href={localizePath(lang, '/support')}>{nav.support}</a></li>
         {hasNews && <li><a href={localizePath(lang, '/news')}>{nav.news}</a></li>}
         <li><a href={localizePath(lang, '/contact')}>{nav.contact}</a></li>
+        <li><a href={localizePath(lang, '/start-project')}>{nav.cta}</a></li>
         <li><a href={site.profilePdf} download>{footer.profile}</a></li>
       </ul>
     </div>
