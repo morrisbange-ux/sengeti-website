@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
 import { defaultLang, langs, t, type Lang } from '../../i18n';
 import { formatDate, getLegalPages } from '../../lib/content';
 import { phoneLink, site } from '../../config/site';
@@ -22,7 +23,8 @@ const { Content } = await render(page);
 ---
 
 <BaseLayout lang={lang} title={`${page.data.title} | ${site.name}`} description={page.data.description} path={`/${page.slug}`}>
-  <section class="page-hero">
+  <section class="page-hero lit-hero">
+    <RedLight variant="subtle" />
     <div class="container">
       <h1>{page.data.title}</h1>
       <p class="muted">{dict.legal.lastUpdated}: {formatDate(page.data.updated, dict.locale)}</p>

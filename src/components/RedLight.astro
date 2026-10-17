@@ -10,6 +10,7 @@ const { variant = 'hero' } = Astro.props;
 ---
 
 <div class:list={['redlight', variant]} aria-hidden="true">
+  <div class="halo"></div>
   <!-- Each flow is its own SVG so the browser can slide it as one ready-made layer, instead of
        redrawing the blurred glow on every frame (that redraw made clicks feel slow). -->
   <svg class="flow flow-a" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
@@ -68,9 +69,15 @@ const { variant = 'hero' } = Astro.props;
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
+  }
+
+  .halo {
+    position: absolute;
+    inset: -10%;
     background:
       radial-gradient(ellipse 60% 50% at 85% 20%, rgb(255 49 48 / 0.22), transparent 70%),
       radial-gradient(ellipse 50% 40% at 5% 95%, rgb(255 49 48 / 0.14), transparent 70%);
+    animation: breathe 16s ease-in-out infinite;
   }
 
   /* Keeps text readable where it sits over the light. */
@@ -90,11 +97,12 @@ const { variant = 'hero' } = Astro.props;
     background: linear-gradient(transparent, var(--black));
   }
 
+  /* Larger than the hero so the drifting light never shows an edge. */
   svg {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    inset: -12%;
+    width: 124%;
+    height: 124%;
   }
 
   @media (max-width: 700px) {
@@ -117,22 +125,52 @@ const { variant = 'hero' } = Astro.props;
   }
 
   .flow-a {
-    animation: drift-a 18s ease-in-out infinite alternate;
+    animation: drift-a 22s ease-in-out infinite;
   }
 
   .flow-b {
-    animation: drift-b 24s ease-in-out infinite alternate;
+    animation: drift-b 17s ease-in-out infinite;
   }
 
+  /* The glow drifts slowly and never stops. Only transform and opacity change, so the
+     browser moves ready-made layers and the page stays fast. */
   @keyframes drift-a {
-    to {
-      transform: translate3d(-40px, 24px, 0) scaleY(1.08);
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+      opacity: 1;
+    }
+    33% {
+      transform: translate3d(-90px, 40px, 0) rotate(-2.5deg) scale(1.06, 1.14);
+      opacity: 0.75;
+    }
+    66% {
+      transform: translate3d(60px, -30px, 0) rotate(2deg) scale(1.1, 0.94);
+      opacity: 1;
     }
   }
 
   @keyframes drift-b {
-    to {
-      transform: translate3d(50px, -20px, 0) scaleY(0.92);
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+      opacity: 0.85;
+    }
+    50% {
+      transform: translate3d(110px, -45px, 0) rotate(3deg) scale(1.12, 0.9);
+      opacity: 1;
+    }
+  }
+
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1) translate3d(0, 0, 0);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.15) translate3d(-3%, 2%, 0);
+      opacity: 1;
     }
   }
 </style>

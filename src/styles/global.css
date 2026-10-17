@@ -569,6 +569,17 @@ p {
   margin-bottom: 0.4em;
 }
 
+/* A page title area with the red glow behind it. */
+.lit-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.lit-hero > .container {
+  position: relative;
+  z-index: 1;
+}
+
 .page-hero {
   padding-top: clamp(48px, 9vw, 112px);
   padding-bottom: clamp(16px, 4vw, 40px);
