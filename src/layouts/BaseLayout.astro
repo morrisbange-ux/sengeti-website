@@ -1,0 +1,156 @@
+---
+import '@fontsource/poppins/latin-600.css';
+import '@fontsource/poppins/latin-700.css';
+import poppins700 from '@fontsource/poppins/files/poppins-latin-700-normal.woff2?url';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ChatWidget from '../components/ChatWidget.astro';
+import { site, socialProfiles } from '../config/site';
+import { defaultLang, langs, localizePath, t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Site path without language prefix, e.g. "/about". Used for canonical and language links. */
+  path: string;
+  image?: string;
+  /** Extra structured data (JSON-LD) for this page. */
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { lang, title, description, path, image = '/og-image.png', schema = [], noindex = false } = Astro.props;
+const dict = t(lang);
+const canonical = new URL(localizePath(lang, path), site.url).href;
+const imageUrl = new URL(image, site.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  // ProfessionalService lets Google show the business locally (Maps, local search).
+  '@type': ['Organization', 'ProfessionalService'],
+  '@id': `${site.url}/#organization`,
+  name: site.name,
+  url: site.url,
+  logo: new URL('/icon-512.png', site.url).href,
+  description: dict.home.description,
+  email: site.email,
+  telephone: site.phone,
+  founder: { '@type': 'Person', name: site.founder },
+  address: { '@type': 'PostalAddress', addressLocality: site.city, addressCountry: site.countryCode },
+  areaServed: site.areaServed,
+  knowsLanguage: langs.map((l) => t(l).langCode),
+  sameAs: socialProfiles().map((s) => s.href),
+  image: new URL('/og-image.png', site.url).href,
+  hasMap: site.mapUrl,
+};
+const jsonLd = [organization, ...schema];
+---
+
+<!doctype html>
+<html lang={dict.langCode}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Apply a saved light/dark choice before the page paints, so it never flashes.
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
+    <link rel="preload" href={poppins700} as="font" type="font/woff2" crossorigin />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {
+      langs.length > 1 &&
+        langs.map((l) => (
+          <link rel="alternate" hreflang={t(l).langCode} href={new URL(localizePath(l, path), site.url).href} />
+        ))
+    }
+    {langs.length > 1 && <link rel="alternate" hreflang="x-default" href={new URL(localizePath(defaultLang, path), site.url).href} />}
+
+    <meta name="theme-color" content="#0b0b0c" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={dict.locale} />
+    {langs.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={t(l).locale} />)}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {
+      site.analytics.plausibleDomain && (
+        <script is:inline defer data-domain={site.analytics.plausibleDomain} src="https://plausible.io/js/script.js" />
+      )
+    }
+    {
+      site.analytics.cloudflareToken && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: site.analytics.cloudflareToken })}
+        />
+      )
+    }
+  </head>
+  <body>
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">{dict.nav.skip}</a>
+    <Header lang={lang} path={path} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <ChatWidget lang={lang} />
+    <script>
+      // Fades sections in as they scroll into view.
+      const items = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        items.forEach((el) => io.observe(el));
+      } else {
+        items.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // Moves the spotlight on cards with the pointer (mouse and trackpad only).
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.addEventListener('pointermove', (e) => {
+          const card = (e.target as Element).closest?.<HTMLElement>('.card-hover');
+          if (!card) return;
+          const r = card.getBoundingClientRect();
+          card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+          card.style.setProperty('--my', `${e.clientY - r.top}px`);
+        });
+      }
+    </script>
+  </body>
+</html>

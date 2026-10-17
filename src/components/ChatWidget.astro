@@ -1,0 +1,414 @@
+---
+/**
+ * A lightweight guided chat assistant. It answers common questions from the
+ * `chat` section of each language file and hands anything else to a person on
+ * WhatsApp. It runs entirely in the browser: no server, no API key, no cost.
+ */
+import Icon from './Icon.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import { whatsappLink } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { chat, contact } = t(lang);
+
+const data = {
+  greeting: chat.greeting,
+  fallback: chat.fallback,
+  human: chat.human,
+  whatsapp: whatsappLink(contact.whatsappMessage),
+  answers: chat.answers.map((a) => ({
+    ...a,
+    link: 'link' in a && a.link ? { label: a.link.label, href: localizePath(lang, a.link.href) } : undefined,
+  })),
+};
+---
+
+<div class="chat" data-chat>
+  <button class="launcher" type="button" aria-expanded="false" aria-controls="chat-panel" data-chat-toggle>
+    <span class="sr-only" data-label-open>{chat.open}</span>
+    <span class="i-open"><Icon name="chat" size={26} /></span>
+    <span class="i-close"><Icon name="close" size={24} /></span>
+  </button>
+
+  <section id="chat-panel" class="panel" role="dialog" aria-label={chat.title} hidden>
+    <header>
+      <span class="avatar" aria-hidden="true">S</span>
+      <div>
+        <strong>{chat.title}</strong>
+        <span class="status">{chat.status}</span>
+      </div>
+      <button type="button" class="x" aria-label={chat.close} data-chat-close><Icon name="close" size={20} /></button>
+    </header>
+    <ol class="log" aria-live="polite" data-chat-log></ol>
+    <div class="quick" data-chat-quick>
+      {chat.quick.map((q) => <button type="button" data-q={q.id}>{q.label}</button>)}
+    </div>
+    <form class="input" data-chat-form>
+      <label class="sr-only" for="chat-input">{chat.placeholder}</label>
+      <input id="chat-input" name="q" type="text" autocomplete="off" placeholder={chat.placeholder} maxlength="300" />
+      <button type="submit" aria-label={chat.send}><Icon name="send" size={20} /></button>
+    </form>
+  </section>
+  <script type="application/json" data-chat-data set:html={JSON.stringify(data)} />
+</div>
+
+<script>
+  type Answer = { id: string; keywords: string[]; text: string; link?: { label: string; href: string } };
+  type Data = { greeting: string; fallback: string; human: string; whatsapp: string; answers: Answer[] };
+
+  const root = document.querySelector<HTMLElement>('[data-chat]');
+  if (root) {
+    const data: Data = JSON.parse(root.querySelector('[data-chat-data]')!.textContent!);
+    const toggle = root.querySelector<HTMLButtonElement>('[data-chat-toggle]')!;
+    const panel = root.querySelector<HTMLElement>('.panel')!;
+    const log = root.querySelector<HTMLOListElement>('[data-chat-log]')!;
+    const form = root.querySelector<HTMLFormElement>('[data-chat-form]')!;
+    const input = form.querySelector<HTMLInputElement>('input')!;
+    let started = false;
+
+    const normalize = (s: string) =>
+      s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\p{L}\p{N}\s]/gu, ' ');
+
+    const add = (who: 'bot' | 'me', text: string, link?: { label: string; href: string; external?: boolean }) => {
+      const li = document.createElement('li');
+      li.className = who;
+      const p = document.createElement('p');
+      p.textContent = text;
+      li.append(p);
+      if (link) {
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.label;
+        if (link.external) {
+          a.target = '_blank';
+          a.rel = 'noopener';
+        }
+        li.append(a);
+      }
+      log.append(li);
+      log.scrollTop = log.scrollHeight;
+    };
+
+    const human = () => add('bot', data.fallback, { label: data.human, href: data.whatsapp, external: true });
+
+    const reply = (answer?: Answer) => {
+      window.setTimeout(() => (answer ? add('bot', answer.text, answer.link) : human()), 350);
+    };
+
+    const find = (question: string) => {
+      const q = ` ${normalize(question)} `;
+      let best: Answer | undefined;
+      let bestScore = 0;
+      for (const a of data.answers) {
+        let score = 0;
+        for (const k of a.keywords) {
+          const key = normalize(k).trim();
+          // Short words must match whole words; longer ones can match the start of a word.
+          if (key.length <= 3 ? q.includes(` ${key} `) : q.includes(` ${key}`)) score += key.length;
+        }
+        if (score > bestScore) {
+          best = a;
+          bestScore = score;
+        }
+      }
+      return best;
+    };
+
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      root!.classList.toggle('is-open', open);
+      if (open) {
+        if (!started) {
+          add('bot', data.greeting);
+          started = true;
+        }
+        if (matchMedia('(min-width: 640px)').matches) input.focus();
+      } else {
+        toggle.focus();
+      }
+    };
+
+    toggle.addEventListener('click', () => setOpen(panel.hasAttribute('hidden')));
+    root.querySelector('[data-chat-close]')!.addEventListener('click', () => setOpen(false));
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hasAttribute('hidden')) setOpen(false);
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-q]').forEach((b) =>
+      b.addEventListener('click', () => {
+        add('me', b.textContent ?? '');
+        const id = b.dataset.q;
+        if (id === 'human') return reply();
+        reply(data.answers.find((a) => a.id === id));
+      }),
+    );
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+      input.value = '';
+      add('me', q);
+      reply(find(q));
+    });
+  }
+</script>
+
+<style>
+  /* The assistant needs JavaScript, so it only appears when JavaScript runs. */
+  .chat {
+    display: none;
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 80;
+    font-size: 0.95rem;
+  }
+
+  :global(html.js) .chat {
+    display: block;
+  }
+
+  .launcher {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 0;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: var(--on-red);
+    background: var(--red);
+    box-shadow:
+      0 10px 30px -6px rgb(255 49 48 / 0.7),
+      0 4px 12px rgb(0 0 0 / 0.5);
+    transition: transform 0.2s;
+  }
+
+  .launcher:hover {
+    transform: scale(1.06);
+  }
+
+  .launcher::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    animation: ring 2.8s ease-out infinite;
+  }
+
+  .is-open .launcher::before {
+    animation: none;
+  }
+
+  .i-close,
+  .is-open .i-open {
+    display: none;
+  }
+
+  .is-open .i-close {
+    display: block;
+  }
+
+  .i-open,
+  .i-close {
+    line-height: 0;
+  }
+
+  .panel {
+    position: absolute;
+    right: 0;
+    bottom: 72px;
+    width: min(370px, calc(100vw - 32px));
+    height: min(540px, calc(100dvh - 120px));
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgb(0 0 0 / 0.6);
+    animation: pop 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 14px 14px 16px;
+    background: linear-gradient(120deg, var(--glow), var(--surface-2) 60%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  header strong {
+    display: block;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  .status {
+    font-size: 0.8rem;
+    color: var(--green);
+  }
+
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--red);
+    color: var(--on-red);
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  .x {
+    margin-left: auto;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .x:hover {
+    background: rgb(var(--tint) / 0.08);
+    color: var(--white);
+  }
+
+  .log {
+    list-style: none;
+    margin: 0;
+    padding: 16px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .log :global(li) {
+    max-width: 85%;
+    padding: 10px 13px;
+    border-radius: 14px;
+    line-height: 1.45;
+    animation: pop 0.2s ease;
+  }
+
+  .log :global(li p) {
+    margin: 0;
+  }
+
+  .log :global(li.bot) {
+    align-self: flex-start;
+    background: var(--surface-2);
+    border-bottom-left-radius: 4px;
+  }
+
+  .log :global(li.me) {
+    align-self: flex-end;
+    background: var(--red);
+    color: var(--on-red);
+    border-bottom-right-radius: 4px;
+  }
+
+  .log :global(li a) {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--red-text);
+    font-weight: 700;
+  }
+
+  .quick {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .quick button {
+    flex: none;
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid rgb(255 49 48 / 0.5);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .quick button:hover {
+    background: var(--red-soft);
+  }
+
+  .input {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .input input {
+    flex: 1;
+    min-width: 0;
+    font: inherit;
+    font-size: 16px;
+    color: var(--white);
+    background: var(--black);
+    border: 1px solid rgb(var(--tint) / 0.15);
+    border-radius: 999px;
+    padding: 10px 16px;
+  }
+
+  .input input:focus {
+    outline: none;
+    border-color: var(--red);
+  }
+
+  .input button {
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border: 0;
+    border-radius: 50%;
+    background: var(--red);
+    color: var(--on-red);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+  }
+
+  @keyframes ring {
+    0% {
+      box-shadow: 0 0 0 0 rgb(255 49 48 / 0.55);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 16px rgb(255 49 48 / 0);
+    }
+  }
+</style>

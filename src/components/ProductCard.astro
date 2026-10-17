@@ -1,0 +1,93 @@
+---
+import Icon from './Icon.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import type { Product } from '../lib/products';
+
+interface Props {
+  product: Product;
+  lang: Lang;
+  /** 2 on pages where the cards sit straight under the page title. */
+  level?: 2 | 3;
+}
+const { product, lang, level = 3 } = Astro.props;
+const Heading = `h${level}` as const;
+const dict = t(lang).products;
+const { data } = product;
+const href = localizePath(lang, `/products/${product.slug}`);
+---
+
+<article class="product card card-hover">
+  <div class="top">
+    <span class:list={['status', data.status]}>{data.status === 'available' ? dict.available : dict.comingSoon}</span>
+    {data.platforms.length > 0 && <span class="platforms">{data.platforms.join(' · ')}</span>}
+  </div>
+  <Heading class="title"><a href={href}>{data.name}</a></Heading>
+  <p class="tagline">{data.tagline}</p>
+  <p class="muted">{data.summary}</p>
+  <span class="more" aria-hidden="true">{dict.viewDetails} <Icon name="arrow" size={18} /></span>
+</article>
+
+<style>
+  .product {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 18px;
+    font-size: 0.85rem;
+  }
+
+  .status {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    background: var(--red-soft);
+    color: var(--red-text);
+  }
+
+  .status.coming-soon {
+    background: rgb(var(--tint) / 0.08);
+    color: var(--muted);
+  }
+
+  .platforms {
+    color: var(--muted);
+  }
+
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 0.3em;
+  }
+
+  .title a {
+    text-decoration: none;
+  }
+
+  /* Makes the whole card clickable while keeping one real link. */
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+
+  .tagline {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--red-text);
+    font-weight: 700;
+  }
+</style>

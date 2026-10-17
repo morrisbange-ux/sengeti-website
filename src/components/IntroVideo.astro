@@ -1,0 +1,99 @@
+---
+/**
+ * The intro video from `introVideo` in src/config/site.ts. Shows a play button
+ * and only loads YouTube when pressed, so the page stays fast.
+ */
+import { t, type Lang } from '../i18n';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { extras } = t(lang);
+const id = site.introVideo;
+---
+
+{
+  id && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <h2>{extras.videoHeading}</h2>
+        </div>
+        <div class="video" data-video={id} data-reveal>
+          <a href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noopener" aria-label={extras.videoPlay}>
+            <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" width="480" height="360" />
+            <span class="play" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-video]').forEach((box) => {
+    box.querySelector('a')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      const frame = document.createElement('iframe');
+      frame.src = `https://www.youtube-nocookie.com/embed/${box.dataset.video}?autoplay=1&rel=0`;
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture';
+      frame.allowFullscreen = true;
+      frame.title = 'Video';
+      box.replaceChildren(frame);
+    });
+  });
+</script>
+
+<style>
+  .video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .video a,
+  .video img,
+  .video :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video img {
+    object-fit: cover;
+    opacity: 0.75;
+    transition: opacity 0.3s, transform 0.6s;
+  }
+
+  .video a:hover img {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+
+  .play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 12px rgb(255 49 48 / 0.25);
+  }
+
+  .play::after {
+    content: '';
+    position: absolute;
+    left: 34px;
+    top: 26px;
+    border-left: 24px solid #fff;
+    border-top: 16px solid transparent;
+    border-bottom: 16px solid transparent;
+  }
+</style>

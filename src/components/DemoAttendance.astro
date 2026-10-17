@@ -1,0 +1,1184 @@
+---
+/**
+ * An interactive, browser-only simulation of Sengeti Attendance for the /demo
+ * page: a rotating lecture QR code, live check-ins, a rejected check-in with an
+ * old code, and the exam eligibility list. All the data is made up.
+ */
+import Icon from './Icon.astro';
+import { t, type Lang } from '../i18n';
+import pages from '../i18n/pages/demo';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const d = pages[lang];
+const locale = t(lang).locale.replace('_', '-');
+
+const TOTAL = 120;
+const INITIAL = 36;
+const THRESHOLD = 75;
+
+// Small seeded random generator, so the sample data is the same on every build.
+function seeded(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let x = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = seeded(2026);
+
+// Generic first names and surnames common in Zimbabwe and neighbouring countries.
+const first = [
+  'Tendai', 'Rudo', 'Tatenda', 'Nyasha', 'Farai', 'Chipo', 'Tafadzwa', 'Kudzai', 'Rumbidzai', 'Tinashe',
+  'Thandiwe', 'Blessing', 'Takudzwa', 'Ruvimbo', 'Munashe', 'Anesu', 'Vimbai', 'Simba', 'Chiedza', 'Sipho',
+  'Lindiwe', 'Mpho', 'Chanda', 'Mwila', 'Thabo', 'Neo', 'Nomsa', 'Tawanda', 'Fadzai', 'Ana',
+];
+const last = [
+  'Moyo', 'Ncube', 'Dube', 'Sibanda', 'Mutasa', 'Banda', 'Phiri', 'Mwale', 'Nkosi', 'Mhlanga', 'Gumbo', 'Chirwa',
+  'Nyathi', 'Tembo', 'Sithole', 'Makoni', 'Chuma', 'Marufu', 'Mabhena', 'Zulu', 'Mudzingwa', 'Chikore', 'Mashava', 'Cossa',
+];
+// i mod 30 and 7i mod 24 only repeat together after 120 students, so every name is unique.
+const students = Array.from({ length: TOTAL }, (_, i) => {
+  const low = rand() < 0.14;
+  return {
+    name: `${first[i % first.length]} ${last[(i * 7) % last.length]}`,
+    id: `S24-${1001 + i}`,
+    pct: Math.round(low ? 52 + rand() * 22 : 76 + rand() * 24),
+  };
+});
+
+// The order students arrive in the lecture.
+const order = students.map((_, i) => i);
+for (let i = order.length - 1; i > 0; i--) {
+  const j = Math.floor(rand() * (i + 1));
+  [order[i], order[j]] = [order[j], order[i]];
+}
+const initialFeed = order
+  .slice(INITIAL - 5, INITIAL)
+  .reverse()
+  .map((i) => ({ name: students[i].name, selfie: rand() < 0.15 }));
+
+const eligibility = [...students].sort((a, b) => a.pct - b.pct || a.name.localeCompare(b.name));
+const flaggedCount = students.filter((s) => s.pct < THRESHOLD).length;
+const pctFmt = new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
+
+// The QR code: 21 x 21 modules plus a quiet zone of 2. Decorative only, not scannable.
+const N = 21;
+const inFinder = (r: number, c: number) =>
+  (r < 8 && c < 8) || (r < 8 && c >= N - 8) || (r >= N - 8 && c < 8);
+const finderPath = [
+  [0, 0],
+  [0, N - 7],
+  [N - 7, 0],
+]
+  .map(([r, c]) => {
+    const x = c + 2, y = r + 2;
+    return `M${x} ${y}h7v7h-7zM${x + 1} ${y + 1}v5h5v-5zM${x + 2} ${y + 2}h3v3h-3z`;
+  })
+  .join('');
+let modules = '';
+for (let r = 0; r < N; r++) {
+  for (let c = 0; c < N; c++) {
+    if (!inFinder(r, c) && rand() < 0.48) modules += `M${c + 2} ${r + 2}h1v1h-1z`;
+  }
+}
+const initialCode = 'K7F2';
+
+const data = {
+  total: TOTAL,
+  initial: INITIAL,
+  locale,
+  students: students.map((s) => s.name),
+  order,
+  text: {
+    checkedIn: d.checkedIn,
+    rejected: d.rejected,
+    selfie: d.selfie,
+    okMessage: d.okMessage,
+    rejectMessage: d.rejectMessage,
+    fakeStudent: d.fakeStudent,
+    fullMessage: d.fullMessage,
+    pause: d.pause,
+    resume: d.resume,
+  },
+};
+const RING = 2 * Math.PI * 18;
+---
+
+<div class="demo" data-demo>
+  <p class="sample">
+    <span class="badge">{d.sampleBadge}</span>
+    <span class="muted">{d.sampleNote}</span>
+  </p>
+
+  <div class="app force-dark">
+    <header class="appbar">
+      <span class="brand"><span class="dot" aria-hidden="true"></span> Sengeti Attendance</span>
+      <span class="cls">{d.className} <small>{d.venue}</small></span>
+      <span class="live-pill"><i aria-hidden="true"></i> {d.live}</span>
+    </header>
+
+    <div class="tabs jsonly" role="tablist" aria-label={d.tabsLabel}>
+      <button type="button" role="tab" id="demo-tab-live" aria-controls="demo-live" aria-selected="true" data-tab>
+        <Icon name="users" size={18} />
+        {d.tabLive}
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="demo-tab-elig"
+        aria-controls="demo-elig"
+        aria-selected="false"
+        tabindex="-1"
+        data-tab
+      >
+        <Icon name="doc" size={18} />
+        {d.tabEligibility}
+      </button>
+    </div>
+
+    <div class="panel live" id="demo-live" role="tabpanel" aria-labelledby="demo-tab-live">
+      <div class="qr-col">
+        <h2 class="h3">{d.qrHeading}</h2>
+        <div class="qr-card" data-qr-card>
+          <svg class="qr" viewBox="0 0 25 25" role="img" aria-label={d.qrAlt} shape-rendering="crispEdges">
+            <rect width="25" height="25" fill="#fff"></rect>
+            <path d={finderPath} fill="#16161a" fill-rule="evenodd"></path>
+            <path d={modules} fill="#16161a" data-qr></path>
+          </svg>
+          <span class="scan" aria-hidden="true"></span>
+        </div>
+        <div class="timer">
+          <span class="ring" aria-hidden="true">
+            <svg viewBox="0 0 44 44">
+              <circle cx="22" cy="22" r="18" class="ring-bg"></circle>
+              <circle
+                cx="22"
+                cy="22"
+                r="18"
+                class="ring-fg"
+                stroke-dasharray={RING.toFixed(2)}
+                stroke-dashoffset="0"
+                data-ring></circle>
+            </svg>
+            <b data-secs>15</b>
+          </span>
+          <span class="timer-text">
+            {d.newCodeIn} <strong><span data-secs-text>15</span>{d.seconds}</strong>
+            <span class="code">{d.codeLabel} <strong data-code>{initialCode}</strong></span>
+          </span>
+        </div>
+        <p class="muted hint">{d.qrHint}</p>
+      </div>
+
+      <div class="stats-col">
+        <div class="counter">
+          <span class="lbl">{d.presentLabel}</span>
+          <p class="count">
+            <strong data-count>{INITIAL}</strong>
+            <span>/ {TOTAL} {d.present}</span>
+          </p>
+          <div class="bar" aria-hidden="true">
+            <span data-bar style={`width:${(INITIAL / TOTAL) * 100}%`}></span>
+          </div>
+        </div>
+
+        <div class="actions jsonly">
+          <button type="button" class="btn btn-primary" data-act="checkin">
+            <Icon name="check" size={18} />
+            {d.simulate}
+          </button>
+          <button type="button" class="btn btn-ghost" data-act="fake">
+            <Icon name="lock" size={18} />
+            {d.oldCode}
+          </button>
+          <div class="mini">
+            <button type="button" class="link" data-act="pause" aria-pressed="false">{d.pause}</button>
+            <button type="button" class="link" data-act="restart">{d.restart}</button>
+          </div>
+        </div>
+        <p class="msg" data-msg role="status" aria-live="polite"></p>
+
+        <h3 class="h4">{d.feedHeading}</h3>
+        <ol class="feed" data-feed>
+          {
+            initialFeed.map((f) => (
+              <li class="ok">
+                <span class="avatar" aria-hidden="true">{f.name.slice(0, 1)}</span>
+                <span class="who">{f.name}</span>
+                <span class="method">{f.selfie ? d.selfie : 'QR'}</span>
+                <span class="state">{d.checkedIn}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <div class="panel elig" id="demo-elig" role="tabpanel" aria-labelledby="demo-tab-elig">
+      <h2 class="h3">{d.eligibilityHeading} · {d.className}</h2>
+      <p class="muted">{d.eligibilityText}</p>
+      <div class="chips">
+        <span class="chip good"><strong>{TOTAL - flaggedCount}</strong> {d.eligibleCount}</span>
+        <span class="chip bad"><strong>{flaggedCount}</strong> {d.flaggedCount}</span>
+        <span class="chip">{d.threshold}</span>
+      </div>
+      <label class="filter jsonly">
+        <input type="checkbox" data-filter />
+        <span class="box" aria-hidden="true"><Icon name="check" size={14} /></span>
+        {d.onlyFlagged}
+      </label>
+      <div class="table-wrap" tabindex="0" role="region" aria-label={d.eligibilityHeading}>
+        <table data-table>
+          <thead>
+            <tr>
+              <th scope="col">{d.colStudent}</th>
+              <th scope="col" class="num-col">{d.colNumber}</th>
+              <th scope="col">{d.colAttendance}</th>
+              <th scope="col">{d.colStatus}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              eligibility.map((s) => (
+                <tr class={s.pct < THRESHOLD ? 'low' : 'ok'}>
+                  <td>{s.name}</td>
+                  <td class="num-col muted">{s.id}</td>
+                  <td>
+                    <span class="pct">
+                      <span class="pbar" aria-hidden="true">
+                        <span style={`width:${s.pct}%`} />
+                      </span>
+                      {pctFmt.format(s.pct / 100)}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="tag">{s.pct < THRESHOLD ? d.flagged : d.eligible}</span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" data-demo-data set:html={JSON.stringify(data)} />
+</div>
+
+<script>
+  type Data = {
+    total: number;
+    initial: number;
+    locale: string;
+    students: string[];
+    order: number[];
+    text: Record<'checkedIn' | 'rejected' | 'selfie' | 'okMessage' | 'rejectMessage' | 'fakeStudent' | 'fullMessage' | 'pause' | 'resume', string>;
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-demo]');
+  const dataEl = root?.querySelector('[data-demo-data]');
+  if (root && dataEl) {
+    const data = JSON.parse(dataEl.textContent || '{}') as Data;
+    const tx = data.text;
+    const $ = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const PERIOD = 15000;
+    const N = 21;
+    const RING = 2 * Math.PI * 18;
+    const clock = new Intl.DateTimeFormat(data.locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    // ----- Tabs -----
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const select = (tab: HTMLButtonElement, focus = false) => {
+      for (const t of tabs) {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')!)!.hidden = !on;
+      }
+      if (focus) tab.focus();
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (e.key === 'Home' || e.key === 'End') {
+          e.preventDefault();
+          select(tabs[e.key === 'Home' ? 0 : tabs.length - 1], true);
+        } else if (dir) {
+          e.preventDefault();
+          select(tabs[(i + dir + tabs.length) % tabs.length], true);
+        }
+      });
+    });
+    select(tabs[0]);
+
+    // ----- Eligibility filter -----
+    $<HTMLInputElement>('[data-filter]').addEventListener('change', (e) => {
+      $('[data-table]').classList.toggle('only-low', (e.target as HTMLInputElement).checked);
+    });
+
+    // ----- Rotating QR code -----
+    const qrPath = $<SVGPathElement>('[data-qr]');
+    const qrCard = $('[data-qr-card]');
+    const ring = $<SVGCircleElement>('[data-ring]');
+    const secs = $('[data-secs]');
+    const secsText = $('[data-secs-text]');
+    const codeEl = $('[data-code]');
+    const inFinder = (r: number, c: number) => (r < 8 && c < 8) || (r < 8 && c >= N - 8) || (r >= N - 8 && c < 8);
+    const makeCode = () => {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      return Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    };
+    const drawQr = () => {
+      let d = '';
+      for (let r = 0; r < N; r++)
+        for (let c = 0; c < N; c++) if (!inFinder(r, c) && Math.random() < 0.48) d += `M${c + 2} ${r + 2}h1v1h-1z`;
+      qrPath.setAttribute('d', d);
+    };
+    const flash = (el: Element, cls: string) => {
+      el.classList.remove(cls);
+      void (el as HTMLElement).offsetWidth;
+      el.classList.add(cls);
+    };
+
+    let current = { code: codeEl.textContent || makeCode(), issued: Date.now() };
+    // An expired code from just before the page opened, so the fake check-in works at once.
+    let previous = { code: makeCode(), expired: Date.now() - 2000 };
+    let lastSec = -1;
+
+    const rotate = (now: number) => {
+      previous = { code: current.code, expired: now };
+      current = { code: makeCode(), issued: now };
+      codeEl.textContent = current.code;
+      drawQr();
+      flash(qrCard, 'swap');
+    };
+
+    const frame = () => {
+      const now = Date.now();
+      if (now - current.issued >= PERIOD) rotate(now);
+      const left = PERIOD - (now - current.issued);
+      const s = Math.max(1, Math.ceil(left / 1000));
+      const frac = reduce ? s / 15 : left / PERIOD;
+      ring.style.strokeDashoffset = String(RING * (1 - frac));
+      if (s !== lastSec) {
+        secs.textContent = secsText.textContent = String(s);
+        lastSec = s;
+      }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+
+    // ----- Check-ins -----
+    const countEl = $('[data-count]');
+    const bar = $('[data-bar]');
+    const feed = $('[data-feed]');
+    const msg = $('[data-msg]');
+    const pauseBtn = $<HTMLButtonElement>('[data-act="pause"]');
+    const initialFeed = feed.innerHTML;
+    let next = data.initial;
+    let paused = false;
+    let msgTimer = 0;
+
+    const say = (text: string, kind: 'ok' | 'bad') => {
+      msg.textContent = text;
+      msg.className = `msg show ${kind}`;
+      clearTimeout(msgTimer);
+      msgTimer = window.setTimeout(() => msg.classList.remove('show'), 7000);
+    };
+    const fill = (s: string, v: Record<string, string>) => s.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? '');
+
+    const addFeed = (name: string, method: string, ok: boolean) => {
+      const li = document.createElement('li');
+      li.className = `${ok ? 'ok' : 'bad'} new`;
+      const parts: [string, string][] = [
+        ['avatar', ok ? name.slice(0, 1) : '!'],
+        ['who', name],
+        ['method', method],
+        ['time', clock.format(new Date())],
+        ['state', ok ? tx.checkedIn : tx.rejected],
+      ];
+      for (const [cls, text] of parts) {
+        const span = document.createElement('span');
+        span.className = cls;
+        span.textContent = text;
+        if (cls === 'avatar') span.setAttribute('aria-hidden', 'true');
+        li.append(span);
+      }
+      feed.prepend(li);
+      while (feed.children.length > 6) feed.lastElementChild!.remove();
+    };
+
+    const showCount = () => {
+      countEl.textContent = String(next);
+      bar.style.width = `${(next / data.total) * 100}%`;
+      flash(countEl, 'pop');
+    };
+
+    const checkIn = (manual: boolean) => {
+      if (next >= data.total) {
+        if (manual) say(tx.fullMessage, 'ok');
+        return;
+      }
+      const name = data.students[data.order[next++]];
+      addFeed(name, Math.random() < 0.15 ? tx.selfie : 'QR', true);
+      showCount();
+      if (manual) say(fill(tx.okMessage, { name, code: current.code }), 'ok');
+      else if (next >= data.total) say(tx.fullMessage, 'ok');
+    };
+
+    const fake = () => {
+      const ago = Math.max(1, Math.round((Date.now() - previous.expired) / 1000));
+      addFeed(tx.fakeStudent, previous.code, false);
+      say(fill(tx.rejectMessage, { code: previous.code, s: String(ago) }), 'bad');
+      flash(qrCard, 'deny');
+    };
+
+    root.addEventListener('click', (e) => {
+      const act = (e.target as Element).closest<HTMLElement>('[data-act]')?.dataset.act;
+      if (act === 'checkin') checkIn(true);
+      else if (act === 'fake') fake();
+      else if (act === 'pause') {
+        paused = !paused;
+        pauseBtn.textContent = paused ? tx.resume : tx.pause;
+        pauseBtn.setAttribute('aria-pressed', String(paused));
+      } else if (act === 'restart') {
+        next = data.initial;
+        feed.innerHTML = initialFeed;
+        showCount();
+        msg.classList.remove('show');
+        if (paused) pauseBtn.click();
+      }
+    });
+
+    // Students trickle in by themselves while the demo is on screen.
+    let visible = false;
+    new IntersectionObserver(([entry]) => (visible = entry.isIntersecting)).observe($('#demo-live'));
+    const trickle = () => {
+      if (visible && !paused && !document.hidden) checkIn(false);
+      window.setTimeout(trickle, 1400 + Math.random() * 2600);
+    };
+    window.setTimeout(trickle, 1500);
+  }
+</script>
+
+<style>
+  .demo {
+    min-width: 0;
+  }
+
+  :global(html:not(.js)) .jsonly {
+    display: none !important;
+  }
+
+  .sample {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-bottom: 16px;
+    font-size: 0.92rem;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgb(255 49 48 / 0.15);
+    border: 1px solid rgb(255 49 48 / 0.5);
+    color: var(--red-text);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  :global([data-theme='light']) .badge {
+    color: #b41818;
+  }
+
+  .app {
+    border-radius: calc(var(--radius) * 1.5);
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgb(255 49 48 / 0.4);
+  }
+
+  .appbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+    padding: 14px clamp(16px, 3vw, 24px);
+    background: var(--black);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  .cls {
+    color: var(--muted);
+    font-size: 0.92rem;
+    flex: 1;
+  }
+
+  .cls small {
+    color: #8a8a92;
+    margin-left: 6px;
+  }
+
+  @media (max-width: 560px) {
+    .cls {
+      order: 3;
+      flex-basis: 100%;
+    }
+    .brand {
+      flex: 1;
+    }
+  }
+
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--red-text);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .live-pill i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 1.6s ease-out infinite;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px clamp(10px, 2vw, 16px) 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tabs button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 14px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .tabs button:hover {
+    color: var(--white);
+  }
+
+  .tabs button[aria-selected='true'] {
+    color: var(--white);
+    border-bottom-color: var(--red);
+  }
+
+  .panel {
+    padding: clamp(18px, 3vw, 32px);
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  .h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .h4 {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin: 1.2rem 0 0.6rem;
+    font-weight: 600;
+  }
+
+  /* ----- Live lecture ----- */
+  .live {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(20px, 4vw, 44px);
+  }
+
+  @media (max-width: 780px) {
+    .live {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .qr-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .qr-card {
+    position: relative;
+    width: min(260px, 100%);
+    aspect-ratio: 1;
+    padding: 12px;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--red), 0 14px 40px -10px rgb(255 49 48 / 0.6);
+    overflow: hidden;
+  }
+
+  .qr {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .qr-card.swap .qr {
+    animation: swap 0.5s ease;
+  }
+
+  .qr-card.deny {
+    animation: deny 0.5s ease;
+  }
+
+  .scan {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 10%;
+    height: 2px;
+    background: var(--red);
+    box-shadow: 0 0 12px 2px rgb(255 49 48 / 0.7);
+    animation: scan 2.6s ease-in-out infinite alternate;
+  }
+
+  .timer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 18px;
+    text-align: left;
+  }
+
+  .ring {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    flex: none;
+  }
+
+  .ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .ring circle {
+    fill: none;
+    stroke-width: 4;
+  }
+
+  .ring-bg {
+    stroke: #2a2a2f;
+  }
+
+  .ring-fg {
+    stroke: var(--red);
+    stroke-linecap: round;
+  }
+
+  .ring b {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timer-text {
+    display: flex;
+    flex-direction: column;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  .timer-text strong {
+    color: var(--white);
+  }
+
+  .code strong {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: 0.1em;
+    color: var(--red-text);
+  }
+
+  .hint {
+    font-size: 0.9rem;
+    margin: 12px 0 0;
+    max-width: 30ch;
+  }
+
+  .counter {
+    padding: 18px;
+    border-radius: 14px;
+    background: rgb(var(--shade) / 0.35);
+    border: 1px solid var(--border);
+  }
+
+  .lbl {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .count {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 12px;
+    color: var(--muted);
+  }
+
+  .count strong {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 7vw, 3.4rem);
+    line-height: 1;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .count strong:global(.pop) {
+    animation: pop 0.4s ease;
+  }
+
+  .bar {
+    height: 10px;
+    border-radius: 999px;
+    background: #2a2a2f;
+    overflow: hidden;
+  }
+
+  .bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff3130, #ff6a4d);
+    transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .actions {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .actions .btn {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .mini {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .link {
+    min-height: 40px;
+    padding: 6px 4px;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .link:hover {
+    color: var(--white);
+  }
+
+  .msg {
+    margin: 12px 0 0;
+    padding: 0 14px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    transition: max-height 0.3s, opacity 0.3s, padding 0.3s;
+  }
+
+  .msg:global(.show) {
+    max-height: 160px;
+    opacity: 1;
+    padding: 12px 14px;
+  }
+
+  .msg:global(.ok) {
+    background: rgb(34 197 94 / 0.1);
+    border: 1px solid rgb(34 197 94 / 0.35);
+    color: #a7f3c0;
+  }
+
+  .msg:global(.bad) {
+    background: rgb(255 49 48 / 0.12);
+    border: 1px solid rgb(255 49 48 / 0.5);
+    color: #ffb3a6;
+  }
+
+  .feed {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .feed :global(li) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 9px 12px;
+    border-radius: 12px;
+    background: rgb(var(--shade) / 0.3);
+    border: 1px solid var(--border);
+    font-size: 0.92rem;
+  }
+
+  .feed :global(li.new) {
+    animation: slide 0.45s ease both;
+  }
+
+  .feed :global(.avatar) {
+    width: 28px;
+    height: 28px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #2a2a2f;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  .feed :global(.who) {
+    flex: 1;
+    min-width: 0;
+    color: var(--white);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .feed :global(.method) {
+    padding: 1px 7px;
+    border-radius: 6px;
+    background: rgb(var(--tint) / 0.07);
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .feed :global(.time) {
+    color: #8a8a92;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .feed :global(.state) {
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: rgb(34 197 94 / 0.14);
+    color: var(--green);
+    white-space: nowrap;
+  }
+
+  .feed :global(li.bad) {
+    border-color: rgb(255 49 48 / 0.5);
+    background: rgb(255 49 48 / 0.08);
+  }
+
+  .feed :global(li.bad .avatar) {
+    background: var(--red);
+  }
+
+  .feed :global(li.bad .state) {
+    background: rgb(255 49 48 / 0.18);
+    color: #ff8a7a;
+  }
+
+  .feed :global(li.bad .method) {
+    text-decoration: line-through;
+  }
+
+  @media (max-width: 480px) {
+    .feed :global(.time) {
+      display: none;
+    }
+  }
+
+  /* ----- Eligibility ----- */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgb(var(--shade) / 0.3);
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .chip strong {
+    color: var(--white);
+  }
+
+  .chip.good {
+    border-color: rgb(34 197 94 / 0.4);
+  }
+
+  .chip.bad {
+    border-color: rgb(255 49 48 / 0.5);
+  }
+
+  .filter {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+
+  .filter input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .box {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    border-radius: 7px;
+    border: 2px solid rgb(var(--tint) / 0.35);
+    color: transparent;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  .filter input:checked + .box {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--on-red);
+  }
+
+  .filter input:focus-visible + .box {
+    outline: 2px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  .table-wrap {
+    max-height: 440px;
+    overflow: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--surface-2);
+    text-align: left;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgb(var(--tint) / 0.05);
+    vertical-align: middle;
+  }
+
+  .only-low tr.ok {
+    display: none;
+  }
+
+  .pct {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pbar {
+    width: 64px;
+    height: 6px;
+    border-radius: 999px;
+    background: #2a2a2f;
+    overflow: hidden;
+  }
+
+  .pbar span {
+    display: block;
+    height: 100%;
+    background: var(--green);
+  }
+
+  .low .pbar span {
+    background: var(--red);
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+    background: rgb(34 197 94 / 0.14);
+    color: var(--green);
+  }
+
+  .low .tag {
+    background: rgb(255 49 48 / 0.18);
+    color: #ff8a7a;
+  }
+
+  .low td:first-child {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  @media (max-width: 560px) {
+    .num-col,
+    .pbar {
+      display: none;
+    }
+    th,
+    td {
+      padding-inline: 8px;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgb(255 49 48 / 0.6);
+    }
+    100% {
+      box-shadow: 0 0 0 8px rgb(255 49 48 / 0);
+    }
+  }
+
+  @keyframes scan {
+    to {
+      top: 88%;
+    }
+  }
+
+  @keyframes swap {
+    0% {
+      opacity: 0.2;
+      transform: scale(0.94) rotateY(70deg);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes deny {
+    20%,
+    60% {
+      transform: translateX(-8px);
+    }
+    40%,
+    80% {
+      transform: translateX(8px);
+    }
+  }
+
+  @keyframes pop {
+    40% {
+      transform: scale(1.15);
+      color: #ff8a7a;
+    }
+  }
+
+  @keyframes slide {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+</style>

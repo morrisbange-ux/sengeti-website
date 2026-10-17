@@ -1,0 +1,202 @@
+---
+import { t, type Lang } from '../i18n';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+  heading: string;
+  subjects: string[];
+  /** Subject line of the email the form service sends you. */
+  emailSubject: string;
+  /** Label above the subject list (defaults to "Subject"). */
+  subjectLabel?: string;
+  /** Extra optional drop-downs, such as budget and timeline. */
+  extraSelects?: { name: string; label: string; options: string[] }[];
+  /** Label above the message box (defaults to "Message"). */
+  messageLabel?: string;
+}
+const { lang, heading, subjects, emailSubject, subjectLabel, extraSelects = [], messageLabel } = Astro.props;
+const { contact } = t(lang);
+---
+
+<form
+  class="card form"
+  action={site.formEndpoint}
+  method="POST"
+  data-contact-form
+  data-sending={contact.sending}
+  data-success={contact.success}
+  data-error={contact.error}>
+  <h2>{heading}</h2>
+  <input type="hidden" name="_subject" value={emailSubject} />
+  <input type="hidden" name="language" value={lang} />
+  <div class="row">
+    <label>
+      <span>{contact.name}</span>
+      <input name="name" type="text" autocomplete="name" required />
+    </label>
+    <label>
+      <span>{contact.email}</span>
+      <input name="email" type="email" autocomplete="email" inputmode="email" required />
+    </label>
+  </div>
+  <div class="row">
+    <label>
+      <span>{contact.phone}</span>
+      <input name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+    </label>
+    <label>
+      <span>{contact.organisation}</span>
+      <input name="organisation" type="text" autocomplete="organization" />
+    </label>
+  </div>
+  <label>
+    <span>{subjectLabel ?? contact.subject}</span>
+    <select name="subject">
+      {subjects.map((s) => <option>{s}</option>)}
+    </select>
+  </label>
+  {
+    extraSelects.length > 0 && (
+      <div class="row">
+        {extraSelects.map((sel) => (
+          <label>
+            <span>{sel.label}</span>
+            <select name={sel.name}>
+              {sel.options.map((o) => (
+                <option>{o}</option>
+              ))}
+            </select>
+          </label>
+        ))}
+      </div>
+    )
+  }
+  <label>
+    <span>{messageLabel ?? contact.message}</span>
+    <textarea name="message" rows="6" required></textarea>
+  </label>
+  <!-- Spam trap: people never see or fill this field. -->
+  <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true" />
+  <button class="btn btn-primary" type="submit">{contact.send}</button>
+  <p class="status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  // Sends the form without leaving the page. Without JavaScript the form
+  // still posts normally to the form service.
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const label = button.textContent;
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      button.disabled = true;
+      button.textContent = form.dataset.sending ?? '';
+      status.className = 'status';
+      status.textContent = '';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        status.classList.add('ok');
+        status.textContent = form.dataset.success ?? '';
+      } catch {
+        status.classList.add('err');
+        status.textContent = form.dataset.error ?? '';
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  });
+</script>
+
+<style>
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  .form {
+    display: grid;
+    gap: 18px;
+  }
+
+  .row {
+    display: grid;
+    gap: 18px;
+  }
+
+  label {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--white);
+    background: var(--black);
+    border: 1px solid rgb(var(--tint) / 0.18);
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-height: 48px;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgb(255 49 48 / 0.25);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  .trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .form .btn {
+    justify-self: start;
+  }
+
+  button:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .status {
+    margin: 0;
+    min-height: 1.5em;
+  }
+
+  .status:global(.ok) {
+    color: var(--green);
+  }
+
+  .status:global(.err) {
+    color: #ff8c8b;
+  }
+
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

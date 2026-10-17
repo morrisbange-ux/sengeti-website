@@ -1,0 +1,317 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Icon from '../../components/Icon.astro';
+import PhoneMockup from '../../components/PhoneMockup.astro';
+import SocialProof from '../../components/SocialProof.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
+import StatsBand from '../../components/StatsBand.astro';
+import IntroVideo from '../../components/IntroVideo.astro';
+import { getNews } from '../../lib/content';
+import { serviceIcon, servicePage } from '../../lib/services';
+import { langPaths, localizePath, t, type Lang } from '../../i18n';
+import { getProducts } from '../../lib/products';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const dict = t(lang);
+const { home, services } = dict;
+const products = await getProducts(lang);
+const featured = products.filter((p) => p.data.featured);
+const shown = featured.length ? featured : products.slice(0, 1);
+const whyIcons = ['globe', 'wallet', 'phone', 'lock'] as const;
+const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-study').slice(0, 3);
+---
+
+<BaseLayout lang={lang} title={home.title} description={home.description} path="/">
+  <section class="hero">
+    <RedLight />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">{home.eyebrow}</span>
+        <h1>{home.heading} <span class="gradient-text">{home.headingAccent}</span></h1>
+        <p class="lead">{home.lead}</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={localizePath(lang, '/services')}>{home.primaryCta}</a>
+          <a class="btn btn-ghost" href={localizePath(lang, '/contact')}>{home.secondaryCta}</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <PhoneMockup lang={lang} label={home.mockupLabel} />
+      </div>
+    </div>
+  </section>
+
+  <section class="stack">
+    <div class="container">
+      <p class="stack-label">{home.stackLabel}</p>
+      <div class="marquee">
+        <ul class="chips">
+          {home.stack.map((item) => <li>{item}</li>)}
+        </ul>
+        {
+          [1, 2, 3].map(() => (
+            <ul class="chips" aria-hidden="true">
+              {home.stack.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <StatsBand lang={lang} />
+
+  <section class="section">
+    <div class="container problems">
+      <div data-reveal>
+        <h2>{home.problemsHeading}</h2>
+        <p class="lead">{home.problemsLead}</p>
+        <blockquote class="principle">
+          <p>“{home.principle}”</p>
+          <cite>{home.principleBy}</cite>
+        </blockquote>
+      </div>
+      <ol class="problem-list">
+        {
+          home.problems.map((p, i) => (
+            <li class="card card-hover" data-reveal style={`--d:${i}`}>
+              <span class="num">{i + 1}</span>
+              <div>
+                <h3>{p.title}</h3>
+                <p class="muted">{p.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2>{home.servicesHeading}</h2>
+        <p class="lead">{home.servicesLead}</p>
+      </div>
+      <div class="grid grid-3">
+        {
+          services.items.map((s, i) => (
+            <a class="card card-hover service" data-reveal style={`--d:${i % 3}`} href={servicePage(s.id) ? localizePath(lang, servicePage(s.id)) : `${localizePath(lang, '/services')}#${s.id}`}>
+              <span class="icon">
+                <Icon name={serviceIcon(s.id)} />
+              </span>
+              <h3>{s.title}</h3>
+              <p class="muted">{s.text}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <SolutionsTeaser lang={lang} />
+
+  <IntroVideo lang={lang} />
+
+  {
+    shown.length > 0 && (
+      <section class="section product-section">
+        <div class="container">
+          <div class="section-head" data-reveal>
+            <h2>{home.productHeading}</h2>
+          </div>
+          <div class="grid grid-2" data-reveal>
+            {shown.map((p) => (
+              <ProductCard product={p} lang={lang} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    caseStudies.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <div class="section-head" data-reveal>
+            <h2>{home.caseStudiesHeading}</h2>
+          </div>
+          <div class="grid grid-2">
+            {caseStudies.map((post, i) => (
+              <NewsCard post={post} lang={lang} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2>{home.whyHeading}</h2>
+      </div>
+      <div class="grid why">
+        {
+          home.why.map((w, i) => (
+            <div class="card card-hover" data-reveal style={`--d:${i}`}>
+              <span class="icon">
+                <Icon name={whyIcons[i % whyIcons.length]} />
+              </span>
+              <h3>{w.title}</h3>
+              <p class="muted">{w.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <SocialProof lang={lang} />
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{home.ctaHeading}</h2>
+        <p>{home.ctaText}</p>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{home.ctaButton}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: min(88vh, 760px);
+    display: flex;
+    align-items: center;
+    padding-block: 96px 72px;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .hero h1 {
+    max-width: 17ch;
+  }
+
+  .hero .lead {
+    margin-bottom: 2rem;
+  }
+
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .stack {
+    padding-block: 8px 24px;
+  }
+
+  .stack-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  .problems {
+    display: grid;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .principle {
+    margin: 28px 0 0;
+    padding: 20px 24px;
+    border-left: 3px solid var(--red);
+    background: linear-gradient(90deg, var(--red-soft), transparent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .principle p {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .principle cite {
+    color: var(--red-text);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .problem-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  .problem-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 18px 20px;
+  }
+
+  .problem-list .num {
+    flex: none;
+    margin: 0;
+  }
+
+  .problem-list h3 {
+    margin-bottom: 0.2em;
+  }
+
+  .service {
+    text-decoration: none;
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--red-soft);
+    color: var(--red-text);
+    margin-bottom: 18px;
+  }
+
+  .why {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+
+  .product-section {
+    background: linear-gradient(180deg, transparent, rgb(255 49 48 / 0.06), transparent);
+  }
+
+  @media (min-width: 960px) {
+    .hero-inner {
+      grid-template-columns: 1.25fr 1fr;
+    }
+    .problems {
+      grid-template-columns: 1fr 1.1fr;
+      gap: 64px;
+    }
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+/**
+ * Client logos and testimonials. Renders nothing until entries exist in
+ * src/content/clients/ or src/content/testimonials/.
+ */
+import { Image } from 'astro:assets';
+import { t, type Lang } from '../i18n';
+import { getClients, getTestimonials } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { home } = t(lang);
+const [clients, testimonials] = await Promise.all([getClients(), getTestimonials()]);
+---
+
+{
+  (clients.length > 0 || testimonials.length > 0) && (
+    <section class="section">
+      <div class="container">
+        {clients.length > 0 && (
+          <div class="clients" data-reveal>
+            <p class="eyebrow">{home.clientsHeading}</p>
+            <ul>
+              {clients.map((c) => (
+                <li>
+                  {c.data.url ? (
+                    <a href={c.data.url} rel="noopener" target="_blank">
+                      <Image src={c.data.logo} alt={c.data.name} height={40} densities={[1, 2]} />
+                    </a>
+                  ) : (
+                    <Image src={c.data.logo} alt={c.data.name} height={40} densities={[1, 2]} />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {testimonials.length > 0 && (
+          <>
+            <div class="section-head" data-reveal>
+              <h2>{home.testimonialsHeading}</h2>
+            </div>
+            <div class="grid grid-3">
+              {testimonials.map((q, i) => (
+                <figure class="card quote" data-reveal style={`--d:${i}`}>
+                  <blockquote>“{q.data.quote}”</blockquote>
+                  <figcaption>
+                    {q.data.photo && <Image src={q.data.photo} alt="" width={44} height={44} densities={[1, 2]} />}
+                    <span>
+                      <strong>{q.data.name}</strong>
+                      {(q.data.role || q.data.organisation) && (
+                        <span class="muted">{[q.data.role, q.data.organisation].filter(Boolean).join(', ')}</span>
+                      )}
+                    </span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .clients {
+    text-align: center;
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+
+  .clients ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 28px 48px;
+  }
+
+  .clients img {
+    height: 40px;
+    width: auto;
+    opacity: 0.7;
+    filter: grayscale(1);
+    transition: opacity 0.2s, filter 0.2s;
+  }
+
+  .clients a:hover img {
+    opacity: 1;
+    filter: none;
+  }
+
+  .quote {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  blockquote {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--white);
+  }
+
+  figcaption {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  figcaption img {
+    border-radius: 50%;
+  }
+
+  figcaption > span {
+    display: grid;
+  }
+</style>

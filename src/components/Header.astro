@@ -1,0 +1,559 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/sengeti-logo-white.png';
+import logoDark from '../assets/brand/sengeti-logo-dark.png';
+import Icon from './Icon.astro';
+import { langs, localizePath, t, type Lang } from '../i18n';
+import { site } from '../config/site';
+import { getNews } from '../lib/content';
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+const { lang, path } = Astro.props;
+const { nav } = t(lang);
+const hasNews = (await getNews(lang)).length > 0;
+
+type NavLink = { href: string; label: string; children?: { href: string; label: string }[] };
+// The logo links home, so Home only appears in the phone menu.
+const links: NavLink[] = [
+  {
+    href: '/about',
+    label: nav.about,
+    children: [
+      { href: '/about', label: nav.aboutUs },
+      { href: '/careers', label: nav.careers },
+      { href: '/security', label: nav.security },
+      { href: '/technology', label: nav.technology },
+    ],
+  },
+  {
+    href: '/services',
+    label: nav.services,
+    children: [
+      { href: '/services', label: nav.allServices },
+      { href: '/automation', label: nav.automation },
+      { href: '/software', label: nav.software },
+      { href: '/ai', label: nav.ai },
+      { href: '/erp', label: nav.erp },
+      { href: '/industries', label: nav.industries },
+    ],
+  },
+  {
+    href: '/products',
+    label: nav.products,
+    children: [
+      { href: '/products', label: nav.allProducts },
+      { href: '/demo', label: nav.demo },
+    ],
+  },
+  { href: '/work', label: nav.work },
+  {
+    href: hasNews ? '/news' : '/savings-calculator',
+    label: nav.resources,
+    children: [
+      // News appears once the first post is published.
+      ...(hasNews ? [{ href: '/news', label: nav.insights }] : []),
+      { href: '/savings-calculator', label: nav.calculator },
+      { href: '/estimate', label: nav.estimate },
+      { href: '/guides/automation-checklist', label: nav.guide },
+    ],
+  },
+  { href: '/support', label: nav.support },
+  { href: '/contact', label: nav.contact },
+];
+const mobileLinks: NavLink[] = [{ href: '/', label: nav.home }, ...links];
+// Pages that exist in every language keep their place when switching; the 404 page goes home.
+const switchPath = path === '/404' ? '/' : path;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
+const inSection = (l: NavLink) => isCurrent(l.href) || !!l.children?.some((c) => isCurrent(c.href));
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href={localizePath(lang, '/')} aria-label={`${site.name}, ${nav.home}`}>
+      <Image class="logo-on-dark" src={logo} alt={site.name} width={132} densities={[1, 2]} loading="eager" fetchpriority="high" />
+      <Image class="logo-on-light" src={logoDark} alt={site.name} width={132} densities={[1, 2]} loading="lazy" />
+    </a>
+
+    <nav class="nav-desktop" aria-label="Main">
+      <ul>
+        {
+          links.map((l) =>
+            l.children ? (
+              <li class="has-sub">
+                <a href={localizePath(lang, l.href)} aria-current={inSection(l) ? 'page' : undefined} aria-haspopup="true">
+                  {l.label}
+                  <svg class="caret" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                  </svg>
+                </a>
+                <ul class="sub">
+                  {l.children.map((c) => (
+                    <li>
+                      <a href={localizePath(lang, c.href)} aria-current={path === c.href ? 'page' : undefined}>
+                        {c.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li>
+                <a href={localizePath(lang, l.href)} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+                  {l.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+      <a class="btn btn-primary btn-sm" href={localizePath(lang, '/start-project')}>{nav.cta}</a>
+    </nav>
+
+    <button class="theme" type="button" aria-label={t(lang).extras.themeToggle} title={t(lang).extras.themeToggle} data-theme-toggle>
+      <svg class="sun" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+        ><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg
+      >
+      <svg class="moon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+        ><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"></path></svg
+      >
+    </button>
+
+    {
+      langs.length > 1 && (
+        <details class="lang">
+          <summary aria-label={`${lang.toUpperCase()} · ${nav.language}`}>
+            <Icon name="globe" size={18} />
+            <span>{lang.toUpperCase()}</span>
+          </summary>
+          <ul>
+            {langs.map((l) => (
+              <li>
+                <a href={localizePath(l, switchPath)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+                  {t(l).langName}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )
+    }
+
+    <details class="nav-mobile">
+      <summary>
+        <span class="sr-only">{nav.menu}</span>
+        <span class="burger" aria-hidden="true"><span></span></span>
+      </summary>
+      <nav aria-label="Main">
+        <ul>
+          {
+            mobileLinks.map((l) => (
+              <li>
+                <a href={localizePath(lang, l.href)} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+                  {l.label}
+                </a>
+                {l.children && (
+                  <ul class="sub-mobile">
+                    {l.children
+                      .filter((c) => c.href !== l.href)
+                      .map((c) => (
+                        <li>
+                          <a href={localizePath(lang, c.href)} aria-current={isCurrent(c.href) ? 'page' : undefined}>
+                            {c.label}
+                          </a>
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{nav.cta}</a>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<script>
+  // Switches between the dark (default) and light themes and remembers the choice.
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    root.classList.add('theme-switching');
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* Private browsing: the choice lasts for this page only. */
+    }
+    window.setTimeout(() => root.classList.remove('theme-switching'), 450);
+  });
+</script>
+
+<style>
+  .logo-on-light {
+    display: none;
+  }
+
+  :global([data-theme='light']) .logo-on-dark {
+    display: none;
+  }
+
+  :global([data-theme='light']) .logo-on-light {
+    display: block;
+  }
+
+  .theme {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, transform 0.4s;
+  }
+
+  .theme:hover {
+    color: var(--white);
+    border-color: rgb(var(--tint) / 0.3);
+    transform: rotate(20deg);
+  }
+
+  .theme .moon,
+  :global([data-theme='light']) .theme .sun {
+    display: none;
+  }
+
+  :global([data-theme='light']) .theme .moon {
+    display: block;
+  }
+
+  .site-header {
+    view-transition-name: site-header;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--header-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* The frosted-glass blur is costly while scrolling on phones, so they get a plain bar. */
+  @media (max-width: 759px) {
+    .site-header {
+      background: var(--black);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 68px;
+  }
+
+  .brand {
+    margin-right: auto;
+    flex: none;
+  }
+
+  .lang {
+    position: relative;
+  }
+
+  .lang summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .lang summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .lang summary:hover,
+  .lang[open] summary {
+    color: var(--white);
+    border-color: rgb(var(--tint) / 0.3);
+  }
+
+  .lang ul {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 160px;
+    padding: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+    z-index: 60;
+  }
+
+  .lang a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .lang a:hover {
+    background: rgb(var(--tint) / 0.06);
+  }
+
+  .lang a[aria-current] {
+    color: var(--red-text);
+    font-weight: 700;
+  }
+
+  .brand {
+    display: block;
+    padding-block: 10px;
+  }
+
+  .brand img {
+    width: 132px;
+    height: auto;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a:not(.btn) {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 550;
+    transition: color 0.2s;
+  }
+
+  nav a:not(.btn):hover,
+  nav a[aria-current='page'] {
+    color: var(--white);
+  }
+
+  nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 8px;
+  }
+
+  .nav-desktop {
+    display: none;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-desktop ul {
+    display: flex;
+    gap: 16px;
+    font-size: 0.96rem;
+  }
+
+  .nav-desktop a {
+    white-space: nowrap;
+  }
+
+  .btn-sm {
+    min-height: 40px;
+    padding: 0.5em 1.1em;
+  }
+
+  .nav-mobile summary {
+    list-style: none;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-right: -10px;
+  }
+
+  .nav-mobile summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .burger,
+  .burger span,
+  .burger::before,
+  .burger::after {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .burger {
+    position: relative;
+    background: transparent;
+  }
+
+  .burger::before,
+  .burger::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .burger::before {
+    top: -7px;
+  }
+
+  .burger::after {
+    top: 7px;
+  }
+
+  details[open] .burger span {
+    opacity: 0;
+  }
+
+  details[open] .burger::before {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  details[open] .burger::after {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .nav-mobile nav {
+    max-height: calc(100dvh - 68px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: var(--black);
+    border-bottom: 1px solid var(--border);
+    padding: 8px var(--gutter) 24px;
+  }
+
+  .nav-mobile li a {
+    display: block;
+    padding: 14px 0;
+    font-size: 1.15rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-mobile .sub-mobile a {
+    padding: 11px 0 11px 18px;
+    font-size: 1rem;
+  }
+
+  .has-sub {
+    position: relative;
+  }
+
+  .has-sub > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .caret {
+    transition: transform 0.2s;
+  }
+
+  .nav-desktop .sub {
+    display: block;
+  }
+
+  .sub {
+    position: absolute;
+    left: -14px;
+    top: 100%;
+    min-width: 200px;
+    padding: 6px;
+    margin-top: 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+    z-index: 60;
+  }
+
+  /* Keeps the menu open while the pointer crosses the gap below the link. */
+  .sub::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -16px;
+    height: 16px;
+  }
+
+  .has-sub:hover .sub,
+  .has-sub:focus-within .sub {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .has-sub:hover .caret,
+  .has-sub:focus-within .caret {
+    transform: rotate(180deg);
+  }
+
+  .nav-desktop .sub a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .nav-desktop .sub a:hover {
+    background: rgb(var(--tint) / 0.06);
+  }
+
+  .nav-desktop .sub a[aria-current='page'] {
+    color: var(--red-text);
+    text-decoration: none;
+  }
+
+  .nav-mobile .btn {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  @media (min-width: 1280px) {
+    .nav-desktop {
+      display: flex;
+    }
+    .nav-mobile {
+      display: none;
+    }
+    .brand img {
+      width: 150px;
+    }
+  }
+</style>

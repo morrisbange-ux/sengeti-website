@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import ContactChannels from '../../components/ContactChannels.astro';
+import { langPaths, t, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { contact } = t(lang);
+---
+
+<BaseLayout lang={lang} title={contact.title} description={contact.description} path="/contact">
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="container inner">
+      <h1>{contact.heading}</h1>
+      <p class="lead">{contact.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container layout">
+      <ContactForm lang={lang} heading={contact.formHeading} subjects={contact.subjects} emailSubject="Website enquiry" />
+      <aside class="details">
+        <ContactChannels lang={lang} />
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .top0 {
+    padding-top: 24px;
+  }
+
+  .layout {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* On phones, show WhatsApp and email before the form. */
+  @media (max-width: 959px) {
+    .details {
+      order: -1;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 1.6fr 1fr;
+    }
+  }
+</style>
