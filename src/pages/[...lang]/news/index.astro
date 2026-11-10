@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RedLight from '../../../components/RedLight.astro';
+import NewsCard from '../../../components/NewsCard.astro';
+import { langPaths, t, type Lang } from '../../../i18n';
+import { getNews } from '../../../lib/content';
+
+// The page is only built once at least one post exists.
+export async function getStaticPaths() {
+  const paths = [];
+  for (const p of langPaths()) if ((await getNews(p.props.lang)).length) paths.push(p);
+  return paths;
+}
+
+const { lang } = Astro.props as { lang: Lang };
+const { news } = t(lang);
+const posts = await getNews(lang);
+---
+
+<BaseLayout lang={lang} title={news.title} description={news.description} path="/news">
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="container inner">
+      <h1>{news.heading}</h1>
+      <p class="lead">{news.lead}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container grid grid-3">
+      {posts.map((post, i) => <NewsCard post={post} lang={lang} index={i} level={2} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+</style>

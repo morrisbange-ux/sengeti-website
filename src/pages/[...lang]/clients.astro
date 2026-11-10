@@ -1,0 +1,508 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import ClientMap, { type MapPin } from '../../components/ClientMap.astro';
+import { langPaths, localizePath, type Lang } from '../../i18n';
+import { clientsPage, editionNames } from '../../i18n/pages/clients';
+import { getClients } from '../../lib/content';
+import { site } from '../../config/site';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const c = clientsPage[lang];
+const clients = await getClients();
+const editions = ['campus', 'senior', 'junior'] as const;
+
+const place = (d: (typeof clients)[number]['data']) =>
+  [c.kinds[d.kind], d.town].filter(Boolean).join(' · ');
+
+const pins: MapPin[] = clients
+  .filter((cl) => cl.data.location)
+  .map((cl) => ({
+    id: cl.id,
+    name: cl.data.name,
+    logo: cl.data.logo,
+    place: place(cl.data),
+    edition: cl.data.edition,
+    editionName: cl.data.edition && editionNames[cl.data.edition],
+    lat: cl.data.location!.lat,
+    lng: cl.data.location!.lng,
+    country: cl.data.country,
+    mapUrl: cl.data.mapUrl,
+  }));
+
+const towns = new Set(clients.map((cl) => cl.data.town).filter(Boolean));
+const editionsInUse = new Set(clients.map((cl) => cl.data.edition).filter(Boolean));
+const hasOther = clients.some((cl) => !cl.data.edition);
+// Numbers only start to impress once there are a few clients.
+const showStats = clients.length >= 3;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: c.title,
+    description: c.description,
+    url: `${site.url}${localizePath(lang, '/clients')}`,
+    about: { '@id': `${site.url}/#organization` },
+    hasPart: clients.map((cl) => ({
+      '@type': cl.data.kind.includes('school') || cl.data.kind === 'university' || cl.data.kind === 'college'
+        ? 'EducationalOrganization'
+        : 'Organization',
+      name: cl.data.name,
+      ...(cl.data.url ? { url: cl.data.url } : {}),
+      ...(cl.data.town
+        ? { address: { '@type': 'PostalAddress', addressLocality: cl.data.town, addressCountry: cl.data.country } }
+        : {}),
+      ...(cl.data.location
+        ? { geo: { '@type': 'GeoCoordinates', latitude: cl.data.location.lat, longitude: cl.data.location.lng } }
+        : {}),
+    })),
+  },
+];
+---
+
+<BaseLayout lang={lang} title={c.title} description={c.description} path="/clients" schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <span class="eyebrow">{c.eyebrow}</span>
+      <h1>{c.heading} <span class="gradient-text">{c.headingAccent}</span></h1>
+      <p class="lead">{c.lead}</p>
+      {
+        showStats && (
+          <dl class="stats">
+            <div>
+              <dt>{c.stats.clients}</dt>
+              <dd>{clients.length}</dd>
+            </div>
+            <div>
+              <dt>{c.stats.towns}</dt>
+              <dd>{towns.size}</dd>
+            </div>
+            <div>
+              <dt>{c.stats.editions}</dt>
+              <dd>{editionsInUse.size}</dd>
+            </div>
+          </dl>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <div class="filters" role="group" aria-label={c.filterLabel} data-reveal>
+        <button type="button" class="filter" aria-pressed="true" data-filter="all">
+          {c.all} <span class="count">{clients.length}</span>
+        </button>
+        {
+          editions.map((e) => (
+            <button type="button" class:list={['filter', e]} aria-pressed="false" data-filter={e}>
+              <i aria-hidden="true" />
+              {editionNames[e]}
+              <span class="count">{clients.filter((cl) => cl.data.edition === e).length}</span>
+            </button>
+          ))
+        }
+        {
+          hasOther && (
+            <button type="button" class="filter other" aria-pressed="false" data-filter="other">
+              <i aria-hidden="true" />
+              {c.other}
+              <span class="count">{clients.filter((cl) => !cl.data.edition).length}</span>
+            </button>
+          )
+        }
+      </div>
+
+      <ul class="logos">
+        {
+          clients.map((cl, i) => (
+            <li class="client card-hover" data-reveal data-edition={cl.data.edition ?? 'other'} style={`--d:${i % 4}`}>
+              <div class="tile">
+                <Image
+                  src={cl.data.logo}
+                  alt={`${cl.data.name} logo`}
+                  width={200}
+                  height={200}
+                  fit="contain"
+                  densities={[1, 2]}
+                />
+              </div>
+              <div class="meta">
+                <h2 class="h3">{cl.data.name}</h2>
+                <p class="muted">{place(cl.data)}</p>
+                {cl.data.edition && (
+                  <span class:list={['chip', cl.data.edition]}>{editionNames[cl.data.edition]}</span>
+                )}
+                <div class="actions">
+                  {cl.data.location && (
+                    <button type="button" class="link" data-show={cl.id}>
+                      {c.showOnMap}
+                    </button>
+                  )}
+                  {cl.data.url && (
+                    <a class="link" href={cl.data.url} target="_blank" rel="noopener">
+                      {c.website} ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      {
+        editions.map((e) => (
+          <p class="empty" data-empty={e} hidden>
+            {c.emptyEdition.replace('{edition}', editionNames[e])}
+          </p>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    pins.length > 0 && (
+      <section class="section map-section" id="map">
+        <div class="container map-layout">
+          <div class="map-copy" data-reveal>
+            <h2>{c.mapHeading}</h2>
+            <p class="muted">{c.mapLead}</p>
+            <ul class="legend" aria-label={c.legend}>
+              {editions.map((e) => (
+                <li class={e}>
+                  <i aria-hidden="true" />
+                  {editionNames[e]}
+                </li>
+              ))}
+              {hasOther && (
+                <li class="other">
+                  <i aria-hidden="true" />
+                  {c.other}
+                </li>
+              )}
+            </ul>
+          </div>
+          <div class="map-box" data-reveal>
+            <ClientMap lang={lang} pins={pins} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{c.ctaHeading}</h2>
+        <p>{c.ctaText}</p>
+        <a class="btn btn-primary" href={localizePath(lang, '/school-demo')}>{c.ctaButton}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 20ch;
+  }
+
+  .top0 {
+    padding-top: 16px;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 48px;
+    margin: 32px 0 0;
+  }
+
+  .stats div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .stats dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .stats dt {
+    color: var(--muted);
+  }
+
+  /* Filter chips */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .filter {
+    --c: var(--red);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgb(var(--tint) / 0.03);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+
+  .filter:hover {
+    border-color: rgb(var(--tint) / 0.3);
+  }
+
+  .filter[aria-pressed='true'] {
+    border-color: var(--red);
+    background: var(--red-soft);
+  }
+
+  .filter i,
+  .legend i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--c);
+  }
+
+  .campus {
+    --c: var(--red);
+    --ct: var(--ed-campus-text);
+  }
+
+  .senior {
+    --c: var(--ed-senior);
+    --ct: var(--ed-senior-text);
+  }
+
+  .junior {
+    --c: var(--ed-junior);
+    --ct: var(--ed-junior-text);
+  }
+
+  .other {
+    --c: var(--white);
+  }
+
+  .count {
+    min-width: 22px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgb(var(--tint) / 0.08);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  /* Logo cards */
+  .logos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  }
+
+  .client {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+    transition:
+      border-color 0.3s,
+      transform 0.3s;
+  }
+
+  .client:hover {
+    border-color: rgb(255 49 48 / 0.45);
+    transform: translateY(-4px);
+  }
+
+  .client[hidden] {
+    display: none;
+  }
+
+  /* Logos sit on white so any client's colours look right in both themes. */
+  .tile {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    margin: 10px 10px 0;
+    border-radius: calc(var(--radius) - 6px);
+    background: radial-gradient(circle at 50% 40%, #fff 55%, #f1f1f3);
+  }
+
+  .tile img {
+    width: auto;
+    height: 72%;
+    max-width: 80%;
+    object-fit: contain;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .client:hover .tile img {
+    transform: scale(1.06);
+  }
+
+  .meta {
+    display: grid;
+    gap: 6px;
+    padding: 18px 20px 20px;
+  }
+
+  .meta h2,
+  .meta p {
+    margin: 0;
+  }
+
+  .chip {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 11px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--c, var(--red)) 14%, transparent);
+    color: var(--ct, var(--red-text));
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 6px;
+  }
+
+  .link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--red-text);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  .empty {
+    margin: 0;
+    padding: 28px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    text-align: center;
+    color: var(--muted);
+  }
+
+  /* Map */
+  .map-section {
+    background: linear-gradient(180deg, transparent, rgb(255 49 48 / 0.05), transparent);
+  }
+
+  .map-layout {
+    display: grid;
+    gap: 28px;
+  }
+
+  .map-copy {
+    display: grid;
+    gap: 6px;
+  }
+
+  .map-copy p {
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .legend {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+  }
+
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+  }
+
+  .map-box {
+    width: 100%;
+  }
+</style>
+
+<script>
+  // Edition filter for the logo cards and the map pins.
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const cards = [...document.querySelectorAll<HTMLElement>('.client[data-edition]')];
+  const empties = [...document.querySelectorAll<HTMLElement>('[data-empty]')];
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const edition = button.dataset.filter!;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+      let shown = 0;
+      for (const card of cards) {
+        card.hidden = edition !== 'all' && card.dataset.edition !== edition;
+        if (!card.hidden) {
+          shown++;
+          card.classList.add('is-visible');
+        }
+      }
+      empties.forEach((p) => (p.hidden = p.dataset.empty !== edition || shown > 0));
+      document.dispatchEvent(new CustomEvent('client-map:filter', { detail: edition }));
+    });
+  }
+
+  // "Show on map" scrolls to the map and opens that client's card.
+  for (const link of document.querySelectorAll<HTMLButtonElement>('[data-show]')) {
+    link.addEventListener('click', () => {
+      const map = document.getElementById('map');
+      const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      map?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'center' });
+      map?.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
+      document.dispatchEvent(new CustomEvent('client-map:open', { detail: link.dataset.show }));
+    });
+  }
+</script>

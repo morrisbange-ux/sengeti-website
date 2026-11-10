@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RedLight from '../../../components/RedLight.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import { langPaths, localizePath, t, type Lang } from '../../../i18n';
+import { getProducts } from '../../../lib/products';
+import { site } from '../../../config/site';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const dict = t(lang);
+const { products: copy } = dict;
+const all = await getProducts(lang);
+const products = all.filter((p) => p.data.status !== 'coming-soon');
+// Products marked `status: coming-soon` form the roadmap.
+const roadmap = all.filter((p) => p.data.status === 'coming-soon');
+---
+
+<BaseLayout lang={lang} title={copy.title} description={copy.description} path="/products">
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="container inner">
+      <h1>{copy.heading}</h1>
+      <p class="lead">{copy.lead}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid-2">
+      {products.map((p) => <ProductCard product={p} lang={lang} level={2} />)}
+      <div class="card soon">
+        <h2 class="h3">{copy.moreSoonHeading}</h2>
+        <p class="muted">{copy.moreSoonText}</p>
+        <a class="btn btn-ghost" href={localizePath(lang, '/start-project')}>{dict.nav.cta}</a>
+        {
+          site.whatsappCatalogue && (
+            <a class="btn btn-ghost" href={site.whatsappCatalogue} target="_blank" rel="noopener">
+              {dict.extras.catalogue}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    roadmap.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <div class="section-head" data-reveal>
+            <h2>{dict.extras.roadmapHeading}</h2>
+            <p class="lead">{dict.extras.roadmapLead}</p>
+          </div>
+          <ol class="roadmap">
+            {roadmap.map((p, i) => (
+              <li class="card card-hover" data-reveal style={`--d:${i}`}>
+                <span class="badge">{dict.extras.roadmapBadge}</span>
+                <h3>{p.data.name}</h3>
+                <p class="muted">{p.data.tagline}</p>
+                <a class="more" href={localizePath(lang, `/products/${p.slug}`)}>
+                  {dict.extras.earlyAccess} →
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .roadmap {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 22px;
+    display: grid;
+    gap: 16px;
+    border-left: 2px solid var(--border);
+  }
+
+  .roadmap li {
+    position: relative;
+  }
+
+  .roadmap li::after {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 30px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 5px var(--red-soft);
+  }
+
+  .badge {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--red-text);
+    background: var(--red-soft);
+  }
+
+  .more {
+    color: var(--red-text);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .soon {
+    border-style: dashed;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+  }
+</style>

@@ -1,0 +1,701 @@
+---
+import type { ComponentProps } from 'astro/types';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import Icon from '../../components/Icon.astro';
+import { langPaths, localizePath, t, type Lang } from '../../i18n';
+import { site } from '../../config/site';
+import { estimate, pricing, projectFeatureKeys, projectSizeKeys, projectTypeKeys, type ProjectType } from '../../config/pricing';
+import pages from '../../i18n/pages/estimator';
+
+export const getStaticPaths = langPaths;
+
+type IconName = ComponentProps<typeof Icon>['name'];
+
+const { lang } = Astro.props as { lang: Lang };
+const c = pages[lang];
+const locale = t(lang).locale.replace('_', '-');
+const money = new Intl.NumberFormat(locale, { style: 'currency', currency: pricing.currency, maximumFractionDigits: 0 });
+const num = new Intl.NumberFormat(locale);
+
+const icons: Record<ProjectType, IconName> = {
+  website: 'globe',
+  webapp: 'web-mobile',
+  mobile: 'phone',
+  automation: 'flow',
+  ai: 'bolt',
+  erp: 'box',
+};
+
+// Default choices, also shown as the result when JavaScript is off.
+const defType: ProjectType = 'website';
+const defSize = 'small';
+const initial = estimate(defType, defSize, []);
+
+const text = {
+  to: c.to,
+  weeks: c.weeks,
+  noFeatures: c.noFeatures,
+  types: Object.fromEntries(projectTypeKeys.map((k) => [k, c.types[k].label])),
+  sizes: Object.fromEntries(projectSizeKeys.map((k) => [k, c.sizes[k].label])),
+  features: c.features,
+};
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: c.appName,
+    description: c.description,
+    url: `${site.url}${localizePath(lang, '/estimate')}`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript',
+    inLanguage: t(lang).langCode,
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
+    provider: { '@id': `${site.url}/#organization` },
+  },
+];
+---
+
+<BaseLayout lang={lang} title={c.title} description={c.description} path="/estimate" schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <span class="eyebrow">{c.eyebrow}</span>
+      <h1>{c.heading} <span class="gradient-text">{c.headingAccent}</span></h1>
+      <p class="lead">{c.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container est" data-est data-locale={locale}>
+      <form class="choices" data-est-form>
+        <fieldset class="card" data-reveal>
+          <legend>{c.typeLegend}</legend>
+          <div class="types">
+            {
+              projectTypeKeys.map((k) => (
+                <label class="type">
+                  <input type="radio" name="type" value={k} checked={k === defType} />
+                  <span class="type-box">
+                    <span class="ico">
+                      <Icon name={icons[k]} size={22} />
+                    </span>
+                    <strong>{c.types[k].label}</strong>
+                    <span class="muted small">{c.types[k].text}</span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="card" data-reveal style="--d:1">
+          <legend>{c.sizeLegend}</legend>
+          <div class="seg">
+            {
+              projectSizeKeys.map((k) => (
+                <label>
+                  <input type="radio" name="size" value={k} checked={k === defSize} />
+                  <span>
+                    <strong>{c.sizes[k].label}</strong>
+                    <small>{c.sizes[k].text}</small>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="card" data-reveal style="--d:2">
+          <legend>{c.featureLegend}</legend>
+          <div class="feats">
+            {
+              projectFeatureKeys.map((k) => (
+                <label class="feat">
+                  <input type="checkbox" name="feature" value={k} />
+                  <span class="box" aria-hidden="true">
+                    <Icon name="check" size={16} />
+                  </span>
+                  <span>{c.features[k]}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+      </form>
+
+      <aside class="card result" id="est-result" data-reveal style="--d:1" aria-labelledby="est-result-h">
+        <h2 id="est-result-h" class="h">{c.resultHeading}</h2>
+        <div class="figure">
+          <span class="lbl">{c.priceLabel}</span>
+          <output class="price" data-price>
+            <span data-lo>{money.format(initial.price[0])}</span>
+            <span class="dash">–</span>
+            <span data-hi>{money.format(initial.price[1])}</span>
+          </output>
+        </div>
+        <div class="figure">
+          <span class="lbl">{c.timeLabel}</span>
+          <output class="weeks" data-weeks>
+            {num.format(initial.weeks[0])} {c.to} {num.format(initial.weeks[1])} {c.weeks}
+          </output>
+        </div>
+        <p class="sr-only" aria-live="polite" data-live></p>
+        <p class="summary muted">
+          {c.summaryLabel}: <span data-summary>{c.types[defType].label} · {c.sizes[defSize].label} · {c.noFeatures}</span>
+        </p>
+        <p class="note">
+          <Icon name="help" size={18} />
+          <span>{c.roughNote}</span>
+        </p>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>
+          {c.ctaButton}
+          <Icon name="arrow" size={18} />
+        </a>
+      </aside>
+      <a class="est-bar" href="#est-result" data-est-bar hidden>
+        <span class="lbl">{c.priceLabel}</span>
+        <strong data-bar-price>{money.format(initial.price[0])} – {money.format(initial.price[1])}</strong>
+      </a>
+    </div>
+    <script type="application/json" data-est-text set:html={JSON.stringify(text)} />
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2>{c.fromHeading}</h2>
+        <p class="muted">{c.fromText}</p>
+      </div>
+      <ul class="grid grid-3 from-list">
+        {
+          projectTypeKeys.map((k, i) => (
+            <li class="card card-hover" data-reveal style={`--d:${i % 3}`}>
+              <span class="ico">
+                <Icon name={icons[k]} size={22} />
+              </span>
+              <h3>{c.types[k].label}</h3>
+              <p class="muted">
+                {c.from} <strong class="from-price">{money.format(estimate(k, 'small', []).price[0])}</strong>
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{c.ctaHeading}</h2>
+        <p>{c.ctaText}</p>
+        <div class="btn-row center">
+          <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{c.ctaButton}</a>
+          <a class="btn btn-ghost" href={localizePath(lang, '/savings-calculator')}>{c.ctaSecondary}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { estimate, pricing, type ProjectFeature, type ProjectSize, type ProjectType } from '../../config/pricing';
+
+  type Text = {
+    to: string;
+    weeks: string;
+    noFeatures: string;
+    types: Record<string, string>;
+    sizes: Record<string, string>;
+    features: Record<string, string>;
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-est]');
+  const form = document.querySelector<HTMLFormElement>('[data-est-form]');
+  const textEl = document.querySelector('[data-est-text]');
+  if (root && form && textEl) {
+    const text = JSON.parse(textEl.textContent || '{}') as Text;
+    const locale = root.dataset.locale || 'en';
+    const money = new Intl.NumberFormat(locale, { style: 'currency', currency: pricing.currency, maximumFractionDigits: 0 });
+    const num = new Intl.NumberFormat(locale);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lo = root.querySelector<HTMLElement>('[data-lo]')!;
+    const hi = root.querySelector<HTMLElement>('[data-hi]')!;
+    const weeks = root.querySelector<HTMLElement>('[data-weeks]')!;
+    const summary = root.querySelector<HTMLElement>('[data-summary]')!;
+    const result = root.querySelector<HTMLElement>('.result')!;
+    const live = root.querySelector<HTMLElement>('[data-live]')!;
+
+    let shown = [0, 0, 0, 0];
+    let raf = 0;
+
+    const read = () => {
+      const data = new FormData(form);
+      const type = (data.get('type') || 'website') as ProjectType;
+      const size = (data.get('size') || 'small') as ProjectSize;
+      const features = data.getAll('feature') as ProjectFeature[];
+      return { type, size, features };
+    };
+
+    const barPrice = root.querySelector<HTMLElement>('[data-bar-price]')!;
+    const estBar = root.querySelector<HTMLElement>('[data-est-bar]')!;
+    // On phones the result sits below the choices, so a small bar shows the price until it is in view.
+    estBar.hidden = false;
+    new IntersectionObserver(([e]) => estBar.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top > 0)).observe(result);
+
+    const render = (v: number[]) => {
+      barPrice.textContent = `${money.format(v[0])} – ${money.format(v[1])}`;
+      lo.textContent = money.format(v[0]);
+      hi.textContent = money.format(v[1]);
+      weeks.textContent = `${num.format(Math.round(v[2]))} ${text.to} ${num.format(Math.round(v[3]))} ${text.weeks}`;
+    };
+
+    const update = (animate = true) => {
+      const { type, size, features } = read();
+      const est = estimate(type, size, features);
+      const target = [est.price[0], est.price[1], est.weeks[0], est.weeks[1]];
+      const extras = features.length ? features.map((f) => text.features[f]).join(', ') : text.noFeatures;
+      summary.textContent = `${text.types[type]} · ${text.sizes[size]} · ${extras}`;
+      if (animate) {
+        live.textContent = `${money.format(target[0])} – ${money.format(target[1])}, ${num.format(target[2])} ${text.to} ${num.format(target[3])} ${text.weeks}`;
+      }
+
+      cancelAnimationFrame(raf);
+      if (!animate || reduce) {
+        shown = target;
+        render(shown);
+        return;
+      }
+      result.classList.remove('pulse');
+      void result.offsetWidth;
+      result.classList.add('pulse');
+      const from = shown.slice();
+      const start = performance.now();
+      const step = (now: number) => {
+        const p = Math.min(1, (now - start) / 650);
+        const e = 1 - Math.pow(1 - p, 3);
+        shown = from.map((f, i) => {
+          const val = f + (target[i] - f) * e;
+          return i < 2 ? Math.round(val / 10) * 10 : val;
+        });
+        if (p === 1) shown = target;
+        render(shown);
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+
+    form.addEventListener('change', () => update());
+    form.addEventListener('submit', (e) => e.preventDefault());
+    // Browsers may restore earlier choices on back navigation, so sync without animating.
+    update(false);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 20ch;
+  }
+
+  .top0 {
+    padding-top: 24px;
+  }
+
+  .est {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(16px, 2.4vw, 24px);
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .est {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .choices {
+    display: grid;
+    gap: clamp(16px, 2.4vw, 24px);
+    min-width: 0;
+  }
+
+  fieldset {
+    margin: 0;
+    min-width: 0;
+  }
+
+  legend {
+    float: left;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 1rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--white);
+  }
+
+  legend + * {
+    clear: both;
+  }
+
+  input[type='radio'],
+  input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+  }
+
+  /* Project type cards */
+  .types {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+
+  .type {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+  }
+
+  .type-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgb(var(--shade) / 0.35);
+    line-height: 1.35;
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+
+  .type:hover .type-box {
+    border-color: rgb(var(--tint) / 0.3);
+  }
+
+  .type strong {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  .small {
+    font-size: 0.88rem;
+  }
+
+  .ico {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    background: var(--red-soft);
+    color: var(--red-text);
+  }
+
+  input:checked + .type-box {
+    border-color: var(--red);
+    background: linear-gradient(180deg, rgb(255 49 48 / 0.16), rgb(255 49 48 / 0.04));
+    box-shadow: 0 10px 30px -14px rgb(255 49 48 / 0.7);
+  }
+
+  input:checked + .type-box .ico {
+    background: var(--red);
+    color: var(--on-red);
+  }
+
+  input:focus-visible + .type-box,
+  .seg input:focus-visible + span,
+  .feat input:focus-visible ~ .box {
+    outline: 2px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  /* Size: segmented control */
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 6px;
+    border-radius: 16px;
+    background: var(--black);
+    border: 1px solid var(--border);
+  }
+
+  .seg label {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+  }
+
+  .seg span {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+    padding: 10px 8px;
+    border-radius: 11px;
+    line-height: 1.3;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .seg strong {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  .seg small {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .seg label:hover span {
+    background: rgb(var(--tint) / 0.05);
+  }
+
+  /* A deeper red so the small white text stays readable. */
+  .seg input:checked + span {
+    background: #d11f1f;
+    color: #fff;
+  }
+
+  .seg input:checked + span strong {
+    color: #fff;
+  }
+
+  .seg input:checked + span small {
+    color: #fff;
+  }
+
+  @media (max-width: 480px) {
+    .seg {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* Optional features: checkbox chips */
+  .feats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+  }
+
+  .feat {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgb(var(--shade) / 0.35);
+    cursor: pointer;
+    line-height: 1.35;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+
+  .feat:hover {
+    border-color: rgb(var(--tint) / 0.3);
+  }
+
+  .box {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    border: 2px solid rgb(var(--tint) / 0.35);
+    color: transparent;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  }
+
+  .feat:has(input:checked) {
+    border-color: rgb(255 49 48 / 0.7);
+    background: rgb(255 49 48 / 0.08);
+  }
+
+  .feat input:checked ~ .box {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--on-red);
+  }
+
+  /* Result */
+  .result {
+    position: sticky;
+    top: 96px;
+    border-color: rgb(255 49 48 / 0.35);
+    background:
+      radial-gradient(ellipse 90% 70% at 100% 0%, rgb(255 49 48 / 0.18), transparent 70%),
+      linear-gradient(180deg, var(--surface-2), var(--surface));
+  }
+
+  @media (max-width: 900px) {
+    .result {
+      position: static;
+    }
+  }
+
+  .result.pulse {
+    animation: glow 0.7s ease;
+  }
+
+  @keyframes glow {
+    40% {
+      box-shadow: 0 0 0 3px rgb(255 49 48 / 0.35), 0 20px 50px -20px rgb(255 49 48 / 0.8);
+    }
+  }
+
+  .h {
+    font-size: 1.35rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .figure {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .lbl {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.35em;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+    line-height: 1.15;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dash {
+    color: var(--red-text);
+  }
+
+  .weeks {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .summary {
+    font-size: 0.9rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .note {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgb(255 49 48 / 0.08);
+    border: 1px solid rgb(255 49 48 / 0.25);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .note :global(svg) {
+    flex: none;
+    color: var(--red-text);
+    margin-top: 2px;
+  }
+
+  .from-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .from-list h3 {
+    margin-bottom: 0.3em;
+  }
+
+  .from-price {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+  }
+
+  .center {
+    justify-content: center;
+  }
+
+  .est-bar {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .est-bar {
+      position: fixed;
+      left: 12px;
+      right: 88px;
+      bottom: 16px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1px solid rgb(255 49 48 / 0.5);
+      background: rgb(20 20 22 / 0.94);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.8);
+      text-decoration: none;
+      line-height: 1.3;
+      transform: translateY(140%);
+      visibility: hidden;
+      transition: transform 0.3s ease, visibility 0.3s;
+    }
+
+    .est-bar[hidden] {
+      display: none;
+    }
+
+    .est-bar:global(.show) {
+      transform: none;
+      visibility: visible;
+    }
+
+    .est-bar strong {
+      font-family: var(--font-display);
+      color: var(--white);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+</style>

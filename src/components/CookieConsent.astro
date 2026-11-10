@@ -1,0 +1,434 @@
+---
+/**
+ * Cookie banner (Accept all, Reject all, Manage) and the "Cookie settings" window.
+ * The choice is kept in this browser. Other code asks for it with
+ *   window.sengetiConsent?.get('analytics' | 'media')
+ * and listens for the "consent:change" event. Elements with
+ *   <script type="text/plain" data-consent="analytics" data-src="...">
+ * are switched on only once that group is allowed.
+ * Any element with [data-cookie-settings] opens the window (the footer has one).
+ */
+import { cookies } from '../i18n/pages/cookies';
+import { localizePath, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = cookies[lang];
+---
+
+<div class="cookie-banner" data-cookie-banner role="region" aria-label={c.label} hidden>
+  <div class="cb-text">
+    <strong>{c.title}</strong>
+    <p>
+      {c.text} <a href={localizePath(lang, '/privacy')}>{c.policy}</a>
+    </p>
+  </div>
+  <div class="cb-actions">
+    <button type="button" class="btn btn-primary" data-consent-all>{c.accept}</button>
+    <button type="button" class="btn btn-ghost" data-consent-none>{c.reject}</button>
+    <button type="button" class="cb-link" data-cookie-settings>{c.manage}</button>
+  </div>
+</div>
+
+<dialog class="cookie-dialog" data-cookie-dialog aria-labelledby="cookie-dialog-title">
+  <form method="dialog" class="cd-inner">
+    <div class="cd-head">
+      <h2 id="cookie-dialog-title">{c.dialogTitle}</h2>
+      <button type="submit" value="close" class="cd-close" aria-label={c.close}>×</button>
+    </div>
+    <p class="muted">{c.dialogText}</p>
+    <ul class="groups">
+      {
+        c.groups.map((g) => (
+          <li>
+            <label class="group">
+              <span class="g-text">
+                <strong>{g.title}</strong>
+                <span class="muted">{g.text}</span>
+                {g.key === 'necessary' && <em>{c.always}</em>}
+              </span>
+              <span class="switch">
+                <input
+                  type="checkbox"
+                  name={g.key}
+                  role="switch"
+                  checked={g.key === 'necessary'}
+                  disabled={g.key === 'necessary'}
+                  data-group={g.key === 'necessary' ? undefined : g.key}
+                />
+                <i aria-hidden="true"></i>
+              </span>
+            </label>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="cd-actions">
+      <button type="button" class="btn btn-primary" data-consent-save>{c.save}</button>
+      <button type="button" class="btn btn-ghost" data-consent-all>{c.accept}</button>
+      <button type="button" class="btn btn-ghost" data-consent-none>{c.reject}</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  type Groups = { analytics: boolean; media: boolean };
+  const KEY = 'sengeti-consent';
+  const VERSION = 1;
+
+  const read = (): Groups | null => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(KEY) ?? 'null');
+      return saved && saved.v === VERSION ? { analytics: !!saved.analytics, media: !!saved.media } : null;
+    } catch {
+      return null;
+    }
+  };
+
+  let state = read();
+  const banner = document.querySelector<HTMLElement>('[data-cookie-banner]')!;
+  const dialog = document.querySelector<HTMLDialogElement>('[data-cookie-dialog]')!;
+  const switches = [...dialog.querySelectorAll<HTMLInputElement>('[data-group]')];
+
+  // Turns on scripts that were waiting for consent, e.g. analytics.
+  const activate = () => {
+    document.querySelectorAll<HTMLScriptElement>('script[type="text/plain"][data-consent]').forEach((old) => {
+      if (!state?.[old.dataset.consent as keyof Groups]) return;
+      const s = document.createElement('script');
+      for (const a of old.attributes) if (a.name !== 'type' && a.name !== 'data-src') s.setAttribute(a.name, a.value);
+      if (old.dataset.src) s.src = old.dataset.src;
+      s.defer = true;
+      old.replaceWith(s);
+    });
+  };
+
+  const save = (next: Groups) => {
+    state = next;
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ v: VERSION, ...next, at: new Date().toISOString() }));
+    } catch {}
+    banner.hidden = true;
+    document.documentElement.classList.remove('consent-pending');
+    activate();
+    document.dispatchEvent(new CustomEvent('consent:change', { detail: next }));
+  };
+
+  (window as unknown as { sengetiConsent: unknown }).sengetiConsent = {
+    get: (group: keyof Groups) => !!state?.[group],
+  };
+
+  const openSettings = () => {
+    switches.forEach((s) => (s.checked = !!state?.[s.dataset.group as keyof Groups]));
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+  };
+
+  document.addEventListener('click', (e) => {
+    const target = (e.target as Element).closest('[data-consent-all],[data-consent-none],[data-consent-save],[data-cookie-settings]');
+    if (!target) return;
+    if (target.hasAttribute('data-cookie-settings')) {
+      e.preventDefault();
+      openSettings();
+      return;
+    }
+    if (target.hasAttribute('data-consent-all')) save({ analytics: true, media: true });
+    else if (target.hasAttribute('data-consent-none')) save({ analytics: false, media: false });
+    else {
+      const pick = (g: string) => switches.find((s) => s.dataset.group === g)?.checked ?? false;
+      save({ analytics: pick('analytics'), media: pick('media') });
+    }
+    if (dialog.open) dialog.close();
+  });
+
+  // Clicking the dimmed area outside the window closes it.
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+
+  if (state) activate();
+  else {
+    banner.hidden = false;
+    document.documentElement.classList.add('consent-pending');
+  }
+</script>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    z-index: 90;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    display: grid;
+    gap: 14px;
+    max-width: 460px;
+    padding: 18px 18px 16px;
+    border-radius: 20px;
+    background: rgb(var(--bg-rgb) / 0.97);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 30px 70px -20px rgb(0 0 0 / 0.6),
+      0 0 0 1px rgb(255 49 48 / 0.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: cb-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+  }
+
+  .cookie-banner[hidden] {
+    display: none;
+  }
+
+  .cookie-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    margin: 18px 0;
+    border-radius: 3px;
+    background: var(--red);
+  }
+
+  @keyframes cb-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+
+  .cb-text strong {
+    display: block;
+    font-family: var(--font-display);
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .cb-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .cb-text a {
+    color: var(--white);
+    font-weight: 600;
+    text-decoration-color: var(--red);
+    text-underline-offset: 3px;
+  }
+
+  .cb-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cb-actions .btn {
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 0.92rem;
+  }
+
+  .cb-link {
+    min-height: 44px;
+    padding: 0 10px;
+    border: 0;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .cb-link:hover {
+    color: var(--red-text);
+  }
+
+  /* Settings window */
+  .cookie-dialog {
+    width: min(540px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 40px 100px -20px rgb(0 0 0 / 0.7);
+  }
+
+  .cookie-dialog::backdrop {
+    background: rgb(0 0 0 / 0.55);
+    backdrop-filter: blur(3px);
+  }
+
+  .cookie-dialog[open] {
+    animation: cb-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cd-inner {
+    display: grid;
+    gap: 14px;
+    padding: 22px;
+  }
+
+  .cd-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cd-head h2 {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+
+  .cd-inner > p {
+    margin: 0;
+    font-size: 0.92rem;
+  }
+
+  .cd-close {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(var(--tint) / 0.06);
+    color: var(--text);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .groups {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .group {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgb(var(--tint) / 0.025);
+    cursor: pointer;
+  }
+
+  .g-text {
+    display: grid;
+    gap: 3px;
+    font-size: 0.88rem;
+  }
+
+  .g-text strong {
+    color: var(--white);
+    font-size: 0.98rem;
+  }
+
+  .g-text em {
+    font-style: normal;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--red-text);
+  }
+
+  /* On/off switch */
+  .switch {
+    position: relative;
+    flex: none;
+    width: 46px;
+    height: 28px;
+  }
+
+  .switch input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .switch i {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: rgb(var(--tint) / 0.18);
+    transition: background-color 0.2s;
+    pointer-events: none;
+  }
+
+  .switch i::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.3);
+    transition: transform 0.2s cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+
+  .switch input:checked + i {
+    background: #d11f1f;
+  }
+
+  .switch input:checked + i::after {
+    transform: translateX(18px);
+  }
+
+  .switch input:disabled + i {
+    opacity: 0.55;
+  }
+
+  .switch input:focus-visible + i {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .cd-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  .cd-actions .btn {
+    min-height: 44px;
+  }
+
+  @media (max-width: 640px) {
+    .cookie-banner {
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      max-width: none;
+    }
+
+    .cb-actions .btn {
+      flex: 1 1 auto;
+    }
+
+    /* The chat button waits until the cookie choice is made, so it never covers the buttons. */
+    :global(html.consent-pending .chat) {
+      display: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cookie-banner,
+    .cookie-dialog[open] {
+      animation: none;
+    }
+  }
+</style>

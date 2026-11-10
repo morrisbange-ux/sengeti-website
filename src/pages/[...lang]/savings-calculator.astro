@@ -1,0 +1,550 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import Icon from '../../components/Icon.astro';
+import { langPaths, localizePath, t, type Lang } from '../../i18n';
+import { site } from '../../config/site';
+import pages from '../../i18n/pages/calculator';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const c = pages[lang];
+const locale = t(lang).locale.replace('_', '-');
+
+// Slider settings. The defaults are also used to show results without JavaScript.
+const inputs = [
+  { id: 'staff', label: c.staffLabel, unit: c.staffUnit, min: 1, max: 100, step: 1, value: 5 },
+  { id: 'hours', label: c.hoursLabel, unit: c.hoursUnit, min: 1, max: 40, step: 1, value: 10 },
+  { id: 'cost', label: c.costLabel, hint: c.costHint, unit: 'US$', min: 1, max: 30, step: 0.5, value: 4 },
+  { id: 'share', label: c.shareLabel, hint: c.shareHint, unit: '%', min: 10, max: 90, step: 5, value: 60 },
+];
+const v = Object.fromEntries(inputs.map((i) => [i.id, i.value]));
+const hoursMonth = (v.staff * v.hours * (v.share / 100) * 52) / 12;
+const num = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+const money = new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+const results = [
+  { id: 'hoursMonth', label: c.hoursSaved, icon: 'bolt', fmt: 'num', value: hoursMonth },
+  { id: 'moneyMonth', label: c.moneyMonth, icon: 'wallet', fmt: 'money', value: hoursMonth * v.cost },
+  { id: 'moneyYear', label: c.moneyYear, icon: 'trend', fmt: 'money', value: hoursMonth * v.cost * 12 },
+  { id: 'days', label: c.daysFreed, icon: 'check', fmt: 'num', value: (hoursMonth * 12) / 8 },
+] as const;
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: c.appName,
+    description: c.description,
+    url: `${site.url}${localizePath(lang, '/savings-calculator')}`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript',
+    inLanguage: t(lang).langCode,
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
+    provider: { '@id': `${site.url}/#organization` },
+  },
+];
+---
+
+<BaseLayout lang={lang} title={c.title} description={c.description} path="/savings-calculator" schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <span class="eyebrow">{c.eyebrow}</span>
+      <h1>{c.heading} <span class="gradient-text">{c.headingAccent}</span></h1>
+      <p class="lead">{c.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container calc" data-calc data-locale={locale}>
+      <div class="card inputs" data-reveal>
+        <h2 class="h">{c.inputsHeading}</h2>
+        {
+          inputs.map((i) => (
+            <div class="field">
+              <div class="label-row">
+                <label for={`calc-${i.id}`}>{i.label}</label>
+                <span class="readout">
+                  <input
+                    type="number"
+                    inputmode="decimal"
+                    min={i.min}
+                    max={i.max}
+                    step={i.step}
+                    value={i.value}
+                    aria-label={i.label}
+                    data-num={i.id}
+                  />
+                  <span class="unit">{i.unit}</span>
+                </span>
+              </div>
+              <input
+                id={`calc-${i.id}`}
+                class="range"
+                type="range"
+                min={i.min}
+                max={i.max}
+                step={i.step}
+                value={i.value}
+                data-range={i.id}
+                aria-describedby={i.hint ? `calc-${i.id}-hint` : undefined}
+                style={`--fill:${((i.value - i.min) / (i.max - i.min)) * 100}%`}
+              />
+              {i.hint && (
+                <p class="hint muted" id={`calc-${i.id}-hint`}>
+                  {i.hint}
+                </p>
+              )}
+            </div>
+          ))
+        }
+      </div>
+
+      <a class="calc-bar" href="#calc-results" data-calc-bar hidden>
+        <span class="muted">{c.moneyYear}</span>
+        <strong data-bar-out>{money.format(results[2].value)}</strong>
+      </a>
+      <div class="card results" id="calc-results" data-reveal style="--d:1">
+        <h2 class="h">{c.resultsHeading}</h2>
+        <dl class="stats">
+          {
+            results.map((r, i) => (
+              <div class:list={['stat', { big: i === 2 }]}>
+                <dt>
+                  <Icon name={r.icon} size={20} />
+                  {r.label}
+                </dt>
+                <dd data-out={r.id} data-fmt={r.fmt}>
+                  {r.fmt === 'money' ? money.format(r.value) : num.format(r.value)}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="note muted">{c.estimateNote}</p>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>
+          {c.ctaButton}
+          <Icon name="arrow" size={18} />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <div class="card how" data-reveal>
+        <h2 class="h">{c.howHeading}</h2>
+        <ol>{c.how.map((step) => <li>{step}</li>)}</ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{c.ctaHeading}</h2>
+        <p>{c.ctaText}</p>
+        <div class="btn-row center">
+          <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{c.ctaButton}</a>
+          <a class="btn btn-ghost" href={localizePath(lang, '/automation')}>{c.ctaSecondary}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-calc]');
+  if (root) {
+    const locale = root.dataset.locale || 'en';
+    const fmt = {
+      num: new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }),
+      money: new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }),
+    };
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ranges = new Map<string, HTMLInputElement>();
+    const nums = new Map<string, HTMLInputElement>();
+    root.querySelectorAll<HTMLInputElement>('[data-range]').forEach((el) => ranges.set(el.dataset.range!, el));
+    root.querySelectorAll<HTMLInputElement>('[data-num]').forEach((el) => nums.set(el.dataset.num!, el));
+    const outs = [...root.querySelectorAll<HTMLElement>('[data-out]')].map((el) => ({
+      el,
+      fmt: el.dataset.fmt === 'money' ? fmt.money : fmt.num,
+      shown: 0,
+      target: 0,
+    }));
+
+    // On phones the results sit below the sliders, so a small bar shows the yearly saving until they are in view.
+    const bar = root.querySelector<HTMLElement>('[data-calc-bar]')!;
+    const barOut = root.querySelector<HTMLElement>('[data-bar-out]')!;
+    bar.hidden = false;
+    new IntersectionObserver(([e]) => bar.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top > 0)).observe(
+      root.querySelector('.results')!,
+    );
+
+    const val = (id: string) => Number(ranges.get(id)!.value);
+    const paint = (r: HTMLInputElement) => {
+      const min = Number(r.min), max = Number(r.max);
+      r.style.setProperty('--fill', `${((Number(r.value) - min) / (max - min)) * 100}%`);
+    };
+
+    let raf = 0;
+    const animate = () => {
+      cancelAnimationFrame(raf);
+      const from = outs.map((o) => o.shown);
+      const start = performance.now();
+      const dur = reduce ? 0 : 600;
+      const step = (now: number) => {
+        const p = dur ? Math.min(1, (now - start) / dur) : 1;
+        const e = 1 - Math.pow(1 - p, 3);
+        outs.forEach((o, i) => {
+          o.shown = from[i] + (o.target - from[i]) * e;
+          o.el.textContent = o.fmt.format(o.shown);
+        });
+        barOut.textContent = outs[2].el.textContent;
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+
+    const update = () => {
+      const hoursMonth = (val('staff') * val('hours') * (val('share') / 100) * 52) / 12;
+      const targets = [hoursMonth, hoursMonth * val('cost'), hoursMonth * val('cost') * 12, (hoursMonth * 12) / 8];
+      outs.forEach((o, i) => (o.target = targets[i]));
+      animate();
+    };
+
+    // Start from the values the server rendered, so nothing jumps on load.
+    {
+      const hoursMonth = (val('staff') * val('hours') * (val('share') / 100) * 52) / 12;
+      const start = [hoursMonth, hoursMonth * val('cost'), hoursMonth * val('cost') * 12, (hoursMonth * 12) / 8];
+      outs.forEach((o, i) => (o.shown = o.target = start[i]));
+    }
+
+    ranges.forEach((r, id) => {
+      r.addEventListener('input', () => {
+        nums.get(id)!.value = r.value;
+        paint(r);
+        update();
+      });
+    });
+    nums.forEach((n, id) => {
+      const sync = (final: boolean) => {
+        const r = ranges.get(id)!;
+        if (n.value === '' || Number.isNaN(Number(n.value))) {
+          if (final) n.value = r.value;
+          return;
+        }
+        const clamped = Math.min(Number(r.max), Math.max(Number(r.min), Number(n.value)));
+        r.value = String(clamped);
+        if (final) n.value = r.value;
+        paint(r);
+        update();
+      };
+      n.addEventListener('input', () => sync(false));
+      n.addEventListener('change', () => sync(true));
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 20ch;
+  }
+
+  .top0 {
+    padding-top: 24px;
+  }
+
+  .calc {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(16px, 2.4vw, 24px);
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .calc {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .h {
+    font-size: 1.35rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .field + .field {
+    margin-top: 1.6rem;
+  }
+
+  .label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  label {
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.35;
+  }
+
+  .readout {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+  }
+
+  .readout input {
+    width: 4.6em;
+    min-height: 40px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--black);
+    color: var(--white);
+    font: inherit;
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .readout input:focus-visible {
+    border-color: var(--red);
+    outline-offset: 1px;
+  }
+
+  .unit {
+    color: var(--muted);
+    font-size: 0.9rem;
+    min-width: 2.2em;
+  }
+
+  .hint {
+    font-size: 0.9rem;
+    margin: 8px 0 0;
+  }
+
+  /* Range slider: red filled track up to the thumb. */
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 28px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .range::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--red), #ff6a4d) 0 / var(--fill, 50%) 100% no-repeat, #2a2a2f;
+  }
+
+  .range::-moz-range-track {
+    height: 8px;
+    border-radius: 999px;
+    background: #2a2a2f;
+  }
+
+  .range::-moz-range-progress {
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--red), #ff6a4d);
+  }
+
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    margin-top: -8px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 4px solid var(--red);
+    box-shadow: 0 0 0 6px rgb(255 49 48 / 0.15);
+    transition: box-shadow 0.2s;
+  }
+
+  .range::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 4px solid var(--red);
+    box-shadow: 0 0 0 6px rgb(255 49 48 / 0.15);
+  }
+
+  .range:focus-visible {
+    outline: none;
+  }
+
+  .range:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 6px rgb(255 49 48 / 0.45);
+  }
+
+  .range:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 6px rgb(255 49 48 / 0.45);
+  }
+
+  .results {
+    position: sticky;
+    top: 96px;
+    border-color: rgb(255 49 48 / 0.35);
+    background:
+      radial-gradient(ellipse 90% 70% at 100% 0%, rgb(255 49 48 / 0.16), transparent 70%),
+      linear-gradient(180deg, var(--surface-2), var(--surface));
+  }
+
+  @media (max-width: 860px) {
+    .results {
+      position: static;
+    }
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0 0 1.2rem;
+  }
+
+  .stat {
+    padding: 16px;
+    border-radius: 12px;
+    background: rgb(var(--shade) / 0.35);
+    border: 1px solid var(--border);
+    min-width: 0;
+  }
+
+  .stat.big,
+  .stat:last-child {
+    grid-column: 1 / -1;
+    order: -1;
+    border-color: rgb(255 49 48 / 0.4);
+  }
+
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  dt :global(svg) {
+    color: var(--red-text);
+    flex: none;
+  }
+
+  dd {
+    margin: 6px 0 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  .big dd {
+    font-size: clamp(2rem, 6vw, 3rem);
+    background: linear-gradient(90deg, #fff, #ffb3a6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .note {
+    font-size: 0.9rem;
+  }
+
+  .how ol {
+    margin: 0;
+    padding-left: 1.3em;
+    display: grid;
+    gap: 8px;
+    color: var(--muted);
+  }
+
+  .how li::marker {
+    color: var(--red-text);
+    font-weight: 700;
+  }
+
+  .center {
+    justify-content: center;
+  }
+
+  .calc-bar {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .calc-bar {
+      position: fixed;
+      left: 12px;
+      right: 88px;
+      bottom: 16px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 16px;
+      border-radius: 14px;
+      border: 1px solid rgb(255 49 48 / 0.5);
+      background: rgb(20 20 22 / 0.94);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.8);
+      text-decoration: none;
+      line-height: 1.3;
+      font-size: 0.9rem;
+      transform: translateY(140%);
+      visibility: hidden;
+      transition: transform 0.3s ease, visibility 0.3s;
+    }
+
+    .calc-bar[hidden] {
+      display: none;
+    }
+
+    .calc-bar:global(.show) {
+      transform: none;
+      visibility: visible;
+    }
+
+    .calc-bar strong {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      color: var(--white);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .stats {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .label-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -1,0 +1,1135 @@
+---
+/**
+ * Africa map with a pin for every client that has a `location`.
+ * Inline SVG, so no map service, no API key and little data. Visitors can zoom
+ * (buttons, pinch, Ctrl + scroll, double-click, + and − keys) and drag to pan.
+ * Clients close together merge into a numbered bubble that splits as you zoom in.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { BOUNDS, K, places, project } from '../lib/map';
+import { aroundAfrica, countries } from '../lib/map-data';
+import { clientsPage } from '../i18n/pages/clients';
+import { t, type Lang } from '../i18n';
+
+export interface MapPin {
+  id: string;
+  name: string;
+  logo: ImageMetadata;
+  place: string;
+  edition?: 'campus' | 'senior' | 'junior';
+  editionName?: string;
+  lat: number;
+  lng: number;
+  /** Country name in English, as in the client file (e.g. "Zimbabwe"). */
+  country?: string;
+  mapUrl?: string;
+}
+
+interface Props {
+  lang: Lang;
+  pins: MapPin[];
+}
+const { lang, pins } = Astro.props;
+const c = clientsPage[lang];
+
+// Country names in the page's language, straight from the browser's own list.
+const names = new Intl.DisplayNames([t(lang).langCode], { type: 'region' });
+const english = new Intl.DisplayNames(['en'], { type: 'region' });
+const codeOf = (country?: string) =>
+  countries.find((s) => english.of(s.code)?.toLowerCase() === country?.toLowerCase())?.code;
+
+const placed = pins.map((pin) => ({ ...pin, ...project(pin.lat, pin.lng) }));
+
+// Countries with clients are lit up. Zimbabwe, home, always is.
+const lit = new Set(['ZW', ...placed.map((p) => codeOf(p.country ?? 'Zimbabwe')).filter(Boolean)]);
+const litShapes = countries.filter((s) => lit.has(s.code));
+
+// The first view frames every client and the whole of Zimbabwe.
+const zw = countries.find((s) => s.code === 'ZW')!.bbox;
+const home = placed.reduce(
+  (b, p) => [Math.min(b[0], p.x), Math.min(b[1], p.y), Math.max(b[2], p.x), Math.max(b[3], p.y)],
+  [...zw],
+);
+
+// View used before the script runs (and without JavaScript): home, padded, at a 4:3 shape.
+const ssr = (() => {
+  const pad = 0.2;
+  let w = (home[2] - home[0]) * (1 + pad * 2);
+  let h = (home[3] - home[1]) * (1 + pad * 2);
+  if (w / h > 4 / 3) h = (w * 3) / 4;
+  else w = (h * 4) / 3;
+  const cx = (home[0] + home[2]) / 2;
+  const cy = (home[1] + home[3]) / 2;
+  return { x: cx - w / 2, y: cy - h / 2, w, h };
+})();
+const pct = (x: number, y: number) =>
+  `left:${(((x - ssr.x) / ssr.w) * 100).toFixed(2)}%;top:${(((y - ssr.y) / ssr.h) * 100).toFixed(2)}%`;
+
+const countryLabels = countries
+  .filter((s) => s.bbox[2] - s.bbox[0] > 150)
+  .map((s) => ({ code: s.code, name: names.of(s.code) ?? s.code, x: s.label[0], y: s.label[1], w: s.bbox[2] - s.bbox[0] }));
+const placeDots = places.map((p) => ({ ...p, ...project(p.lat, p.lng) }));
+---
+
+<div
+  class="client-map"
+  data-client-map
+  data-home={JSON.stringify(home)}
+  data-bounds={JSON.stringify(BOUNDS)}
+  data-k={K}
+  data-cluster={c.cluster}
+  data-hint-touch={c.hintTouch}
+  data-hint-wheel={c.hintWheel}
+  data-hint-wheel-mac={c.hintWheelMac}>
+  <div class="frame" tabindex="0" role="application" aria-roledescription="map" aria-label={`${c.mapLabel}. ${c.mapKeys}`}>
+    <svg viewBox={`${ssr.x} ${ssr.y} ${ssr.w} ${ssr.h}`} aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="cm-fill" cx="0.6" cy="0.4" r="0.8">
+          <stop offset="0" stop-color="#ff3130" stop-opacity="0.26"></stop>
+          <stop offset="1" stop-color="#ff3130" stop-opacity="0.06"></stop>
+        </radialGradient>
+      </defs>
+      <path class="around" d={aroundAfrica} vector-effect="non-scaling-stroke"></path>
+      {countries.map((s) => <path class:list={['country', { lit: lit.has(s.code) }]} d={s.d} vector-effect="non-scaling-stroke" />)}
+      {litShapes.map((s) => <path class="lit-fill" d={s.d} />)}
+      {litShapes.map((s) => <path class="lit-glow" d={s.d} vector-effect="non-scaling-stroke" />)}
+      {litShapes.map((s) => <path class="lit-line" d={s.d} pathLength="1" vector-effect="non-scaling-stroke" />)}
+    </svg>
+
+    <div class="layer" aria-hidden="true">
+      {countryLabels.map((l) => (
+        <span class="cl" data-x={l.x} data-y={l.y} data-w={l.w} style={pct(l.x, l.y)}>
+          {l.name}
+        </span>
+      ))}
+      {placeDots.map((p) => (
+        <span class:list={['place', `t${p.tier}`, { capital: p.capital }]} data-x={p.x} data-y={p.y} data-tier={p.tier} style={pct(p.x, p.y)}>
+          <i></i>
+          <b>{p.name}</b>
+        </span>
+      ))}
+      {placed.map((pin) => (
+        <span class:list={['pin-name', pin.edition ?? 'other']} data-name-for={pin.id} data-x={pin.x} data-y={pin.y} style={pct(pin.x, pin.y)}>
+          {pin.name}
+        </span>
+      ))}
+    </div>
+
+    {placed.map((pin) => (
+      <button
+        type="button"
+        class:list={['pin', pin.edition ?? 'other']}
+        style={pct(pin.x, pin.y)}
+        data-x={pin.x}
+        data-y={pin.y}
+        data-pin={pin.id}
+        data-edition={pin.edition ?? 'other'}
+        aria-expanded="false"
+        aria-controls={`pop-${pin.id}`}
+        aria-label={`${pin.name}, ${pin.place}`}
+      >
+        <span class="dot" aria-hidden="true"></span>
+      </button>
+    ))}
+    <div class="clusters" data-clusters></div>
+
+    <div class="controls">
+      <button type="button" data-zoom="in" aria-label={c.zoomIn} title={c.zoomIn}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      </button>
+      <button type="button" data-zoom="out" aria-label={c.zoomOut} title={c.zoomOut}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg>
+      </button>
+      <button type="button" data-zoom="all" aria-label={c.showAll} title={c.showAll}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg>
+      </button>
+    </div>
+    <div class="hint" data-hint aria-hidden="true"></div>
+  </div>
+
+  <!-- Cards sit outside the frame so that, on phones, they can drop below the map without stretching it. -->
+  {placed.map((pin) => (
+    <div class="pop" id={`pop-${pin.id}`} style={pct(pin.x, pin.y).replace('left', '--x').replace('top', '--y')} data-pop={pin.id} hidden>
+      <span class="pop-logo">
+        <Image src={pin.logo} alt="" width={56} height={56} densities={[1, 2]} fit="contain" />
+      </span>
+      <span class="pop-text">
+        <strong>{pin.name}</strong>
+        <span class="muted">{pin.place}</span>
+        {pin.editionName && (
+          <span class:list={['chip', pin.edition]}>
+            {c.usesEdition} {pin.editionName}
+          </span>
+        )}
+        {pin.mapUrl && (
+          <a href={pin.mapUrl} target="_blank" rel="noopener">
+            {c.openInMaps} ↗
+          </a>
+        )}
+      </span>
+      <button type="button" class="pop-close" data-close aria-label={c.close}>×</button>
+    </div>
+  ))}
+</div>
+
+<script>
+  type View = { cx: number; cy: number; s: number };
+  type Box = [number, number, number, number];
+  interface Item {
+    el: HTMLElement;
+    x: number;
+    y: number;
+    w?: number;
+    h?: number;
+  }
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-client-map]').forEach((root) => {
+    const frame = root.querySelector<HTMLElement>('.frame')!;
+    const svg = frame.querySelector<SVGSVGElement>(':scope > svg')!;
+    const clusterBox = root.querySelector<HTMLElement>('[data-clusters]')!;
+    const hint = root.querySelector<HTMLElement>('[data-hint]')!;
+    const K = Number(root.dataset.k);
+    const B = JSON.parse(root.dataset.bounds!) as { x0: number; y0: number; x1: number; y1: number };
+    const home = JSON.parse(root.dataset.home!) as Box;
+    const MAX_S = 16; // 1,600 pixels per degree: street-level enough to tell schools apart.
+
+    const read = (el: HTMLElement): Item => ({ el, x: Number(el.dataset.x), y: Number(el.dataset.y) });
+    const countryLabels = [...root.querySelectorAll<HTMLElement>('.cl')].map(read);
+    const placeLabels = [...root.querySelectorAll<HTMLElement>('.place')]
+      .map(read)
+      .sort((a, b) => Number(a.el.dataset.tier) - Number(b.el.dataset.tier));
+    const pins = [...root.querySelectorAll<HTMLButtonElement>('.pin')].map(read);
+    const names = new Map([...root.querySelectorAll<HTMLElement>('.pin-name')].map((el) => [el.dataset.nameFor!, read(el)]));
+    const pops = new Map([...root.querySelectorAll<HTMLElement>('[data-pop]')].map((el) => [el.dataset.pop!, el]));
+
+    let W = frame.clientWidth;
+    let H = frame.clientHeight;
+    const minS = () => Math.min(W / (B.x1 - B.x0), H / (B.y1 - B.y0)) * 0.9;
+
+    const clamp = (v: View): View => {
+      const s = Math.min(MAX_S, Math.max(minS(), v.s));
+      const hw = W / 2 / s;
+      const hh = H / 2 / s;
+      const cx = B.x1 - B.x0 < hw * 2 ? (B.x0 + B.x1) / 2 : Math.min(B.x1 - hw, Math.max(B.x0 + hw, v.cx));
+      const cy = B.y1 - B.y0 < hh * 2 ? (B.y0 + B.y1) / 2 : Math.min(B.y1 - hh, Math.max(B.y0 + hh, v.cy));
+      return { cx, cy, s };
+    };
+
+    const fit = (b: Box, pad = 0.2, minSpan = 0): View => {
+      const w = Math.max(b[2] - b[0], minSpan) * (1 + pad * 2);
+      const h = Math.max(b[3] - b[1], minSpan) * (1 + pad * 2);
+      return clamp({ cx: (b[0] + b[2]) / 2, cy: (b[1] + b[3]) / 2, s: Math.min(W / w, H / h) });
+    };
+
+    let view = fit(home);
+    // Read every label's size in one go (one layout), before anything moves.
+    const measureAll = () => [...countryLabels, ...placeLabels, ...names.values()].forEach((it) => measure(it));
+    let filter = 'all';
+    let openId: string | null = null;
+
+    // Measure label sizes once; they never change size.
+    const measure = (it: Item) => {
+      if (it.w === undefined) {
+        it.w = it.el.offsetWidth;
+        it.h = it.el.offsetHeight;
+      }
+    };
+
+    const place = (el: HTMLElement, x: number, y: number) => {
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+    };
+
+    function render() {
+      const vx = view.cx - W / 2 / view.s;
+      const vy = view.cy - H / 2 / view.s;
+      svg.setAttribute('viewBox', `${vx} ${vy} ${W / view.s} ${H / view.s}`);
+      const sx = (x: number) => (x - vx) * view.s;
+      const sy = (y: number) => (y - vy) * view.s;
+      const ppd = view.s * K;
+      const taken: [number, number, number, number][] = [];
+      const free = (r: [number, number, number, number]) =>
+        r[0] > 4 && r[1] > 4 && r[2] < W - 4 && r[3] < H - 4 && !taken.some((t) => r[0] < t[2] && r[2] > t[0] && r[1] < t[3] && r[3] > t[1]);
+
+      // 1. Pins, merged into clusters when they would touch.
+      const visible = pins.filter((p) => filter === 'all' || p.el.dataset.edition === filter);
+      pins.forEach((p) => p.el.classList.toggle('is-hidden', !visible.includes(p)));
+      const groups: { x: number; y: number; items: Item[] }[] = [];
+      const atMax = view.s >= MAX_S * 0.98;
+      for (const p of visible) {
+        const x = sx(p.x);
+        const y = sy(p.y);
+        const near = groups.find((g) => Math.hypot(g.x - x, g.y - y) < (atMax ? 18 : 38));
+        if (near) {
+          near.items.push(p);
+          near.x = (near.x * (near.items.length - 1) + x) / near.items.length;
+          near.y = (near.y * (near.items.length - 1) + y) / near.items.length;
+        } else groups.push({ x, y, items: [p] });
+      }
+
+      const clusters: typeof groups = [];
+      for (const g of groups) {
+        if (g.items.length === 1 || atMax) {
+          // Fully zoomed in and still on top of each other (same compound): fan them out.
+          g.items.forEach((p, i) => {
+            const n = g.items.length;
+            const r = n > 1 ? 26 : 0;
+            const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+            const x = n > 1 ? g.x + Math.cos(a) * r : sx(p.x);
+            const y = n > 1 ? g.y + Math.sin(a) * r : sy(p.y);
+            place(p.el, x, y);
+            p.el.classList.remove('in-cluster');
+            p.el.classList.toggle('off-view', x < -30 || y < -30 || x > W + 30 || y > H + 30);
+            taken.push([x - 14, y - 14, x + 14, y + 14]);
+          });
+        } else {
+          g.items.forEach((p) => p.el.classList.add('in-cluster'));
+          clusters.push(g);
+          taken.push([g.x - 22, g.y - 22, g.x + 22, g.y + 22]);
+        }
+      }
+
+      // Cluster bubbles are made as needed and reused.
+      while (clusterBox.children.length < clusters.length) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'cluster';
+        b.addEventListener('click', () => zoomToIds((b.dataset.ids ?? '').split(',')));
+        clusterBox.append(b);
+      }
+      [...clusterBox.children].forEach((child, i) => {
+        const b = child as HTMLButtonElement;
+        const g = clusters[i];
+        b.hidden = !g;
+        if (!g) return;
+        b.textContent = String(g.items.length);
+        b.dataset.ids = g.items.map((p) => p.el.dataset.pin).join(',');
+        b.setAttribute('aria-label', root.dataset.cluster!.replace('{n}', String(g.items.length)));
+        const eds = new Set(g.items.map((p) => p.el.dataset.edition));
+        b.dataset.edition = eds.size === 1 ? [...eds][0] : 'mixed';
+        place(b, g.x, g.y);
+      });
+
+      // 2. Client names beside single pins, when there is room.
+      for (const [id, it] of names) {
+        const pin = pins.find((p) => p.el.dataset.pin === id)!;
+        const show = !pin.el.classList.contains('is-hidden') && !pin.el.classList.contains('in-cluster') && ppd >= 35;
+        let ok = false;
+        if (show) {
+          measure(it);
+          const x = parseFloat(pin.el.style.left) + 16;
+          const y = parseFloat(pin.el.style.top);
+          const r: [number, number, number, number] = [x, y - it.h! / 2, x + it.w!, y + it.h! / 2];
+          ok = free(r);
+          if (ok) {
+            taken.push(r);
+            place(it.el, x, y);
+          }
+        }
+        it.el.classList.toggle('off', !ok);
+      }
+
+      // 3. Capitals and big towns, then country names, then smaller towns.
+      const minPpd = { 1: 0, 2: 22, 3: 55 } as Record<string, number>;
+      const towns = (tiers: string[]) => {
+        for (const it of placeLabels) {
+          if (!tiers.includes(it.el.dataset.tier!)) continue;
+          let ok = ppd >= minPpd[it.el.dataset.tier!];
+          if (ok) {
+            measure(it);
+            const x = sx(it.x);
+            const y = sy(it.y);
+            const r: [number, number, number, number] = [x - 5, y - it.h! / 2, x + it.w!, y + it.h! / 2];
+            ok = free(r);
+            if (ok) {
+              taken.push(r);
+              place(it.el, x, y);
+            }
+          }
+          it.el.classList.toggle('off', !ok);
+        }
+      };
+      towns(['1', '2']);
+
+      // Country names, only where the country is wide enough on screen.
+      for (const it of countryLabels) {
+        measure(it);
+        const x = sx(it.x);
+        const y = sy(it.y);
+        const r: [number, number, number, number] = [x - it.w! / 2, y - it.h! / 2, x + it.w! / 2, y + it.h! / 2];
+        const ok = Number(it.el.dataset.w) * view.s > it.w! + 24 && ppd < 900 && free(r);
+        if (ok) {
+          taken.push(r);
+          place(it.el, x, y);
+        }
+        it.el.classList.toggle('off', !ok);
+      }
+      towns(['3']);
+
+      // 4. Keep the open card next to its pin, or close it if the pin went into a bubble.
+      if (openId) {
+        const pin = pins.find((p) => p.el.dataset.pin === openId)!;
+        if (pin.el.classList.contains('in-cluster') || pin.el.classList.contains('is-hidden') || pin.el.classList.contains('off-view')) close();
+        else {
+          const pop = pops.get(openId)!;
+          const x = parseFloat(pin.el.style.left);
+          pop.style.setProperty('--x', `${x}px`);
+          pop.style.setProperty('--y', pin.el.style.top);
+          pop.classList.toggle('flip', x > W * 0.55);
+        }
+      }
+
+      const zoomOut = root.querySelector<HTMLButtonElement>('[data-zoom="out"]')!;
+      const zoomIn = root.querySelector<HTMLButtonElement>('[data-zoom="in"]')!;
+      zoomIn.disabled = view.s >= MAX_S * 0.999;
+      zoomOut.disabled = view.s <= minS() * 1.001;
+    }
+
+    let frameReq = 0;
+    const schedule = () => {
+      if (!frameReq) frameReq = requestAnimationFrame(() => ((frameReq = 0), render()));
+    };
+
+    let anim = 0;
+    function go(to: View, then?: () => void) {
+      cancelAnimationFrame(anim);
+      const target = clamp(to);
+      const from = { ...view };
+      const dur = reduced ? 0 : 480;
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const k = dur ? Math.min(1, (now - t0) / dur) : 1;
+        const e = 1 - Math.pow(1 - k, 3);
+        view = {
+          cx: from.cx + (target.cx - from.cx) * e,
+          cy: from.cy + (target.cy - from.cy) * e,
+          s: from.s * Math.pow(target.s / from.s, e),
+        };
+        render();
+        if (k < 1) anim = requestAnimationFrame(step);
+        else then?.();
+      };
+      anim = requestAnimationFrame(step);
+    }
+
+    /** Zooms by `f`, keeping the map point under (px, py) still. */
+    const zoomAt = (f: number, px = W / 2, py = H / 2, animate = true) => {
+      const s = Math.min(MAX_S, Math.max(minS(), view.s * f));
+      const wx = view.cx + (px - W / 2) / view.s;
+      const wy = view.cy + (py - H / 2) / view.s;
+      const next = { cx: wx - (px - W / 2) / s, cy: wy - (py - H / 2) / s, s };
+      if (animate) go(next);
+      else {
+        view = clamp(next);
+        schedule();
+      }
+    };
+
+    function zoomToIds(ids: string[]) {
+      const items = pins.filter((p) => ids.includes(p.el.dataset.pin!));
+      const b: Box = [
+        Math.min(...items.map((p) => p.x)),
+        Math.min(...items.map((p) => p.y)),
+        Math.max(...items.map((p) => p.x)),
+        Math.max(...items.map((p) => p.y)),
+      ];
+      const next = fit(b, 0.35);
+      // Zoom in step by step (at most 5×), so people keep their bearings; a bubble may split again.
+      go({ ...next, s: Math.min(view.s * 5, Math.max(next.s, view.s * 2.5)) });
+    }
+
+    // Opening and closing client cards
+    function open(id: string) {
+      close();
+      const pin = pins.find((p) => p.el.dataset.pin === id);
+      const pop = pops.get(id);
+      if (!pin || !pop) return;
+      openId = id;
+      pop.hidden = false;
+      pin.el.setAttribute('aria-expanded', 'true');
+      render();
+    }
+    function close() {
+      if (!openId) return;
+      pops.get(openId)!.hidden = true;
+      pins.find((p) => p.el.dataset.pin === openId)?.el.setAttribute('aria-expanded', 'false');
+      openId = null;
+    }
+
+    for (const p of pins) {
+      p.el.addEventListener('click', () => (openId === p.el.dataset.pin ? close() : open(p.el.dataset.pin!)));
+    }
+    for (const pop of pops.values()) pop.querySelector('[data-close]')!.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+
+    // Buttons
+    root.querySelector('[data-zoom="in"]')!.addEventListener('click', () => zoomAt(2));
+    root.querySelector('[data-zoom="out"]')!.addEventListener('click', () => zoomAt(0.5));
+    root.querySelector('[data-zoom="all"]')!.addEventListener('click', () => go(fit(home)));
+
+    // A short tip when someone tries to scroll or swipe the map the "wrong" way.
+    let hintTimer = 0;
+    const showHint = (text: string) => {
+      hint.textContent = text;
+      hint.classList.add('on');
+      clearTimeout(hintTimer);
+      hintTimer = window.setTimeout(() => hint.classList.remove('on'), 1600);
+    };
+
+    const local = (clientX: number, clientY: number) => {
+      const r = frame.getBoundingClientRect();
+      return [clientX - r.left, clientY - r.top];
+    };
+
+    // Mouse: drag to pan, double-click to zoom, Ctrl/⌘ + scroll (or trackpad pinch) to zoom.
+    let drag: { x: number; y: number; view: View } | null = null;
+    frame.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch' || e.button !== 0 || (e.target as Element).closest('button')) return;
+      drag = { x: e.clientX, y: e.clientY, view: { ...view } };
+      frame.setPointerCapture(e.pointerId);
+      frame.classList.add('dragging');
+      cancelAnimationFrame(anim);
+    });
+    frame.addEventListener('pointermove', (e) => {
+      if (!drag) return;
+      view = clamp({ ...drag.view, cx: drag.view.cx - (e.clientX - drag.x) / view.s, cy: drag.view.cy - (e.clientY - drag.y) / view.s });
+      schedule();
+    });
+    const endDrag = () => {
+      drag = null;
+      frame.classList.remove('dragging');
+    };
+    frame.addEventListener('pointerup', endDrag);
+    frame.addEventListener('pointercancel', endDrag);
+    frame.addEventListener('dblclick', (e) => {
+      if ((e.target as Element).closest('button')) return;
+      const [x, y] = local(e.clientX, e.clientY);
+      zoomAt(2, x, y);
+    });
+    frame.addEventListener(
+      'wheel',
+      (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          const [x, y] = local(e.clientX, e.clientY);
+          zoomAt(Math.exp(-e.deltaY * (e.deltaMode ? 0.05 : 0.0025)), x, y, false);
+        } else if (Math.abs(e.deltaY) > 4) {
+          showHint(/Mac|iPhone|iPad/.test(navigator.platform) ? root.dataset.hintWheelMac! : root.dataset.hintWheel!);
+        }
+      },
+      { passive: false },
+    );
+
+    // Touch: one finger scrolls the page as usual; two fingers move and zoom the map.
+    let pinch: { d: number; mx: number; my: number; view: View } | null = null;
+    let swipe: { x: number; y: number } | null = null;
+    const two = (e: TouchEvent) => {
+      const [a, b] = [e.touches[0], e.touches[1]];
+      const [ax, ay] = local(a.clientX, a.clientY);
+      const [bx, by] = local(b.clientX, b.clientY);
+      return { d: Math.hypot(ax - bx, ay - by), mx: (ax + bx) / 2, my: (ay + by) / 2 };
+    };
+    frame.addEventListener(
+      'touchstart',
+      (e) => {
+        if (e.touches.length === 2) {
+          pinch = { ...two(e), view: { ...view } };
+          swipe = null;
+          cancelAnimationFrame(anim);
+        } else if (e.touches.length === 1) swipe = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      },
+      { passive: true },
+    );
+    frame.addEventListener(
+      'touchmove',
+      (e) => {
+        if (e.touches.length === 2 && pinch) {
+          e.preventDefault();
+          const now = two(e);
+          const s = Math.min(MAX_S, Math.max(minS(), pinch.view.s * (now.d / pinch.d)));
+          const wx = pinch.view.cx + (pinch.mx - W / 2) / pinch.view.s;
+          const wy = pinch.view.cy + (pinch.my - H / 2) / pinch.view.s;
+          view = clamp({ cx: wx - (now.mx - W / 2) / s, cy: wy - (now.my - H / 2) / s, s });
+          schedule();
+        } else if (swipe && e.touches.length === 1) {
+          const dx = Math.abs(e.touches[0].clientX - swipe.x);
+          if (dx > 24) {
+            showHint(root.dataset.hintTouch!);
+            swipe = null;
+          }
+        }
+      },
+      { passive: false },
+    );
+    frame.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) pinch = null;
+    });
+
+    // Keyboard, when the map has focus.
+    frame.addEventListener('keydown', (e) => {
+      if (e.target !== frame) return;
+      const step = 120 / view.s;
+      const moves: Record<string, [number, number]> = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+      if (moves[e.key]) go({ ...view, cx: view.cx + moves[e.key][0], cy: view.cy + moves[e.key][1] });
+      else if (e.key === '+' || e.key === '=') zoomAt(2);
+      else if (e.key === '-' || e.key === '_') zoomAt(0.5);
+      else if (e.key === '0') go(fit(home));
+      else return;
+      e.preventDefault();
+    });
+
+    // From the rest of the page: edition filter, and "Show on map".
+    document.addEventListener('client-map:filter', (e) => {
+      filter = (e as CustomEvent<string>).detail;
+      if (openId) {
+        const pin = pins.find((p) => p.el.dataset.pin === openId);
+        if (pin && filter !== 'all' && pin.el.dataset.edition !== filter) close();
+      }
+      render();
+    });
+    document.addEventListener('client-map:open', (e) => {
+      const id = (e as CustomEvent<string>).detail;
+      const pin = pins.find((p) => p.el.dataset.pin === id);
+      if (!pin) return;
+      close();
+      // Zoom in far enough that the pin stands on its own rather than inside a bubble.
+      const others = pins.filter((p) => p !== pin && !p.el.classList.contains('is-hidden'));
+      const nearest = Math.min(Infinity, ...others.map((p) => Math.hypot(p.x - pin.x, p.y - pin.y)));
+      const s = Math.min(MAX_S, Math.max(view.s, 6, 44 / nearest));
+      go({ cx: pin.x, cy: pin.y, s }, () => open(id));
+    });
+
+    new ResizeObserver(() => {
+      const first = W === 0;
+      W = frame.clientWidth;
+      H = frame.clientHeight;
+      view = first ? fit(home) : clamp(view);
+      render();
+    }).observe(frame);
+
+    measureAll();
+    root.classList.add('ready');
+    render();
+    // Labels change width once the web font arrives: measure again then.
+    document.fonts?.ready.then(() => {
+      [...countryLabels, ...placeLabels, ...names.values()].forEach((it) => (it.w = undefined));
+      measureAll();
+      render();
+    });
+  });
+</script>
+
+<style>
+  .client-map {
+    position: relative;
+  }
+
+  .frame {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 45%, rgb(255 49 48 / 0.06), transparent 70%),
+      rgb(var(--tint) / 0.02);
+    cursor: grab;
+    touch-action: pan-x pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .frame.dragging {
+    cursor: grabbing;
+  }
+
+  .frame:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 3px;
+  }
+
+  .frame > svg {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .around {
+    fill: rgb(var(--tint) / 0.025);
+    stroke: none;
+  }
+
+  .country {
+    fill: rgb(var(--tint) / 0.045);
+    stroke: rgb(var(--tint) / 0.16);
+    stroke-width: 0.8;
+    stroke-linejoin: round;
+  }
+
+  .lit-fill {
+    fill: url(#cm-fill);
+  }
+
+  .lit-glow {
+    fill: none;
+    stroke: #ff3130;
+    stroke-width: 7;
+    stroke-opacity: 0.18;
+    stroke-linejoin: round;
+  }
+
+  .lit-line {
+    fill: none;
+    stroke: #ff5a45;
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  /* The border of each client country draws itself once when the map scrolls into view. */
+  :global(.js) :global([data-reveal]:not(.is-visible)) .lit-line {
+    stroke-dashoffset: 1;
+  }
+
+  :global(.js) .lit-line {
+    transition: stroke-dashoffset 2.2s cubic-bezier(0.6, 0, 0.3, 1) 0.2s;
+  }
+
+  /* Labels drawn over the map, so they stay sharp and the same size at any zoom. */
+  .layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .layer > * {
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  .layer > .off {
+    visibility: hidden;
+  }
+
+  .cl {
+    transform: translate(-50%, -50%);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgb(var(--tint) / 0.34);
+  }
+
+  .place {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transform: translate(-3.5px, -50%);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .place i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(var(--tint) / 0.5);
+    flex: none;
+  }
+
+  .place.capital i {
+    background: none;
+    border: 2px solid rgb(var(--tint) / 0.75);
+  }
+
+  .place.capital b {
+    color: var(--text);
+  }
+
+  .place b {
+    font-weight: 500;
+    text-shadow:
+      0 0 6px rgb(var(--bg-rgb)),
+      0 0 2px rgb(var(--bg-rgb));
+  }
+
+  .pin-name {
+    transform: translateY(-50%);
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: var(--font-display);
+    color: var(--white);
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgb(var(--bg-rgb) / 0.82);
+    border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  .pin-name.campus,
+  .pin.campus,
+  .clusters :global(.cluster[data-edition='campus']) {
+    --c: var(--ed-campus);
+  }
+
+  .pin-name.senior,
+  .pin.senior,
+  .clusters :global(.cluster[data-edition='senior']) {
+    --c: var(--ed-senior);
+  }
+
+  .pin-name.junior,
+  .pin.junior,
+  .clusters :global(.cluster[data-edition='junior']) {
+    --c: var(--ed-junior);
+  }
+
+  .pin-name.other,
+  .pin.other {
+    --c: var(--white);
+  }
+
+  /* Pins */
+  .pin {
+    --c: var(--red);
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    z-index: 2;
+  }
+
+  :global(.js) .client-map:not(.ready) .pin {
+    visibility: hidden;
+  }
+
+  .dot {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+      0 0 0 3px rgb(var(--bg-rgb) / 0.9),
+      0 0 18px 4px color-mix(in srgb, var(--c) 70%, transparent);
+    transition: transform 0.2s;
+  }
+
+  .dot::before,
+  .dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--c);
+    animation: ping 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+
+  .dot::after {
+    animation-delay: 1.3s;
+  }
+
+  @keyframes ping {
+    from {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    to {
+      transform: scale(3.6);
+      opacity: 0;
+    }
+  }
+
+  .pin:hover .dot,
+  .pin[aria-expanded='true'] .dot {
+    transform: scale(1.3);
+  }
+
+  .pin:focus-visible,
+  .clusters :global(.cluster:focus-visible),
+  .controls button:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .pin.is-hidden,
+  .pin.in-cluster,
+  .pin.off-view {
+    display: none;
+  }
+
+  /* A bubble for clients too close together to show one by one. */
+  .clusters :global(.cluster) {
+    --c: var(--red);
+    position: absolute;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border-radius: 50%;
+    border: 2px solid var(--c);
+    background: rgb(var(--bg-rgb) / 0.9);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow:
+      0 0 0 5px color-mix(in srgb, var(--c) 22%, transparent),
+      0 0 24px color-mix(in srgb, var(--c) 55%, transparent);
+    transition: transform 0.2s;
+  }
+
+  .clusters :global(.cluster[data-edition='mixed']) {
+    border-color: transparent;
+    background:
+      linear-gradient(rgb(var(--bg-rgb)), rgb(var(--bg-rgb))) padding-box,
+      conic-gradient(var(--ed-campus), var(--ed-senior), var(--ed-junior), var(--ed-campus)) border-box;
+  }
+
+  .clusters :global(.cluster:hover) {
+    transform: scale(1.1);
+  }
+
+  .clusters :global(.cluster[hidden]) {
+    display: none;
+  }
+
+  /* Zoom buttons */
+  .controls {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    z-index: 3;
+    display: grid;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: rgb(var(--bg-rgb) / 0.85);
+    backdrop-filter: blur(8px);
+  }
+
+  .controls button {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: none;
+    color: var(--white);
+    cursor: pointer;
+  }
+
+  .controls button + button {
+    border-top: 1px solid var(--border);
+  }
+
+  .controls button:hover:not(:disabled) {
+    background: rgb(255 49 48 / 0.14);
+  }
+
+  .controls button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .controls svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  :global(html:not(.js)) .controls {
+    display: none;
+  }
+
+  .hint {
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    z-index: 4;
+    transform: translate(-50%, 8px);
+    max-width: calc(100% - 32px);
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgb(11 11 12 / 0.88);
+    color: #fff;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      opacity 0.25s,
+      transform 0.25s;
+  }
+
+  .hint:global(.on) {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  /* The card that opens from a pin */
+  .pop {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    z-index: 5;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    width: min(320px, 80vw);
+    padding: 14px 40px 14px 14px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.6);
+    transform: translate(26px, -50%);
+    animation: pop-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pop:global(.flip) {
+    transform: translate(calc(-100% - 26px), -50%);
+  }
+
+  .pop[hidden] {
+    display: none;
+  }
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      scale: 0.94;
+    }
+  }
+
+  .pop-logo {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  .pop-logo img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+  }
+
+  .pop-text {
+    display: grid;
+    gap: 4px;
+    font-size: 0.92rem;
+    min-width: 0;
+  }
+
+  .pop-text strong {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+  }
+
+  .pop-text a {
+    color: var(--red-text);
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 4px;
+  }
+
+  .pop-text a:hover {
+    text-decoration: underline;
+  }
+
+  .pop-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--muted);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .pop-close:hover {
+    color: var(--white);
+    background: rgb(var(--tint) / 0.08);
+  }
+
+  .chip {
+    --c: var(--red);
+    justify-self: start;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    color: var(--ct, var(--red-text));
+  }
+
+  .chip.campus {
+    --ct: var(--ed-campus-text);
+  }
+
+  .chip.senior {
+    --c: var(--ed-senior);
+    --ct: var(--ed-senior-text);
+  }
+
+  .chip.junior {
+    --c: var(--ed-junior);
+    --ct: var(--ed-junior-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot::before,
+    .dot::after {
+      animation: none;
+      opacity: 0;
+    }
+  }
+
+  /* On phones the map is taller, and the card sits under it instead of beside the pin. */
+  @media (max-width: 640px) {
+    .frame {
+      aspect-ratio: 1 / 1.05;
+      border-radius: 18px;
+    }
+
+    .pop,
+    .pop:global(.flip) {
+      position: relative;
+      left: auto;
+      top: auto;
+      transform: none;
+      width: 100%;
+      margin-top: 12px;
+    }
+  }
+</style>

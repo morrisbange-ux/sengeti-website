@@ -1,0 +1,61 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import { defaultLang, langs, t, type Lang } from '../../i18n';
+import { formatDate, getLegalPages } from '../../lib/content';
+import { phoneLink, site } from '../../config/site';
+
+/** Legal pages (privacy policy, terms) from src/content/legal/. */
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of langs) {
+    for (const page of await getLegalPages(lang)) {
+      paths.push({ params: { lang: lang === defaultLang ? undefined : lang, page: page.slug }, props: { lang, page } });
+    }
+  }
+  return paths;
+}
+
+const { lang, page } = Astro.props as { lang: Lang; page: Awaited<ReturnType<typeof getLegalPages>>[number] };
+const dict = t(lang);
+const { Content } = await render(page);
+---
+
+<BaseLayout lang={lang} title={`${page.data.title} | ${site.name}`} description={page.data.description} path={`/${page.slug}`}>
+  <section class="page-hero lit-hero">
+    <RedLight variant="subtle" />
+    <div class="container">
+      <h1>{page.data.title}</h1>
+      <p class="muted">{dict.legal.lastUpdated}: {formatDate(page.data.updated, dict.locale)}</p>
+    </div>
+  </section>
+  <section class="section top0">
+    <div class="container">
+      <div class="prose">
+        <Content />
+        <ul class="contact">
+          <li>{site.name}, {site.country}</li>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><a href={phoneLink()}>{site.phone}</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .top0 {
+    padding-top: 16px;
+  }
+
+  .prose {
+    max-width: 760px;
+    color: var(--text);
+  }
+
+  .contact {
+    list-style: none;
+    padding: 0;
+  }
+</style>

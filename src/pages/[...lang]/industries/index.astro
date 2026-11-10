@@ -1,0 +1,172 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RedLight from '../../../components/RedLight.astro';
+import Icon from '../../../components/Icon.astro';
+import { langPaths, localizePath, t, type Lang } from '../../../i18n';
+import industries, { industryIcons, industrySlugs } from '../../../i18n/pages/industries';
+import { site, whatsappLink } from '../../../config/site';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const dict = t(lang);
+const copy = industries[lang];
+const page = copy.index;
+const path = '/industries';
+const href = (slug: string) => localizePath(lang, `${path}/${slug}`);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: page.title,
+    description: page.description,
+    url: `${site.url}${localizePath(lang, path)}`,
+    publisher: { '@id': `${site.url}/#organization` },
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: industrySlugs.map((slug, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: copy.items[slug].name,
+        url: `${site.url}${href(slug)}`,
+      })),
+    },
+  },
+];
+---
+
+<BaseLayout lang={lang} title={page.title} description={page.description} path={path} schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <span class="eyebrow">{page.eyebrow}</span>
+      <h1>{page.heading} <span class="gradient-text">{page.headingAccent}</span></h1>
+      <p class="lead">{page.lead}</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{dict.nav.cta}</a>
+        <a class="btn btn-ghost" href={whatsappLink(dict.contact.whatsappMessage)} target="_blank" rel="noopener"
+          >{dict.contact.whatsappButton}</a
+        >
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal><h2>{page.listHeading}</h2></div>
+      <div class="grid grid-3">
+        {
+          industrySlugs.map((slug, i) => {
+            const item = copy.items[slug];
+            return (
+              <a class="card card-hover industry" href={href(slug)} data-reveal style={`--d:${i % 3}`}>
+                <span class="icon">
+                  <Icon name={industryIcons[slug]} size={24} />
+                </span>
+                <h3>{item.name}</h3>
+                <p class="muted">{item.summary}</p>
+                <ul class="ticks">
+                  {item.points.map((p) => (
+                    <li>{p}</li>
+                  ))}
+                </ul>
+                <span class="more">
+                  {page.cardCta} <Icon name="arrow" size={18} />
+                </span>
+              </a>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{page.otherHeading}</h2>
+        <p>{page.otherText}</p>
+        <div class="btn-row center">
+          <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{dict.nav.cta}</a>
+          <a class="btn btn-ghost" href={whatsappLink(dict.contact.whatsappMessage)} target="_blank" rel="noopener"
+            >{dict.contact.whatsappButton}</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 20ch;
+  }
+
+  .industry {
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .industry .ticks {
+    margin: 0 0 1.4rem;
+    color: var(--muted);
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--red-soft);
+    color: var(--red-text);
+    margin-bottom: 16px;
+  }
+
+  .more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--red-text);
+    font-weight: 600;
+  }
+
+  .more :global(svg) {
+    transition: transform 0.25s;
+  }
+
+  .industry:hover .more :global(svg),
+  .industry:focus-visible .more :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .center {
+    justify-content: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .more :global(svg) {
+      transition: none;
+    }
+
+    .industry:hover .more :global(svg),
+    .industry:focus-visible .more :global(svg) {
+      transform: none;
+    }
+  }
+</style>

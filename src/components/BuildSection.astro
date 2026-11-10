@@ -1,0 +1,114 @@
+---
+import Icon from './Icon.astro';
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { build } = t(lang);
+---
+
+<section class="section build">
+  <div class="dot-grid" aria-hidden="true"></div>
+  <div class="container inner">
+    <div class="section-head" data-reveal>
+      <h2>{build.heading}</h2>
+      <p class="lead">{build.lead}</p>
+    </div>
+    <div class="grid pillars">
+      {
+        build.pillars.map((p, i) => (
+          <div class="card card-hover" data-reveal style={`--d:${i}`}>
+            <span class="icon">
+              <Icon name={p.icon as 'phone' | 'cloud' | 'lock' | 'signal'} />
+            </span>
+            <h3>{p.title}</h3>
+            <p class="muted">{p.text}</p>
+          </div>
+        ))
+      }
+    </div>
+    <dl class="highlights" data-reveal>
+      {
+        build.highlights.map((h) => (
+          <div>
+            <dt>{h.value}</dt>
+            <dd>{h.label}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .build {
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+  }
+
+  .pillars {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--red-soft);
+    color: var(--red-text);
+    margin-bottom: 18px;
+  }
+
+  .highlights {
+    margin: clamp(28px, 4vw, 48px) 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--border);
+    gap: 1px;
+  }
+
+  .highlights div {
+    background: var(--black);
+    padding: 22px 20px;
+  }
+
+  dt {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: var(--white);
+    line-height: 1.1;
+  }
+
+  dt::after {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--red);
+    margin: 10px 0 8px;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  @media (min-width: 800px) {
+    .highlights {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
