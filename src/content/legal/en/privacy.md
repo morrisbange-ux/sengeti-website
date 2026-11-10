@@ -28,7 +28,7 @@ For SengetiEdu, the school, college, university or organisation that uses it dec
 - Where a school uses those modules: who may collect a child, transport routes, boarding records, and sick bay notes such as allergies.
 - Technical information such as device type, app version and error logs, used to keep the app working.
 
-**When you browse this website:** basic technical information that web servers record, such as your IP address, browser type and the pages you visit. This website does not use advertising or tracking cookies. If you use the chat assistant, your questions are answered in your browser and are not sent to us unless you choose to contact us.
+**When you browse this website:** basic technical information that web servers record, such as your IP address, browser type and the pages you visit. This website does not use advertising cookies. It remembers your language, light or dark mode and cookie choices in your browser. Anonymous visit statistics and videos played from YouTube are only switched on if you allow them in the cookie banner, and you can change your choice at any time with "Cookie settings" at the bottom of every page. If you use the chat assistant, your questions are answered in your browser and are not sent to us unless you choose to contact us.
 
 ## Camera access
 

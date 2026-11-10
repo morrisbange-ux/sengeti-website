@@ -311,7 +311,7 @@ const en = {
   phone: {
     label: 'Illustration of the SengetiEdu app on a phone, showing the Campus, Senior and Junior editions',
     school: 'Your School',
-    campus: { title: 'Check in', cls: 'CS 201 · Data Structures', hint: 'Scan the code on the screen', refresh: 'New code in' },
+    campus: { title: 'Check in', cls: 'CS 201 · Data Structures', hint: 'Scan the code on the screen', refresh: 'New code in', present: 'checked in', greeting: 'Good morning' },
     senior: {
       title: 'Today · Form 4B',
       timetable: [
@@ -670,7 +670,7 @@ const fr: typeof en = {
   phone: {
     label: 'Illustration de l’application SengetiEdu sur un téléphone, montrant les éditions Campus, Senior et Junior',
     school: 'Votre École',
-    campus: { title: 'Pointage', cls: 'CS 201 · Structures de données', hint: 'Scannez le code à l’écran', refresh: 'Nouveau code dans' },
+    campus: { title: 'Pointage', cls: 'CS 201 · Structures de données', hint: 'Scannez le code à l’écran', refresh: 'Nouveau code dans', present: 'présents', greeting: 'Bonjour' },
     senior: {
       title: 'Aujourd’hui · Form 4B',
       timetable: [
@@ -1029,7 +1029,7 @@ const pt: typeof en = {
   phone: {
     label: 'Ilustração da aplicação SengetiEdu num telemóvel, com as edições Campus, Senior e Junior',
     school: 'A Sua Escola',
-    campus: { title: 'Registar presença', cls: 'CS 201 · Estruturas de Dados', hint: 'Leia o código no ecrã', refresh: 'Novo código em' },
+    campus: { title: 'Registar presença', cls: 'CS 201 · Estruturas de Dados', hint: 'Leia o código no ecrã', refresh: 'Novo código em', present: 'presentes', greeting: 'Bom dia' },
     senior: {
       title: 'Hoje · Form 4B',
       timetable: [

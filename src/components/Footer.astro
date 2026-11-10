@@ -8,6 +8,7 @@ import { getNews } from '../lib/content';
 import SocialIcons from './SocialIcons.astro';
 import NewsletterForm from './NewsletterForm.astro';
 import { schoolDemo } from '../i18n/pages/schools';
+import { cookies } from '../i18n/pages/cookies';
 
 interface Props {
   lang: Lang;
@@ -83,6 +84,7 @@ const hasNews = (await getNews(lang)).length > 0;
     <nav aria-label={footer.legal}>
       <a href={localizePath(lang, '/privacy')}>{footer.privacy}</a>
       <a href={localizePath(lang, '/terms')}>{footer.terms}</a>
+      <button type="button" class="cookie-btn" data-cookie-settings>{cookies[lang].settings}</button>
     </nav>
   </div>
 </footer>
@@ -177,14 +179,27 @@ const hasNews = (await getNews(lang)).length > 0;
 
   .legal nav {
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 6px 20px;
   }
 
-  .legal a {
+  .legal a,
+  .cookie-btn {
     color: var(--muted);
   }
 
-  .legal a:hover {
+  .cookie-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .legal a:hover,
+  .cookie-btn:hover {
     color: var(--white);
   }
 

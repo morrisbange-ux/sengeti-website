@@ -7,6 +7,7 @@ url: https://example.com # optional: the client's website
 kind: primary-school # university, college, high-school, primary-school, school, business, ngo or government
 edition: junior # optional: campus, senior or junior (the SengetiEdu edition they use)
 town: Harare
+country: Zimbabwe # in English, e.g. Zambia, Mozambique, South Africa. Countries with clients light up on the map.
 # The map pin. In Google Maps, the address contains "!3d<lat>!4d<lng>": copy those two numbers here.
 location:
   lat: -17.8292

@@ -35,6 +35,9 @@ const id = site.introVideo;
 <script>
   document.querySelectorAll<HTMLElement>('[data-video]').forEach((box) => {
     box.querySelector('a')?.addEventListener('click', (e) => {
+      // Without consent for embedded videos, the link simply opens the video on YouTube.
+      const consent = (window as unknown as { sengetiConsent?: { get: (g: string) => boolean } }).sengetiConsent;
+      if (!consent?.get('media')) return;
       e.preventDefault();
       const frame = document.createElement('iframe');
       frame.src = `https://www.youtube-nocookie.com/embed/${box.dataset.video}?autoplay=1&rel=0`;

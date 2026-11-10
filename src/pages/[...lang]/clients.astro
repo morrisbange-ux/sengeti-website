@@ -29,6 +29,7 @@ const pins: MapPin[] = clients
     editionName: cl.data.edition && editionNames[cl.data.edition],
     lat: cl.data.location!.lat,
     lng: cl.data.location!.lng,
+    country: cl.data.country,
     mapUrl: cl.data.mapUrl,
   }));
 
@@ -438,16 +439,26 @@ const schema = [
 
   .map-layout {
     display: grid;
-    gap: 32px;
-    align-items: center;
+    gap: 28px;
+  }
+
+  .map-copy {
+    display: grid;
+    gap: 6px;
+  }
+
+  .map-copy p {
+    max-width: 60ch;
+    margin: 0;
   }
 
   .legend {
     list-style: none;
     padding: 0;
-    margin: 24px 0 0;
-    display: grid;
-    gap: 10px;
+    margin: 14px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
   }
 
   .legend li {
@@ -458,15 +469,7 @@ const schema = [
   }
 
   .map-box {
-    max-width: 720px;
     width: 100%;
-    justify-self: center;
-  }
-
-  @media (min-width: 960px) {
-    .map-layout {
-      grid-template-columns: 1fr 1.6fr;
-    }
   }
 </style>
 

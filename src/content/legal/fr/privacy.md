@@ -28,7 +28,7 @@ Pour SengetiEdu, l'école, l'université ou l'organisation qui l'utilise décide
 - Lorsqu'une école utilise ces modules : qui peut récupérer un enfant, les lignes de transport, les données d'internat et les notes d'infirmerie comme les allergies.
 - Des informations techniques comme le type d'appareil, la version de l'application et les journaux d'erreurs, utilisées pour assurer le bon fonctionnement de l'application.
 
-**Lorsque vous naviguez sur ce site :** les informations techniques de base enregistrées par les serveurs web, comme votre adresse IP, le type de navigateur et les pages visitées. Ce site n'utilise pas de cookies publicitaires ni de suivi. Si vous utilisez l'assistant de discussion, vos questions sont traitées dans votre navigateur et ne nous sont pas envoyées, sauf si vous choisissez de nous contacter.
+**Lorsque vous naviguez sur ce site :** les informations techniques de base enregistrées par les serveurs web, comme votre adresse IP, le type de navigateur et les pages visitées. Ce site n'utilise pas de cookies publicitaires. Il mémorise dans votre navigateur votre langue, le mode clair ou sombre et vos choix de cookies. Les statistiques de visite anonymes et la lecture des vidéos YouTube ne sont activées que si vous les autorisez dans le bandeau des cookies, et vous pouvez changer d'avis à tout moment via « Paramètres des cookies » en bas de chaque page. Si vous utilisez l'assistant de discussion, vos questions sont traitées dans votre navigateur et ne nous sont pas envoyées, sauf si vous choisissez de nous contacter.
 
 ## Accès à l'appareil photo
 

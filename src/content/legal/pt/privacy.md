@@ -28,7 +28,7 @@ No SengetiEdu, é a escola, a universidade ou a organização que o usa que deci
 - Quando uma escola usa esses módulos: quem pode ir buscar uma criança, rotas de transporte, registos do internato e notas da enfermaria, como alergias.
 - Informação técnica, como o tipo de dispositivo, a versão da aplicação e registos de erros, usada para manter a aplicação a funcionar.
 
-**Quando navega neste site:** informação técnica básica registada pelos servidores web, como o seu endereço IP, o tipo de navegador e as páginas visitadas. Este site não usa cookies de publicidade nem de rastreamento. Se usar o assistente de conversa, as suas perguntas são respondidas no seu navegador e não nos são enviadas, a menos que opte por nos contactar.
+**Quando navega neste site:** informação técnica básica registada pelos servidores web, como o seu endereço IP, o tipo de navegador e as páginas visitadas. Este site não usa cookies de publicidade. Guarda no seu navegador o idioma, o modo claro ou escuro e as suas escolhas de cookies. As estatísticas de visitas anónimas e a reprodução de vídeos do YouTube só são ativadas se as autorizar no aviso de cookies, e pode mudar a escolha a qualquer momento em «Definições de cookies», no fundo de cada página. Se usar o assistente de conversa, as suas perguntas são respondidas no seu navegador e não nos são enviadas, a menos que opte por nos contactar.
 
 ## Acesso à câmara
 
