@@ -1,10 +1,10 @@
 ---
 title: Terms of Use
 description: The terms that apply when you use the Sengeti Technologies website.
-updated: 2026-10-16
+updated: 2026-11-10
 ---
 
-These terms apply to your use of this website, operated by Sengeti Technologies. By using the website you agree to them. Use of our products, such as Sengeti Attendance, is also covered by the agreement we make with each customer.
+These terms apply to your use of this website, operated by Sengeti Technologies. By using the website you agree to them. Use of our products, such as SengetiEdu, is also covered by the agreement we make with each customer.
 
 ## Using this website
 

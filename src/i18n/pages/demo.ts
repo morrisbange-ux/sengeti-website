@@ -1,11 +1,11 @@
-/** Text for the live Sengeti Attendance demo (/demo). */
+/** Text for the live attendance demo of Sengeti Campus, part of SengetiEdu (/demo). */
 const en = {
-  title: 'Live demo: Sengeti Attendance | Sengeti Technologies',
+  title: 'Live demo: Sengeti Campus | Sengeti Technologies',
   description:
-    'Try Sengeti Attendance in your browser: a rotating QR code, live check-ins, a rejected proxy sign-in and an automatic exam eligibility list, with sample data.',
+    'Try Sengeti Campus in your browser: a rotating QR code, live check-ins, a rejected proxy sign-in and an automatic exam eligibility list, with sample data.',
   navLabel: 'Live demo',
   eyebrow: 'Live demo',
-  heading: 'See Sengeti Attendance',
+  heading: 'See Sengeti Campus',
   headingAccent: 'in action.',
   lead: 'This is how a lecture looks on the lecturer’s screen. Watch students check in, try to cheat with an old code, then open the exam eligibility list.',
   sampleBadge: 'Demo · sample data',
@@ -58,19 +58,19 @@ const en = {
     { title: 'Eligibility on its own', text: 'Percentages and exam eligibility lists build themselves from every lecture, ready before exams.' },
   ],
   ctaHeading: 'Want this at your institution?',
-  ctaText: 'We set up Sengeti Attendance for universities and colleges, or build a system like it for your organisation.',
+  ctaText: 'This is the attendance part of Sengeti Campus, one of the three SengetiEdu editions. We set SengetiEdu up for schools, colleges and universities, or build a system like it for your organisation.',
   ctaButton: 'Start a project',
-  ctaProduct: 'About Sengeti Attendance',
-  appName: 'Sengeti Attendance live demo',
+  ctaProduct: 'About SengetiEdu',
+  appName: 'Sengeti Campus live demo',
 };
 
 const fr: typeof en = {
-  title: 'Démo en direct : Sengeti Attendance | Sengeti Technologies',
+  title: 'Démo en direct : Sengeti Campus | Sengeti Technologies',
   description:
-    'Essayez Sengeti Attendance dans votre navigateur : code QR changeant, pointages en direct, tentative de fraude rejetée et liste d’admissibilité aux examens automatique, avec des données fictives.',
+    'Essayez Sengeti Campus dans votre navigateur : code QR changeant, pointages en direct, tentative de fraude rejetée et liste d’admissibilité aux examens automatique, avec des données fictives.',
   navLabel: 'Démo en direct',
   eyebrow: 'Démo en direct',
-  heading: 'Découvrez Sengeti Attendance',
+  heading: 'Découvrez Sengeti Campus',
   headingAccent: 'en action.',
   lead: 'Voici l’écran de l’enseignant pendant un cours. Regardez les étudiants pointer, essayez de tricher avec un ancien code, puis ouvrez la liste d’admissibilité aux examens.',
   sampleBadge: 'Démo · données fictives',
@@ -123,19 +123,19 @@ const fr: typeof en = {
     { title: 'L’admissibilité toute seule', text: 'Les pourcentages et les listes d’admissibilité se construisent à partir de chaque cours, prêts avant les examens.' },
   ],
   ctaHeading: 'Vous le voulez dans votre établissement ?',
-  ctaText: 'Nous installons Sengeti Attendance pour les universités et écoles, ou construisons un système similaire pour votre organisation.',
+  ctaText: 'Voici la partie présences de Sengeti Campus, l’une des trois éditions de SengetiEdu. Nous installons SengetiEdu dans les écoles et les universités, ou construisons un système similaire pour votre organisation.',
   ctaButton: 'Démarrer un projet',
-  ctaProduct: 'Découvrir Sengeti Attendance',
-  appName: 'Démo en direct de Sengeti Attendance',
+  ctaProduct: 'Découvrir SengetiEdu',
+  appName: 'Démo en direct de Sengeti Campus',
 };
 
 const pt: typeof en = {
-  title: 'Demonstração ao vivo: Sengeti Attendance | Sengeti Technologies',
+  title: 'Demonstração ao vivo: Sengeti Campus | Sengeti Technologies',
   description:
-    'Experimente o Sengeti Attendance no seu navegador: código QR que muda, registos de presença ao vivo, uma tentativa de fraude rejeitada e a lista de admissão a exame automática, com dados fictícios.',
+    'Experimente o Sengeti Campus no seu navegador: código QR que muda, registos de presença ao vivo, uma tentativa de fraude rejeitada e a lista de admissão a exame automática, com dados fictícios.',
   navLabel: 'Demonstração ao vivo',
   eyebrow: 'Demonstração ao vivo',
-  heading: 'Veja o Sengeti Attendance',
+  heading: 'Veja o Sengeti Campus',
   headingAccent: 'em ação.',
   lead: 'É assim que uma aula aparece no ecrã do docente. Veja os estudantes a registar presença, tente fazer batota com um código antigo e abra depois a lista de admissão a exame.',
   sampleBadge: 'Demonstração · dados fictícios',
@@ -188,10 +188,10 @@ const pt: typeof en = {
     { title: 'Admissão sem esforço', text: 'As percentagens e as listas de admissão a exame constroem-se a partir de todas as aulas, prontas antes dos exames.' },
   ],
   ctaHeading: 'Quer isto na sua instituição?',
-  ctaText: 'Instalamos o Sengeti Attendance em universidades e institutos, ou construímos um sistema semelhante para a sua organização.',
+  ctaText: 'Esta é a parte de presenças do Sengeti Campus, uma das três edições do SengetiEdu. Instalamos o SengetiEdu em escolas e universidades, ou construímos um sistema semelhante para a sua organização.',
   ctaButton: 'Iniciar um projeto',
-  ctaProduct: 'Conhecer o Sengeti Attendance',
-  appName: 'Demonstração ao vivo do Sengeti Attendance',
+  ctaProduct: 'Conhecer o SengetiEdu',
+  appName: 'Demonstração ao vivo do Sengeti Campus',
 };
 
 export default { en, fr, pt };

@@ -8,7 +8,7 @@ const pattern = (ext: string) => `**/*.${ext}`;
 /**
  * Products live in src/content/products/<language>/<product>.md.
  * To add a product, copy an existing file, rename it and edit it.
- * The file name becomes the address, e.g. attendance.md -> /products/attendance
+ * The file name becomes the address, e.g. sengetiedu.md -> /products/sengetiedu
  */
 const products = defineCollection({
   loader: glob({ pattern: pattern('md'), base: './src/content/products' }),
@@ -25,7 +25,7 @@ const products = defineCollection({
       features: z.array(z.object({ title: z.string(), text: z.string() })).default([]),
       // Real app screenshots (portrait phone screens). When present they replace the drawn mockup.
       screenshots: z.array(z.object({ src: image(), alt: z.string() })).default([]),
-      // Show the drawn Sengeti Attendance phone mockup when there are no screenshots.
+      // Show the drawn phone mockup when there are no screenshots.
       mockup: z.boolean().default(false),
     }),
 });
@@ -71,7 +71,10 @@ const testimonials = defineCollection({
     }),
 });
 
-/** Client and partner logos: one file per client in src/content/clients/. */
+/**
+ * Clients: one file per client in src/content/clients/. They appear on the Clients page,
+ * on its map (when `location` is set) and in the logo row on the home page.
+ */
 const clients = defineCollection({
   loader: glob({ pattern: pattern('md'), base: './src/content/clients' }),
   schema: ({ image }) =>
@@ -79,6 +82,18 @@ const clients = defineCollection({
       name: z.string(),
       logo: image(),
       url: z.url().optional(),
+      // What kind of organisation it is; the label is translated on the page.
+      kind: z
+        .enum(['university', 'college', 'high-school', 'primary-school', 'school', 'business', 'ngo', 'government'])
+        .default('business'),
+      // The SengetiEdu edition the client uses, if any.
+      edition: z.enum(['campus', 'senior', 'junior']).optional(),
+      town: z.string().optional(),
+      country: z.string().default('Zimbabwe'),
+      // Where the pin goes on the map. Copy the two numbers from the Google Maps address.
+      location: z.object({ lat: z.number(), lng: z.number() }).optional(),
+      mapUrl: z.url().optional(),
+      since: z.number().optional(),
       order: z.number().default(100),
       draft: z.boolean().default(false),
     }),

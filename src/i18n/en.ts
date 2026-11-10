@@ -28,6 +28,9 @@ const en = {
     allProducts: 'All products',
     demo: 'Live demo',
     work: 'Our work',
+    projects: 'Projects',
+    clients: 'Our clients',
+    sengetiedu: 'SengetiEdu for schools',
     industries: 'Industries',
     resources: 'Resources',
     insights: 'News and insights',
@@ -77,8 +80,7 @@ const en = {
     principleBy: 'The Sengeti principle',
     servicesHeading: 'What we do',
     servicesLead: 'Automation is at the heart of everything we build. We combine it with the software and integrations your organisation needs.',
-    productHeading: 'Our first product',
-    mockupLabel: 'Illustration of the Sengeti Attendance app showing a live lecture register',
+    productHeading: 'For schools: SengetiEdu',
     testimonialsHeading: 'What our clients say',
     clientsHeading: 'Trusted by',
     caseStudiesHeading: 'Our work',
@@ -126,7 +128,7 @@ const en = {
 
   products: {
     title: 'Products | Sengeti Technologies',
-    description: 'Software products by Sengeti Technologies, starting with Sengeti Attendance for universities and colleges.',
+    description: 'Software products by Sengeti Technologies, starting with SengetiEdu, one school platform from ECD to university.',
     heading: 'Products',
     lead: 'Ready-made software from Sengeti Technologies. More products are on the way.',
     viewDetails: 'View details',
@@ -220,7 +222,7 @@ const en = {
 
   support: {
     title: 'Support | Sengeti Technologies',
-    description: 'Get help with Sengeti Attendance and other Sengeti Technologies products: answers to common questions and ways to reach our support team.',
+    description: 'Get help with SengetiEdu and other Sengeti Technologies products: answers to common questions and ways to reach our support team.',
     heading: 'Support',
     lead: 'Need help with one of our products or systems? Find a quick answer below or contact our support team.',
     channelsHeading: 'Contact support',
@@ -230,7 +232,7 @@ const en = {
     faqHeading: 'Frequently asked questions',
     faqs: [
       {
-        q: 'How do I get help with Sengeti Attendance?',
+        q: 'How do I get help with SengetiEdu?',
         a: 'Send us a message on WhatsApp or use the support form on this page. Tell us your institution, what you were trying to do and, if you can, include a screenshot.',
       },
       {
@@ -238,8 +240,8 @@ const en = {
         a: 'The QR code changes every 15 seconds, so the student should scan the code currently on screen, with a working internet connection and the latest version of the app. If it still fails, the lecturer can mark them present manually and contact us with the details.',
       },
       {
-        q: 'Can you set up Sengeti Attendance for our university or college?',
-        a: 'Yes. We set up your faculties, courses and semesters, import your students and train your staff. Request a demo and we will walk you through it.',
+        q: 'Can you set up SengetiEdu for our school, college or university?',
+        a: 'Yes. We set up your school with its logo and colours, import learners, staff and parents from Excel and train everyone over four weeks. Book a free demonstration and we will walk you through it.',
       },
       {
         q: 'Is our data safe?',
@@ -255,7 +257,7 @@ const en = {
       },
     ],
     formHeading: 'Send a support request',
-    subjects: ['Sengeti Attendance', 'A system we built for you', 'Billing', 'Something else'],
+    subjects: ['SengetiEdu', 'A system we built for you', 'Billing', 'Something else'],
   },
 
   contact: {
@@ -269,7 +271,7 @@ const en = {
     phone: 'Phone number (optional)',
     organisation: 'Organisation (optional)',
     subject: 'What is it about?',
-    subjects: ['General question', 'Automating a process', 'Sengeti Attendance', 'A new software project', 'Support'],
+    subjects: ['General question', 'Automating a process', 'SengetiEdu', 'A new software project', 'Support'],
     message: 'Message',
     send: 'Send message',
     sending: 'Sending…',
@@ -301,7 +303,7 @@ const en = {
   },
 
   mockup: {
-    app: 'Sengeti Attendance',
+    app: 'SengetiEdu',
     className: 'CS 201 · Data Structures',
     venue: 'Lecture Hall B',
     live: 'Live',
@@ -342,7 +344,7 @@ const en = {
     human: 'Chat with a person on WhatsApp',
     quick: [
       { label: 'What do you automate?', id: 'services' },
-      { label: 'Sengeti Attendance', id: 'attendance' },
+      { label: 'SengetiEdu for schools', id: 'attendance' },
       { label: 'Pricing', id: 'pricing' },
       { label: 'I need support', id: 'support' },
       { label: 'Talk to a person', id: 'human' },
@@ -356,9 +358,9 @@ const en = {
       },
       {
         id: 'attendance',
-        keywords: ['attendance', 'register', 'qr', 'university', 'college', 'student', 'lecture', 'eligib', 'semester', 'roll call'],
-        text: 'Sengeti Attendance lets students check in with a QR code that changes every 15 seconds, blocks proxy sign-ins and produces exam eligibility lists in one click.',
-        link: { label: 'About Sengeti Attendance', href: '/products/attendance' },
+        keywords: ['attendance', 'register', 'qr', 'university', 'college', 'school', 'student', 'learner', 'pupil', 'parent', 'lecture', 'eligib', 'semester', 'roll call', 'sengetiedu', 'report card', 'zimsec', 'homework', 'ecd', 'boarding', 'campus', 'senior', 'junior'],
+        text: "SengetiEdu is our school platform from ECD to university: attendance, teaching, results, fees and parents on every phone, in three editions (Sengeti Campus, Senior and Junior), in your school's own brand.",
+        link: { label: 'About SengetiEdu', href: '/products/sengetiedu' },
       },
       {
         id: 'pricing',
@@ -416,7 +418,7 @@ const en = {
       {
         id: 'demo',
         keywords: ['demo', 'trial', 'try', 'test'],
-        text: 'You can try Sengeti Attendance right now in our live demo. For a demo of anything else, send us a message and we will arrange a time.',
+        text: 'You can try the SengetiEdu attendance demo right now. For a full demonstration with your school name, send us a message and we will arrange a time.',
         link: { label: 'Try the live demo', href: '/demo' },
       },
       {
@@ -434,7 +436,7 @@ const en = {
       {
         id: 'hello',
         keywords: ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'mhoro', 'bonjour', 'ola'],
-        text: 'Hello! Ask me about our services, Sengeti Attendance, pricing or support.',
+        text: 'Hello! Ask me about our services, SengetiEdu for schools, pricing or support.',
       },
       {
         id: 'thanks',
@@ -677,7 +679,7 @@ const en = {
     ],
     formHeading: 'Tell us about your project',
     typeLabel: 'What do you need?',
-    types: ['Process automation', 'AI solution', 'ERP system', 'Custom software or app', 'Sengeti Attendance', 'Not sure yet'],
+    types: ['Process automation', 'AI solution', 'ERP system', 'Custom software or app', 'SengetiEdu', 'Not sure yet'],
     budgetLabel: 'Budget (optional)',
     budgets: ['Not sure yet', 'Under US$1,000', 'US$1,000 to 5,000', 'US$5,000 to 20,000', 'Over US$20,000'],
     timelineLabel: 'When would you like to start? (optional)',

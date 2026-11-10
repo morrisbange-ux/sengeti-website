@@ -9,6 +9,6 @@ tech: [Web app, Android app, Cloud]
 results: [Roll call in seconds, Proxy sign-ins blocked, Exam eligibility lists in one click]
 visual: attendance
 caseStudy: university-attendance
-product: attendance
+product: sengetiedu
 order: 1
 ---

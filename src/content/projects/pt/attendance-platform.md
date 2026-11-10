@@ -9,6 +9,6 @@ tech: [Aplicação web, Aplicação Android, Cloud]
 results: [Chamada em segundos, Presenças falsas bloqueadas, Elegibilidade para exames num clique]
 visual: attendance
 caseStudy: university-attendance
-product: attendance
+product: sengetiedu
 order: 1
 ---

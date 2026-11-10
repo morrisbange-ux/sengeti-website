@@ -10,9 +10,11 @@ import { getProducts, type Product } from '../../../lib/products';
 import { site, whatsappLink } from '../../../config/site';
 
 export async function getStaticPaths() {
+  // Products whose page lives in its own file next to this one.
+  const ownPages = ['sengetiedu'];
   const paths = [];
   for (const lang of langs) {
-    for (const product of await getProducts(lang)) {
+    for (const product of (await getProducts(lang)).filter((p) => !ownPages.includes(p.slug))) {
       paths.push({
         params: { lang: lang === defaultLang ? undefined : lang, slug: product.slug },
         props: { lang, product },

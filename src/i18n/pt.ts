@@ -27,6 +27,9 @@ const pt: Dict = {
     allProducts: 'Todos os produtos',
     demo: 'Demonstração ao vivo',
     work: 'Trabalhos',
+    projects: 'Projetos',
+    clients: 'Os nossos clientes',
+    sengetiedu: 'SengetiEdu para escolas',
     industries: 'Setores',
     resources: 'Recursos',
     insights: 'Notícias e artigos',
@@ -76,8 +79,7 @@ const pt: Dict = {
     principleBy: 'O princípio Sengeti',
     servicesHeading: 'O que fazemos',
     servicesLead: 'A automação está no centro de tudo o que construímos. Combinamo-la com o software e as integrações de que a sua organização precisa.',
-    productHeading: 'O nosso primeiro produto',
-    mockupLabel: 'Ilustração da aplicação Sengeti Attendance a mostrar a presença numa aula em tempo real',
+    productHeading: 'Para escolas: SengetiEdu',
     testimonialsHeading: 'O que dizem os nossos clientes',
     clientsHeading: 'Confiam em nós',
     caseStudiesHeading: 'O nosso trabalho',
@@ -125,7 +127,7 @@ const pt: Dict = {
 
   products: {
     title: 'Produtos | Sengeti Technologies',
-    description: 'Produtos de software da Sengeti Technologies, a começar pelo Sengeti Attendance para universidades e institutos superiores.',
+    description: 'Produtos de software da Sengeti Technologies, a começar pelo SengetiEdu, uma plataforma escolar do pré-escolar à universidade.',
     heading: 'Produtos',
     lead: 'Software pronto a usar da Sengeti Technologies. Há mais produtos a caminho.',
     viewDetails: 'Ver detalhes',
@@ -219,7 +221,7 @@ const pt: Dict = {
 
   support: {
     title: 'Suporte | Sengeti Technologies',
-    description: 'Obtenha ajuda com o Sengeti Attendance e outros produtos da Sengeti Technologies: respostas a perguntas frequentes e formas de contactar a nossa equipa de suporte.',
+    description: 'Obtenha ajuda com o SengetiEdu e outros produtos da Sengeti Technologies: respostas a perguntas frequentes e formas de contactar a nossa equipa de suporte.',
     heading: 'Suporte',
     lead: 'Precisa de ajuda com um dos nossos produtos ou sistemas? Encontre uma resposta rápida abaixo ou contacte a nossa equipa de suporte.',
     channelsHeading: 'Contactar o suporte',
@@ -229,7 +231,7 @@ const pt: Dict = {
     faqHeading: 'Perguntas frequentes',
     faqs: [
       {
-        q: 'Como obtenho ajuda com o Sengeti Attendance?',
+        q: 'Como obtenho ajuda com o SengetiEdu?',
         a: 'Envie-nos uma mensagem no WhatsApp ou use o formulário de suporte desta página. Indique a sua instituição, o que estava a tentar fazer e, se puder, inclua uma captura de ecrã.',
       },
       {
@@ -237,8 +239,8 @@ const pt: Dict = {
         a: 'O código QR muda a cada 15 segundos, por isso o estudante deve ler o código que está no ecrã, com ligação à internet e a versão mais recente da aplicação. Se continuar a falhar, o docente pode marcar a presença manualmente e contactar-nos com os detalhes.',
       },
       {
-        q: 'Podem instalar o Sengeti Attendance na nossa universidade ou instituto?',
-        a: 'Sim. Configuramos as suas faculdades, cursos e semestres, importamos os seus estudantes e formamos a sua equipa. Peça uma demonstração e mostramos-lhe como funciona.',
+        q: 'Podem instalar o SengetiEdu na nossa escola ou universidade?',
+        a: 'Sim. Configuramos a sua escola com o logótipo e as cores, importamos alunos, funcionários e pais do Excel e formamos todos em quatro semanas. Marque uma demonstração gratuita e mostramos-lhe como funciona.',
       },
       {
         q: 'Os nossos dados estão seguros?',
@@ -254,7 +256,7 @@ const pt: Dict = {
       },
     ],
     formHeading: 'Enviar um pedido de suporte',
-    subjects: ['Sengeti Attendance', 'Um sistema que desenvolvemos para si', 'Faturação', 'Outro assunto'],
+    subjects: ['SengetiEdu', 'Um sistema que desenvolvemos para si', 'Faturação', 'Outro assunto'],
   },
 
   contact: {
@@ -268,7 +270,7 @@ const pt: Dict = {
     phone: 'Número de telefone (opcional)',
     organisation: 'Organização (opcional)',
     subject: 'Qual é o assunto?',
-    subjects: ['Pergunta geral', 'Automatizar um processo', 'Sengeti Attendance', 'Um novo projeto de software', 'Suporte'],
+    subjects: ['Pergunta geral', 'Automatizar um processo', 'SengetiEdu', 'Um novo projeto de software', 'Suporte'],
     message: 'Mensagem',
     send: 'Enviar mensagem',
     sending: 'A enviar…',
@@ -300,7 +302,7 @@ const pt: Dict = {
   },
 
   mockup: {
-    app: 'Sengeti Attendance',
+    app: 'SengetiEdu',
     className: 'INF 201 · Algoritmos',
     venue: 'Anfiteatro B',
     live: 'Ao vivo',
@@ -341,7 +343,7 @@ const pt: Dict = {
     human: 'Falar com uma pessoa no WhatsApp',
     quick: [
       { label: 'O que podem automatizar?', id: 'services' },
-      { label: 'Sengeti Attendance', id: 'attendance' },
+      { label: 'SengetiEdu para escolas', id: 'attendance' },
       { label: 'Preços', id: 'pricing' },
       { label: 'Preciso de suporte', id: 'support' },
       { label: 'Falar com uma pessoa', id: 'human' },
@@ -355,9 +357,9 @@ const pt: Dict = {
       },
       {
         id: 'attendance',
-        keywords: ['attendance', 'presenc', 'registo', 'qr', 'universidade', 'instituto', 'estudante', 'aula', 'elegib', 'semestre', 'chamada'],
-        text: 'Com o Sengeti Attendance os estudantes registam a presença com um código QR que muda a cada 15 segundos: as presenças falsas são bloqueadas e as listas de elegibilidade para exames saem num clique.',
-        link: { label: 'Conhecer o Sengeti Attendance', href: '/products/attendance' },
+        keywords: ['attendance', 'presenc', 'registo', 'qr', 'universidade', 'instituto', 'escola', 'estudante', 'aluno', 'pais', 'aula', 'elegib', 'semestre', 'chamada', 'sengetiedu', 'pauta', 'zimsec', 'trabalho de casa', 'pre-escolar', 'internato', 'campus', 'senior', 'junior'],
+        text: 'O SengetiEdu é a nossa plataforma escolar do pré-escolar à universidade: presenças, ensino, resultados, propinas e pais em cada telemóvel, em três edições (Sengeti Campus, Senior e Junior), com a imagem da sua escola.',
+        link: { label: 'Conhecer o SengetiEdu', href: '/products/sengetiedu' },
       },
       {
         id: 'pricing',
@@ -415,7 +417,7 @@ const pt: Dict = {
       {
         id: 'demo',
         keywords: ['demo', 'demonstrac', 'experimentar', 'testar'],
-        text: 'Pode experimentar o Sengeti Attendance agora mesmo na nossa demonstração ao vivo. Para outra demonstração, envie-nos uma mensagem e marcamos uma hora.',
+        text: 'Pode experimentar já a demonstração de presenças do SengetiEdu. Para uma demonstração completa com o nome da sua escola, envie-nos uma mensagem e marcamos uma hora.',
         link: { label: 'Experimentar a demonstração', href: '/demo' },
       },
       {
@@ -433,7 +435,7 @@ const pt: Dict = {
       {
         id: 'hello',
         keywords: ['ola', 'bom dia', 'boa tarde', 'boa noite', 'hello', 'hi'],
-        text: 'Olá! Pergunte-me sobre os nossos serviços, o Sengeti Attendance, preços ou suporte.',
+        text: 'Olá! Pergunte-me sobre os nossos serviços, o SengetiEdu para escolas, preços ou suporte.',
       },
       {
         id: 'thanks',
@@ -676,7 +678,7 @@ const pt: Dict = {
     ],
     formHeading: 'Fale-nos do seu projeto',
     typeLabel: 'De que precisa?',
-    types: ['Automatização de processos', 'Solução de IA', 'Sistema ERP', 'Software ou aplicação à medida', 'Sengeti Attendance', 'Ainda não sei'],
+    types: ['Automatização de processos', 'Solução de IA', 'Sistema ERP', 'Software ou aplicação à medida', 'SengetiEdu', 'Ainda não sei'],
     budgetLabel: 'Orçamento (opcional)',
     budgets: ['Ainda não sei', 'Menos de US$1.000', 'US$1.000 a 5.000', 'US$5.000 a 20.000', 'Mais de US$20.000'],
     timelineLabel: 'Quando gostaria de começar? (opcional)',

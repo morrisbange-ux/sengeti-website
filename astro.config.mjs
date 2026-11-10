@@ -10,5 +10,11 @@ export default defineConfig({
   // Start loading a page as soon as a visitor points at or taps its link, so it opens instantly.
   // Astro skips this on data-saver and very slow connections.
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
+  // Sengeti Attendance grew into SengetiEdu; old links still work.
+  redirects: {
+    '/products/attendance': '/products/sengetiedu',
+    '/fr/products/attendance': '/fr/products/sengetiedu',
+    '/pt/products/attendance': '/pt/products/sengetiedu',
+  },
   integrations: [sitemap()],
 });

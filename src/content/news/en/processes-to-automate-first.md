@@ -33,7 +33,7 @@ Invoices that are due, contracts that expire and customers who need a follow-up 
 
 ## 5. Paper forms and registers
 
-Paper is slow to fill in, easy to lose and easy to fake. Simple online forms that work on any phone, even on a slow connection, put the information straight into your system. Our [Sengeti Attendance](/products/attendance) platform replaced paper registers at a university in exactly this way.
+Paper is slow to fill in, easy to lose and easy to fake. Simple online forms that work on any phone, even on a slow connection, put the information straight into your system. The attendance system we built for a university replaced paper registers in exactly this way, and it now lives on in [SengetiEdu](/products/sengetiedu), our platform for schools.
 
 **Signs you need it:** someone types up paper forms at the end of the week.
 

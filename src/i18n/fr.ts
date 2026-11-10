@@ -27,6 +27,9 @@ const fr: Dict = {
     allProducts: 'Tous les produits',
     demo: 'Démo en direct',
     work: 'Réalisations',
+    projects: 'Projets',
+    clients: 'Nos clients',
+    sengetiedu: 'SengetiEdu pour les écoles',
     industries: 'Secteurs',
     resources: 'Ressources',
     insights: 'Actualités et conseils',
@@ -76,8 +79,7 @@ const fr: Dict = {
     principleBy: 'Le principe Sengeti',
     servicesHeading: 'Ce que nous faisons',
     servicesLead: "L'automatisation est au cœur de tout ce que nous construisons. Nous la combinons avec les logiciels et les intégrations dont votre organisation a besoin.",
-    productHeading: 'Notre premier produit',
-    mockupLabel: "Illustration de l'application Sengeti Attendance affichant la présence en direct d'un cours",
+    productHeading: 'Pour les écoles : SengetiEdu',
     testimonialsHeading: 'Ce que disent nos clients',
     clientsHeading: 'Ils nous font confiance',
     caseStudiesHeading: 'Nos réalisations',
@@ -125,7 +127,7 @@ const fr: Dict = {
 
   products: {
     title: 'Produits | Sengeti Technologies',
-    description: 'Les produits logiciels de Sengeti Technologies, à commencer par Sengeti Attendance pour les universités et les écoles supérieures.',
+    description: 'Les produits logiciels de Sengeti Technologies, à commencer par SengetiEdu, une plateforme scolaire de la maternelle à l’université.',
     heading: 'Produits',
     lead: "Des logiciels prêts à l'emploi signés Sengeti Technologies. D'autres produits arrivent bientôt.",
     viewDetails: 'Voir les détails',
@@ -219,7 +221,7 @@ const fr: Dict = {
 
   support: {
     title: 'Assistance | Sengeti Technologies',
-    description: "Obtenez de l'aide pour Sengeti Attendance et les autres produits de Sengeti Technologies : réponses aux questions fréquentes et moyens de joindre notre équipe d'assistance.",
+    description: "Obtenez de l'aide pour SengetiEdu et les autres produits de Sengeti Technologies : réponses aux questions fréquentes et moyens de joindre notre équipe d'assistance.",
     heading: 'Assistance',
     lead: "Besoin d'aide avec l'un de nos produits ou systèmes ? Trouvez une réponse rapide ci-dessous ou contactez notre équipe d'assistance.",
     channelsHeading: "Contacter l'assistance",
@@ -229,7 +231,7 @@ const fr: Dict = {
     faqHeading: 'Questions fréquentes',
     faqs: [
       {
-        q: "Comment obtenir de l'aide pour Sengeti Attendance ?",
+        q: "Comment obtenir de l'aide pour SengetiEdu ?",
         a: "Envoyez-nous un message sur WhatsApp ou utilisez le formulaire d'assistance de cette page. Indiquez votre établissement, ce que vous essayiez de faire et, si possible, joignez une capture d'écran.",
       },
       {
@@ -237,8 +239,8 @@ const fr: Dict = {
         a: "Le code QR change toutes les 15 secondes : l'étudiant doit scanner le code affiché à l'écran, avec une connexion internet active et la dernière version de l'application. Si cela ne fonctionne toujours pas, l'enseignant peut le marquer présent manuellement et nous contacter avec les détails.",
       },
       {
-        q: 'Pouvez-vous installer Sengeti Attendance pour notre université ou école ?',
-        a: 'Oui. Nous configurons vos facultés, cours et semestres, importons vos étudiants et formons votre personnel. Demandez une démo et nous vous guiderons.',
+        q: 'Pouvez-vous installer SengetiEdu dans notre école ou université ?',
+        a: 'Oui. Nous configurons votre école avec son logo et ses couleurs, importons élèves, personnel et parents depuis Excel et formons tout le monde en quatre semaines. Réservez une démonstration gratuite et nous vous guiderons.',
       },
       {
         q: 'Nos données sont-elles en sécurité ?',
@@ -254,7 +256,7 @@ const fr: Dict = {
       },
     ],
     formHeading: "Envoyer une demande d'assistance",
-    subjects: ['Sengeti Attendance', 'Un système que nous avons conçu pour vous', 'Facturation', 'Autre chose'],
+    subjects: ['SengetiEdu', 'Un système que nous avons conçu pour vous', 'Facturation', 'Autre chose'],
   },
 
   contact: {
@@ -268,7 +270,7 @@ const fr: Dict = {
     phone: 'Numéro de téléphone (facultatif)',
     organisation: 'Organisation (facultatif)',
     subject: 'À quel sujet ?',
-    subjects: ['Question générale', "Automatiser un processus", 'Sengeti Attendance', 'Un nouveau projet logiciel', 'Assistance'],
+    subjects: ['Question générale', "Automatiser un processus", 'SengetiEdu', 'Un nouveau projet logiciel', 'Assistance'],
     message: 'Message',
     send: 'Envoyer le message',
     sending: 'Envoi…',
@@ -300,7 +302,7 @@ const fr: Dict = {
   },
 
   mockup: {
-    app: 'Sengeti Attendance',
+    app: 'SengetiEdu',
     className: 'INF 201 · Algorithmique',
     venue: 'Amphithéâtre B',
     live: 'En direct',
@@ -341,7 +343,7 @@ const fr: Dict = {
     human: 'Discuter avec une personne sur WhatsApp',
     quick: [
       { label: 'Que pouvez-vous automatiser ?', id: 'services' },
-      { label: 'Sengeti Attendance', id: 'attendance' },
+      { label: 'SengetiEdu pour les écoles', id: 'attendance' },
       { label: 'Tarifs', id: 'pricing' },
       { label: "J'ai besoin d'aide", id: 'support' },
       { label: 'Parler à une personne', id: 'human' },
@@ -355,9 +357,9 @@ const fr: Dict = {
       },
       {
         id: 'attendance',
-        keywords: ['attendance', 'presence', 'registre', 'qr', 'universite', 'ecole', 'etudiant', 'cours', 'admissib', 'semestre', 'appel'],
-        text: "Avec Sengeti Attendance, les étudiants pointent avec un code QR qui change toutes les 15 secondes : les pointages frauduleux sont bloqués et les listes d'admissibilité aux examens se font en un clic.",
-        link: { label: 'Découvrir Sengeti Attendance', href: '/products/attendance' },
+        keywords: ['attendance', 'presence', 'registre', 'qr', 'universite', 'ecole', 'etudiant', 'eleve', 'parent', 'cours', 'admissib', 'semestre', 'appel', 'sengetiedu', 'bulletin', 'zimsec', 'devoir', 'maternelle', 'internat', 'campus', 'senior', 'junior'],
+        text: 'SengetiEdu est notre plateforme scolaire de la maternelle à l’université : présences, enseignement, résultats, frais et parents sur chaque téléphone, en trois éditions (Sengeti Campus, Senior et Junior), à l’image de votre école.',
+        link: { label: 'Découvrir SengetiEdu', href: '/products/sengetiedu' },
       },
       {
         id: 'pricing',
@@ -415,7 +417,7 @@ const fr: Dict = {
       {
         id: 'demo',
         keywords: ['demo', 'essai', 'essayer', 'tester'],
-        text: "Vous pouvez essayer Sengeti Attendance tout de suite dans notre démo en direct. Pour une autre démonstration, envoyez-nous un message et nous fixerons un rendez-vous.",
+        text: 'Vous pouvez essayer la démo des présences SengetiEdu tout de suite. Pour une démonstration complète au nom de votre école, envoyez-nous un message et nous fixerons un rendez-vous.',
         link: { label: 'Essayer la démo', href: '/demo' },
       },
       {
@@ -433,7 +435,7 @@ const fr: Dict = {
       {
         id: 'hello',
         keywords: ['bonjour', 'salut', 'bonsoir', 'hello', 'hi'],
-        text: 'Bonjour ! Posez-moi vos questions sur nos services, Sengeti Attendance, nos tarifs ou l’assistance.',
+        text: 'Bonjour ! Posez-moi vos questions sur nos services, SengetiEdu pour les écoles, nos tarifs ou l’assistance.',
       },
       {
         id: 'thanks',
@@ -676,7 +678,7 @@ const fr: Dict = {
     ],
     formHeading: 'Parlez-nous de votre projet',
     typeLabel: 'De quoi avez-vous besoin ?',
-    types: ['Automatisation de processus', 'Solution d’IA', 'Système ERP', 'Logiciel ou application sur mesure', 'Sengeti Attendance', 'Je ne sais pas encore'],
+    types: ['Automatisation de processus', 'Solution d’IA', 'Système ERP', 'Logiciel ou application sur mesure', 'SengetiEdu', 'Je ne sais pas encore'],
     budgetLabel: 'Budget (facultatif)',
     budgets: ['Je ne sais pas encore', 'Moins de 1 000 US$', '1 000 à 5 000 US$', '5 000 à 20 000 US$', 'Plus de 20 000 US$'],
     timelineLabel: 'Quand souhaitez-vous commencer ? (facultatif)',

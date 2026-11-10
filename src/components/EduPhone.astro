@@ -1,0 +1,575 @@
+---
+/**
+ * A phone drawn in HTML and CSS that cycles through the three SengetiEdu editions:
+ * a Campus QR check-in, a Senior learner's day and a Junior parent's alert.
+ * The tabs above it switch editions by hand; cycling stops for reduced motion.
+ */
+import { sengetiEdu } from '../i18n/pages/sengetiedu';
+import { editionNames } from '../i18n/pages/clients';
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Show the edition tabs above the phone. */
+  tabs?: boolean;
+}
+const { lang, tabs = true } = Astro.props;
+const p = sengetiEdu[lang].phone;
+const editions = ['campus', 'senior', 'junior'] as const;
+const uid = `edu-${Math.random().toString(36).slice(2, 8)}`;
+
+// A QR-like pattern (decorative only): three corner squares plus fixed noise.
+const N = 21;
+const finder = (r: number, c: number) => {
+  for (const [fr, fc] of [[0, 0], [0, N - 7], [N - 7, 0]]) {
+    const y = r - fr, x = c - fc;
+    if (y >= 0 && y < 7 && x >= 0 && x < 7) {
+      return y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4);
+    }
+    if (y >= -1 && y <= 7 && x >= -1 && x <= 7) return false;
+  }
+  return null;
+};
+const qr = Array.from({ length: N * N }, (_, i) => {
+  const r = Math.floor(i / N), c = i % N;
+  return finder(r, c) ?? (((r * 73856093) ^ (c * 19349663) ^ (r * c * 83492791)) >>> 0) % 7 < 3;
+});
+---
+
+<div class="edu" data-edu-phone data-active="campus">
+  {
+    tabs && (
+      <div class="tabs" role="tablist" aria-label="SengetiEdu">
+        {editions.map((e, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`${uid}-tab-${e}`}
+            class:list={['tab', e]}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-controls={`${uid}-phone`}
+            data-edition={e}
+          >
+            {editionNames[e].replace('Sengeti ', '')}
+          </button>
+        ))}
+      </div>
+    )
+  }
+  <div class="phone force-dark" id={`${uid}-phone`} role="img" aria-label={p.label}>
+    <div class="notch" aria-hidden="true"></div>
+    <div class="screen" aria-hidden="true">
+      <div class="appbar">
+        <span class="crest">YS</span>
+        <span class="appname">{p.school}</span>
+        <span class="ed">{editionNames.campus}</span>
+        <span class="ed">{editionNames.senior}</span>
+        <span class="ed">{editionNames.junior}</span>
+      </div>
+
+      <div class="views">
+        <div class="view campus">
+          <p class="title">{p.campus.title}</p>
+          <p class="sub">{p.campus.cls}</p>
+          <div class="qr">
+            {qr.map((on) => <span class={on ? 'on' : undefined} />)}
+            <span class="scanline" />
+          </div>
+          <p class="sub">{p.campus.hint}</p>
+          <p class="timer">
+            {p.campus.refresh} <strong>15s</strong>
+            <span class="ring" />
+          </p>
+        </div>
+
+        <div class="view senior">
+          <p class="title small">{p.senior.title}</p>
+          <ul class="tt">
+            {p.senior.timetable.map((row, i) => (
+              <li class:list={{ now: i === 1 }} style={`--i:${i}`}>
+                <span class="time">{row.time}</span>
+                <span>{row.subject}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="card hw">
+            <small>{p.senior.homeworkLabel}</small>
+            <span>{p.senior.homework}</span>
+          </div>
+          <div class="card mark">
+            <span>
+              <small>{p.senior.markLabel}</small>
+              <span>{p.senior.mark}</span>
+            </span>
+            <strong>78%</strong>
+          </div>
+        </div>
+
+        <div class="view junior">
+          <div class="alert">
+            <span class="bell" />
+            <span>
+              <strong>{p.junior.alertTitle}</strong>
+              <small>{p.junior.alertText}</small>
+            </span>
+          </div>
+          <div class="card fees">
+            <small>{p.junior.feesLabel}</small>
+            <strong>US$120.00</strong>
+            <span class="pay">{p.junior.pay}</span>
+          </div>
+          <div class="card notice">
+            <small>{p.junior.noticeLabel}</small>
+            <span>{p.junior.notice}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .edu {
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+  }
+
+  /* Edition tabs */
+  .tabs {
+    display: inline-flex;
+    padding: 4px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgb(var(--tint) / 0.04);
+  }
+
+  .tab {
+    position: relative;
+    padding: 7px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .tab[aria-selected='true'] {
+    color: #fff;
+    background: #d11f1f;
+  }
+
+  /* A thin bar inside the active tab shows when the phone moves on to the next edition. */
+  .tab[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 3px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 0.7);
+    transform-origin: left;
+    animation: progress var(--cycle, 5s) linear;
+  }
+
+  .edu.paused .tab::after {
+    display: none;
+  }
+
+  @keyframes progress {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  /* Phone */
+  .phone {
+    position: relative;
+    width: min(290px, 66vw);
+    aspect-ratio: 9 / 18.5;
+    border-radius: 42px;
+    padding: 12px;
+    background: linear-gradient(145deg, #2a2a2e, #0e0e10 60%);
+    box-shadow:
+      0 0 0 1px rgb(var(--tint) / 0.08),
+      0 30px 80px -20px rgb(255 49 48 / 0.45),
+      0 20px 40px rgb(0 0 0 / 0.6);
+    animation: float 7s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .notch {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 84px;
+    height: 22px;
+    margin-left: -42px;
+    border-radius: 999px;
+    background: #000;
+    z-index: 2;
+  }
+
+  .screen {
+    height: 100%;
+    border-radius: 32px;
+    overflow: hidden;
+    background: #f6f6f8;
+    color: #16161a;
+    font-size: 12px;
+    line-height: 1.35;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .appbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 50px 16px 12px;
+    background: #12235a;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    transition: background 0.5s;
+  }
+
+  /* Each school shows in its own colours: these three stand in for three schools. */
+  [data-active='senior'] .appbar {
+    background: #0f5132;
+  }
+
+  [data-active='junior'] .appbar {
+    background: #6b1f3a;
+  }
+
+  .crest {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px 8px 13px 13px;
+    background: #fff;
+    color: #12235a;
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  .appname {
+    flex: 1;
+  }
+
+  .ed {
+    display: none;
+    font-family: var(--font-body, inherit);
+    font-size: 9.5px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  [data-active='campus'] .ed:nth-of-type(3),
+  [data-active='senior'] .ed:nth-of-type(4),
+  [data-active='junior'] .ed:nth-of-type(5) {
+    display: inline;
+  }
+
+  .views {
+    position: relative;
+    flex: 1;
+  }
+
+  .view {
+    position: absolute;
+    inset: 0;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(16px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  [data-active='campus'] .view.campus,
+  [data-active='senior'] .view.senior,
+  [data-active='junior'] .view.junior {
+    opacity: 1;
+    transform: none;
+  }
+
+  .view p {
+    margin: 0;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .title.small {
+    font-size: 15px;
+  }
+
+  .sub {
+    color: #55555e;
+    font-weight: 500;
+  }
+
+  /* Campus: QR check-in */
+  .view.campus {
+    align-items: center;
+    text-align: center;
+    padding-top: 22px;
+  }
+
+  .qr {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(21, 1fr);
+    width: 70%;
+    aspect-ratio: 1;
+    padding: 10px;
+    margin: 8px 0 4px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow:
+      0 0 0 2px var(--red),
+      0 8px 24px rgb(255 49 48 / 0.25);
+    overflow: hidden;
+  }
+
+  .qr .on {
+    background: #16161a;
+  }
+
+  .scanline {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    top: 10%;
+    height: 2px;
+    background: var(--red);
+    box-shadow: 0 0 12px 2px rgb(255 49 48 / 0.7);
+    animation: scan 2.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes scan {
+    to {
+      transform: translateY(15em);
+    }
+  }
+
+  .timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #55555e;
+  }
+
+  .timer strong {
+    color: #d11f1f;
+  }
+
+  .ring {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #d11f1f;
+    border-right-color: #ececf0;
+    animation: spin 1.5s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Senior: a learner's day */
+  .tt {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  .tt li {
+    display: flex;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.05);
+    font-weight: 600;
+  }
+
+  .tt li.now {
+    box-shadow: inset 3px 0 0 #0f5132, 0 1px 6px rgb(0 0 0 / 0.05);
+  }
+
+  .time {
+    color: #6b6b74;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  .card {
+    display: grid;
+    gap: 2px;
+    padding: 11px 12px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.05);
+  }
+
+  .card small {
+    color: #6b6b74;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .card > span {
+    font-weight: 600;
+  }
+
+  .mark {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .mark > span {
+    display: grid;
+  }
+
+  .mark strong {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: #0f6e33;
+  }
+
+  /* Junior: a parent's phone */
+  .alert {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow:
+      inset 3px 0 0 #d11f1f,
+      0 6px 18px rgb(0 0 0 / 0.08);
+    animation: nudge 5s ease-in-out infinite;
+  }
+
+  @keyframes nudge {
+    0%,
+    80%,
+    100% {
+      transform: none;
+    }
+    85% {
+      transform: translateX(-3px);
+    }
+    90% {
+      transform: translateX(3px);
+    }
+  }
+
+  .alert > span:last-child {
+    display: grid;
+    gap: 2px;
+  }
+
+  .alert small {
+    color: #6b6b74;
+  }
+
+  .bell {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 45%, #d11f1f 0 5px, transparent 5.5px),
+      #fde4e4;
+  }
+
+  .fees strong {
+    font-family: var(--font-display);
+    font-size: 22px;
+  }
+
+  .pay {
+    justify-self: start;
+    margin-top: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #0b5ed7;
+    color: #fff;
+    font-size: 11px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .view {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Moves to the next edition every few seconds until someone picks one.
+  const CYCLE = 5000;
+  const editions = ['campus', 'senior', 'junior'];
+  for (const root of document.querySelectorAll<HTMLElement>('[data-edu-phone]')) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-edition]')];
+    root.style.setProperty('--cycle', `${CYCLE}ms`);
+    const show = (edition: string) => {
+      root.dataset.active = edition;
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.edition === edition)));
+    };
+    let timer = 0;
+    const stop = () => {
+      clearInterval(timer);
+      root.classList.add('paused');
+    };
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        stop();
+        show(t.dataset.edition!);
+      }),
+    );
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      root.classList.add('paused');
+    } else {
+      timer = window.setInterval(() => {
+        // Only move on while the phone is on screen and the tab is visible.
+        if (document.hidden) return;
+        const next = editions[(editions.indexOf(root.dataset.active!) + 1) % editions.length];
+        show(next);
+        // Restart the progress bar on the newly selected tab.
+        tabs.forEach((t) => t.getAnimations({ subtree: true }).forEach((a) => (a.currentTime = 0)));
+      }, CYCLE);
+    }
+  }
+</script>

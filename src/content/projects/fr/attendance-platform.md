@@ -9,6 +9,6 @@ tech: [Application web, Application Android, Cloud]
 results: [Appel en quelques secondes, Pointages frauduleux bloqués, Admissibilité aux examens en un clic]
 visual: attendance
 caseStudy: university-attendance
-product: attendance
+product: sengetiedu
 order: 1
 ---

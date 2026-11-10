@@ -1,10 +1,10 @@
 ---
 title: Conditions d'utilisation
 description: Les conditions qui s'appliquent lorsque vous utilisez le site de Sengeti Technologies.
-updated: 2026-10-16
+updated: 2026-11-10
 ---
 
-Ces conditions s'appliquent à votre utilisation de ce site, exploité par Sengeti Technologies. En utilisant le site, vous les acceptez. L'utilisation de nos produits, comme Sengeti Attendance, est également régie par le contrat conclu avec chaque client.
+Ces conditions s'appliquent à votre utilisation de ce site, exploité par Sengeti Technologies. En utilisant le site, vous les acceptez. L'utilisation de nos produits, comme SengetiEdu, est également régie par le contrat conclu avec chaque client.
 
 ## Utilisation de ce site
 

@@ -1,0 +1,481 @@
+---
+/**
+ * A map of Zimbabwe with a pin for every client that has a `location`.
+ * Drawn as inline SVG, so it costs no map service, no API key and almost no data.
+ * Pins are buttons; each opens a small card with the client's details.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { MAP_HEIGHT, MAP_WIDTH, neighbours, outlines, project, towns } from '../lib/map';
+import { clientsPage } from '../i18n/pages/clients';
+import type { Lang } from '../i18n';
+
+export interface MapPin {
+  id: string;
+  name: string;
+  logo: ImageMetadata;
+  place: string;
+  edition?: 'campus' | 'senior' | 'junior';
+  editionName?: string;
+  lat: number;
+  lng: number;
+  mapUrl?: string;
+}
+
+interface Props {
+  lang: Lang;
+  pins: MapPin[];
+}
+const { lang, pins } = Astro.props;
+const c = clientsPage[lang];
+
+// Spread out pins that would sit on top of each other (several clients in one town).
+const placed: { x: number; y: number }[] = [];
+const positioned = pins.map((pin) => {
+  let { x, y } = project(pin.lat, pin.lng);
+  for (let step = 1; placed.some((p) => Math.hypot(p.x - x, p.y - y) < 16) && step < 24; step++) {
+    const base = project(pin.lat, pin.lng);
+    const angle = step * 2.4;
+    x = base.x + Math.cos(angle) * 9 * Math.sqrt(step);
+    y = base.y + Math.sin(angle) * 9 * Math.sqrt(step);
+  }
+  placed.push({ x, y });
+  return { ...pin, left: (x / MAP_WIDTH) * 100, top: (y / MAP_HEIGHT) * 100 };
+});
+
+// A town label goes on the left when it sits near the eastern border, or when a client pin covers its right side.
+const townsDrawn = towns.map((t) => {
+  const { x, y } = project(t.lat, t.lng);
+  return { ...t, x, y, left: x > MAP_WIDTH * 0.75 };
+});
+---
+
+<div class="client-map" data-client-map>
+  <div class="frame">
+    <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} role="img" aria-label={c.mapLabel}>
+      <defs>
+        <pattern id="cm-dots" width="13" height="13" patternUnits="userSpaceOnUse">
+          <circle cx="6.5" cy="6.5" r="1.3"></circle>
+        </pattern>
+        <radialGradient id="cm-fill" cx="0.62" cy="0.42" r="0.75">
+          <stop offset="0" stop-color="#ff3130" stop-opacity="0.22"></stop>
+          <stop offset="1" stop-color="#ff3130" stop-opacity="0.04"></stop>
+        </radialGradient>
+        <filter id="cm-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="10"></feGaussianBlur>
+        </filter>
+        <clipPath id="cm-clip"><path d={outlines.zw}></path></clipPath>
+      </defs>
+
+      {Object.entries(outlines).filter(([k]) => k !== 'zw').map(([, d]) => <path class="nb" d={d} />)}
+      {neighbours.map((n) => (
+        <text class="nb-label" x={n.x} y={n.y} text-anchor="middle">
+          {c.countries[n.key].toUpperCase()}
+        </text>
+      ))}
+
+      <path class="zw-glow" d={outlines.zw} filter="url(#cm-glow)"></path>
+      <path class="zw" d={outlines.zw}></path>
+      <rect class="zw-dots" width={MAP_WIDTH} height={MAP_HEIGHT} fill="url(#cm-dots)" clip-path="url(#cm-clip)"></rect>
+      <path class="zw-line" d={outlines.zw} pathLength="1"></path>
+
+      {townsDrawn.map((t) => (
+        <g class:list={['town', { capital: t.capital }]}>
+          <circle cx={t.x} cy={t.y} r={t.capital ? 5 : 3.5} />
+          <text x={t.left ? t.x - 22 : t.x + 12} y={t.y + 5} text-anchor={t.left ? 'end' : 'start'}>
+            {t.name}
+          </text>
+        </g>
+      ))}
+    </svg>
+
+    {positioned.map((pin) => (
+      <button
+        type="button"
+        class:list={['pin', pin.edition ?? 'other']}
+        style={`left:${pin.left}%;top:${pin.top}%`}
+        data-pin={pin.id}
+        data-edition={pin.edition ?? 'other'}
+        aria-expanded="false"
+        aria-controls={`pop-${pin.id}`}
+        aria-label={`${pin.name}, ${pin.place}`}
+      >
+        <span class="dot" aria-hidden="true"></span>
+      </button>
+    ))}
+
+  </div>
+
+  <!-- Cards sit outside the frame so that, on phones, they can drop below the map without stretching it. -->
+  {positioned.map((pin) => (
+    <div
+      class:list={['pop', { flip: pin.left > 55 }]}
+      id={`pop-${pin.id}`}
+      style={`--x:${pin.left}%;--y:${pin.top}%`}
+      data-pop={pin.id}
+      hidden
+    >
+      <span class="pop-logo">
+        <Image src={pin.logo} alt="" width={56} height={56} densities={[1, 2]} fit="contain" />
+      </span>
+      <span class="pop-text">
+        <strong>{pin.name}</strong>
+        <span class="muted">{pin.place}</span>
+        {pin.editionName && (
+          <span class:list={['chip', pin.edition]}>
+            {c.usesEdition} {pin.editionName}
+          </span>
+        )}
+        {pin.mapUrl && (
+          <a href={pin.mapUrl} target="_blank" rel="noopener">
+            {c.openInMaps} ↗
+          </a>
+        )}
+      </span>
+      <button type="button" class="pop-close" data-close aria-label={c.close}>×</button>
+    </div>
+  ))}
+</div>
+
+<style>
+  .client-map {
+    position: relative;
+  }
+
+  .frame {
+    position: relative;
+    aspect-ratio: 832 / 780;
+    width: 100%;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* Neighbouring countries fade out towards the edges. */
+    mask-image: radial-gradient(ellipse 62% 60% at 54% 50%, #000 70%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 62% 60% at 54% 50%, #000 70%, transparent 100%);
+  }
+
+  .nb {
+    fill: rgb(var(--tint) / 0.025);
+    stroke: rgb(var(--tint) / 0.12);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+  }
+
+  .nb-label {
+    fill: rgb(var(--tint) / 0.28);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+  }
+
+  .zw-glow {
+    fill: none;
+    stroke: #ff3130;
+    stroke-width: 6;
+    opacity: 0.45;
+  }
+
+  .zw {
+    fill: url(#cm-fill);
+  }
+
+  pattern circle {
+    fill: rgb(var(--tint) / 0.16);
+  }
+
+  .zw-line {
+    fill: none;
+    stroke: #ff5a45;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  /* The border draws itself once when the map scrolls into view. */
+  :global(.js) [data-reveal]:not(.is-visible) .zw-line {
+    stroke-dashoffset: 1;
+  }
+
+  :global(.js) .zw-line {
+    transition: stroke-dashoffset 2.2s cubic-bezier(0.6, 0, 0.3, 1) 0.2s;
+  }
+
+  .town circle {
+    fill: rgb(var(--tint) / 0.55);
+  }
+
+  .town.capital circle {
+    fill: none;
+    stroke: rgb(var(--tint) / 0.75);
+    stroke-width: 2;
+  }
+
+  .town text {
+    fill: var(--muted);
+    font-size: 17px;
+    font-weight: 500;
+  }
+
+  .town.capital text {
+    fill: var(--text);
+    font-weight: 600;
+  }
+
+  /* Pins */
+  .pin {
+    --c: var(--red);
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    z-index: 2;
+  }
+
+  .pin.senior {
+    --c: var(--ed-senior);
+    --ct: var(--ed-senior-text);
+  }
+
+  .pin.junior {
+    --c: var(--ed-junior);
+    --ct: var(--ed-junior-text);
+  }
+
+  .pin.other {
+    --c: var(--white);
+  }
+
+  .dot {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+      0 0 0 3px rgb(var(--bg-rgb) / 0.9),
+      0 0 18px 4px color-mix(in srgb, var(--c) 70%, transparent);
+    transition: transform 0.2s;
+  }
+
+  .dot::before,
+  .dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--c);
+    animation: ping 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+
+  .dot::after {
+    animation-delay: 1.3s;
+  }
+
+  @keyframes ping {
+    from {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    to {
+      transform: scale(3.6);
+      opacity: 0;
+    }
+  }
+
+  .pin:hover .dot,
+  .pin[aria-expanded='true'] .dot {
+    transform: scale(1.3);
+  }
+
+  .pin:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .pin.is-hidden {
+    display: none;
+  }
+
+  /* The card that opens from a pin */
+  .pop {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    z-index: 3;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    width: min(320px, 80vw);
+    padding: 14px 40px 14px 14px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.6);
+    transform: translate(26px, -50%);
+    animation: pop-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pop.flip {
+    transform: translate(calc(-100% - 26px), -50%);
+  }
+
+  .pop[hidden] {
+    display: none;
+  }
+
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      scale: 0.94;
+    }
+  }
+
+  .pop-logo {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  .pop-logo img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+  }
+
+  .pop-text {
+    display: grid;
+    gap: 4px;
+    font-size: 0.92rem;
+    min-width: 0;
+  }
+
+  .pop-text strong {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+  }
+
+  .pop-text a {
+    color: var(--red-text);
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 4px;
+  }
+
+  .pop-text a:hover {
+    text-decoration: underline;
+  }
+
+  .pop-close {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--muted);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .pop-close:hover {
+    color: var(--white);
+    background: rgb(var(--tint) / 0.08);
+  }
+
+  .chip {
+    justify-self: start;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: var(--red-soft);
+    color: var(--red-text);
+  }
+
+  /* On phones the card sits under the map instead of floating beside the pin. */
+  @media (max-width: 640px) {
+    .pop,
+    .pop.flip {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 100%;
+      margin-top: 12px;
+      transform: none;
+    }
+
+    .pin {
+      width: 36px;
+      height: 36px;
+      margin: -18px 0 0 -18px;
+    }
+
+    .dot {
+      width: 13px;
+      height: 13px;
+    }
+
+    .town text {
+      font-size: 22px;
+    }
+
+    .nb-label {
+      font-size: 19px;
+    }
+  }
+</style>
+
+<script>
+  // Pins open their card; one card at a time. Other parts of the page can open a pin with
+  // a "client-map:open" event carrying the client's id.
+  for (const map of document.querySelectorAll<HTMLElement>('[data-client-map]')) {
+    const pins = [...map.querySelectorAll<HTMLButtonElement>('[data-pin]')];
+    const pops = [...map.querySelectorAll<HTMLElement>('[data-pop]')];
+    const close = () => {
+      pops.forEach((p) => (p.hidden = true));
+      pins.forEach((p) => p.setAttribute('aria-expanded', 'false'));
+    };
+    const open = (id: string, focus = false) => {
+      const pin = pins.find((p) => p.dataset.pin === id);
+      const pop = pops.find((p) => p.dataset.pop === id);
+      if (!pin || !pop) return;
+      const wasOpen = !pop.hidden;
+      close();
+      if (wasOpen && !focus) return;
+      pop.hidden = false;
+      pin.setAttribute('aria-expanded', 'true');
+      if (focus) pin.focus({ preventScroll: true });
+    };
+    pins.forEach((pin) => pin.addEventListener('click', () => open(pin.dataset.pin!)));
+    map.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+    map.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+    document.addEventListener('client-map:open', (e) => open((e as CustomEvent<string>).detail, true));
+    document.addEventListener('client-map:filter', (e) => {
+      const edition = (e as CustomEvent<string>).detail;
+      close();
+      pins.forEach((p) => p.classList.toggle('is-hidden', edition !== 'all' && p.dataset.edition !== edition));
+    });
+  }
+</script>

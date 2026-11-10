@@ -2,6 +2,13 @@
   --red: #ff3130;
   --red-soft: rgb(255 49 48 / 0.14);
   --red-text: #ff3130;
+  /* SengetiEdu edition colours. The -text versions are used for words, and are darker in light mode. */
+  --ed-campus: #ff3130;
+  --ed-senior: #ff7a3d;
+  --ed-junior: #ffb020;
+  --ed-campus-text: #ff3130;
+  --ed-senior-text: #ff7a3d;
+  --ed-junior-text: #ffb020;
   --black: #0b0b0c;
   --surface: #141416;
   --surface-2: #1c1c1f;
@@ -40,6 +47,9 @@
   --red-soft: rgb(255 49 48 / 0.1);
   /* Brand red is too light for small text on white; this darker red keeps it readable. */
   --red-text: #d11f1f;
+  --ed-campus-text: #c41c1c;
+  --ed-senior-text: #a8430d;
+  --ed-junior-text: #855600;
   --tint: 11 11 12;
   --bg-rgb: 246 246 247;
   --shade: 255 255 255;

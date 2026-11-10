@@ -4,7 +4,8 @@
  * src/content/clients/ or src/content/testimonials/.
  */
 import { Image } from 'astro:assets';
-import { t, type Lang } from '../i18n';
+import { localizePath, t, type Lang } from '../i18n';
+import { clientsPage } from '../i18n/pages/clients';
 import { getClients, getTestimonials } from '../lib/content';
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 const { lang } = Astro.props;
 const { home } = t(lang);
+const cp = clientsPage[lang];
 const [clients, testimonials] = await Promise.all([getClients(), getTestimonials()]);
 ---
 
@@ -25,16 +27,15 @@ const [clients, testimonials] = await Promise.all([getClients(), getTestimonials
             <ul>
               {clients.map((c) => (
                 <li>
-                  {c.data.url ? (
-                    <a href={c.data.url} rel="noopener" target="_blank">
-                      <Image src={c.data.logo} alt={c.data.name} height={40} densities={[1, 2]} />
-                    </a>
-                  ) : (
-                    <Image src={c.data.logo} alt={c.data.name} height={40} densities={[1, 2]} />
-                  )}
+                  <a href={localizePath(lang, '/clients')} title={c.data.name}>
+                    <Image src={c.data.logo} alt={c.data.name} height={64} fit="contain" densities={[1, 2]} />
+                  </a>
                 </li>
               ))}
             </ul>
+            <a class="more" href={localizePath(lang, '/clients')}>
+              {cp.homeLink} →
+            </a>
           </div>
         )}
         {testimonials.length > 0 && (
@@ -82,17 +83,38 @@ const [clients, testimonials] = await Promise.all([getClients(), getTestimonials
     gap: 28px 48px;
   }
 
-  .clients img {
-    height: 40px;
-    width: auto;
-    opacity: 0.7;
-    filter: grayscale(1);
-    transition: opacity 0.2s, filter 0.2s;
+  /* Logos sit on white tiles so every client's colours look right in both themes. */
+  .clients li a {
+    display: grid;
+    place-items: center;
+    height: 96px;
+    min-width: 132px;
+    padding: 14px 22px;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 12px 30px -16px rgb(0 0 0 / 0.5);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .clients a:hover img {
-    opacity: 1;
-    filter: none;
+  .clients li a:hover {
+    transform: translateY(-4px);
+  }
+
+  .clients img {
+    height: 64px;
+    width: auto;
+  }
+
+  .more {
+    display: inline-block;
+    margin-top: 24px;
+    color: var(--red-text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .more:hover {
+    text-decoration: underline;
   }
 
   .quote {

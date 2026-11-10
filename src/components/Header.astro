@@ -45,10 +45,18 @@ const links: NavLink[] = [
     label: nav.products,
     children: [
       { href: '/products', label: nav.allProducts },
+      { href: '/products/sengetiedu', label: nav.sengetiedu },
       { href: '/demo', label: nav.demo },
     ],
   },
-  { href: '/work', label: nav.work },
+  {
+    href: '/work',
+    label: nav.work,
+    children: [
+      { href: '/work', label: nav.projects },
+      { href: '/clients', label: nav.clients },
+    ],
+  },
   {
     href: hasNews ? '/news' : '/savings-calculator',
     label: nav.resources,

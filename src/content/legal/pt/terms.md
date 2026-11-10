@@ -1,10 +1,10 @@
 ---
 title: Termos de Utilização
 description: Os termos que se aplicam quando utiliza o site da Sengeti Technologies.
-updated: 2026-10-16
+updated: 2026-11-10
 ---
 
-Estes termos aplicam-se à utilização deste site, gerido pela Sengeti Technologies. Ao usar o site, aceita-os. A utilização dos nossos produtos, como o Sengeti Attendance, é também regida pelo acordo que celebramos com cada cliente.
+Estes termos aplicam-se à utilização deste site, gerido pela Sengeti Technologies. Ao usar o site, aceita-os. A utilização dos nossos produtos, como o SengetiEdu, é também regida pelo acordo que celebramos com cada cliente.
 
 ## Utilização deste site
 

@@ -20,3 +20,7 @@ Students now check in by scanning a QR code that changes every 15 seconds, so a 
 - Proxy sign-ins blocked
 - Eligibility lists in one click
 - A new semester set up in an hour
+
+## What came next
+
+The system grew into [Sengeti Campus](/products/sengetiedu#campus), the university and college edition of SengetiEdu, our school platform from ECD to university.

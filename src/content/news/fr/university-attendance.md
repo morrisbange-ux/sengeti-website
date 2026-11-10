@@ -20,3 +20,7 @@ Les étudiants pointent désormais en scannant un code QR qui change toutes les 
 - Les pointages frauduleux bloqués
 - Les listes d'admissibilité en un clic
 - Un nouveau semestre configuré en une heure
+
+## La suite
+
+Le système est devenu [Sengeti Campus](/fr/products/sengetiedu#campus), l’édition pour les universités de SengetiEdu, notre plateforme scolaire de la maternelle à l’université.

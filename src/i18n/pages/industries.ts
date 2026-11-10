@@ -53,7 +53,7 @@ const en = {
       audience: 'Universities, colleges and other higher education institutions',
       title: 'Software for universities and colleges in Zimbabwe | Sengeti Technologies',
       description:
-        'Software and automation for universities and colleges in Zimbabwe and the region: Sengeti Attendance with rotating QR check-in and exam eligibility lists, student records, fee reminders and reports.',
+        'Software and automation for universities and colleges in Zimbabwe and the region: Sengeti Campus with rotating QR check-in and exam eligibility lists, student records, fee reminders and reports.',
       eyebrow: 'Higher education',
       heading: 'Software for universities and colleges',
       headingAccent: 'that takes paper off campus.',
@@ -65,7 +65,7 @@ const en = {
         { title: 'Data in many spreadsheets', text: 'Student records, fees and results live in different files, each slightly different.' },
       ],
       builds: [
-        { title: 'Sengeti Attendance', text: 'QR check-in that changes every 15 seconds, live lecture views and exam eligibility lists in one click.', href: '/products/attendance' },
+        { title: 'Sengeti Campus', text: 'QR check-in that changes every 15 seconds, live lecture views and exam eligibility lists in one click.', href: '/products/sengetiedu#campus' },
         { title: 'Student records and enrolment', text: 'One place for applications, enrolment and student records, instead of scattered spreadsheets.', href: '/software' },
         { title: 'Fee reminders and receipts', text: 'Automatic reminders by SMS, WhatsApp or email, and receipts sent as soon as a payment is recorded.', href: '/automation' },
         { title: 'Reports for faculties and management', text: 'Attendance, enrolment and fee reports that build themselves, by faculty, course or semester.', href: '/automation' },
@@ -74,24 +74,24 @@ const en = {
       ],
       spotlight: {
         eyebrow: 'Our product for higher education',
-        heading: 'Sengeti Attendance',
-        text: 'Students check in from their own phones by scanning a QR code that changes every 15 seconds, so a photo of it shared in a group chat is useless. Lecturers see who is present as it happens, and exam eligibility lists build themselves.',
+        heading: 'Sengeti Campus',
+        text: 'The university and college edition of SengetiEdu. Students check in by scanning a QR code that changes every 15 seconds, so a photo shared in a group chat is useless, and exam eligibility lists build themselves. Around it: lecture notes, assignments, quizzes, semesters and module registration.',
         points: [
           'QR code that changes every 15 seconds',
           'Selfie check-in when a lecturer needs extra proof',
           'Exam eligibility lists in one click',
-          'Android app and web, built for slow connections',
+          'Moodle, Google Classroom, LTI and single sign-on',
         ],
-        productCta: 'See Sengeti Attendance',
+        productCta: 'See Sengeti Campus',
         caseCta: 'Read the case study',
       },
       faqs: [
         {
           q: 'Do you have software for universities in Zimbabwe?',
-          a: 'Yes. Sengeti Attendance is our attendance system for universities and colleges, and we also build custom systems for student records, fees, reporting and finance.',
+          a: 'Yes. Sengeti Campus, the university edition of SengetiEdu, covers attendance, teaching, semesters, fees and students, and we also build custom systems for records, reporting and finance.',
         },
         {
-          q: 'How does Sengeti Attendance stop proxy sign-ins?',
+          q: 'How does Sengeti Campus stop proxy sign-ins?',
           a: 'Students check in by scanning a QR code on the lecture screen that changes every 15 seconds, so a photo of the code sent to a friend no longer works. Lecturers can also ask for a quick selfie when they need extra proof.',
         },
         {
@@ -342,7 +342,7 @@ const fr: typeof en = {
       audience: "Universités, écoles supérieures et autres établissements d'enseignement supérieur",
       title: 'Logiciels pour universités et écoles supérieures au Zimbabwe | Sengeti Technologies',
       description:
-        "Logiciels et automatisation pour les universités et écoles supérieures au Zimbabwe et dans la région : Sengeti Attendance avec pointage par code QR tournant et listes d'admissibilité aux examens, dossiers étudiants, rappels de frais et rapports.",
+        "Logiciels et automatisation pour les universités et écoles supérieures au Zimbabwe et dans la région : Sengeti Campus avec pointage par code QR tournant et listes d'admissibilité aux examens, dossiers étudiants, rappels de frais et rapports.",
       eyebrow: 'Enseignement supérieur',
       heading: 'Des logiciels pour les universités et écoles supérieures',
       headingAccent: 'qui font disparaître le papier du campus.',
@@ -354,7 +354,7 @@ const fr: typeof en = {
         { title: 'Données éparpillées', text: 'Dossiers étudiants, frais et résultats sont dans des fichiers différents, jamais tout à fait identiques.' },
       ],
       builds: [
-        { title: 'Sengeti Attendance', text: "Pointage par code QR qui change toutes les 15 secondes, suivi des cours en direct et listes d'admissibilité aux examens en un clic.", href: '/products/attendance' },
+        { title: 'Sengeti Campus', text: "Pointage par code QR qui change toutes les 15 secondes, suivi des cours en direct et listes d'admissibilité aux examens en un clic.", href: '/products/sengetiedu#campus' },
         { title: 'Dossiers étudiants et inscriptions', text: 'Un seul endroit pour les candidatures, les inscriptions et les dossiers étudiants, au lieu de tableurs dispersés.', href: '/software' },
         { title: 'Rappels de frais et reçus', text: "Rappels automatiques par SMS, WhatsApp ou e-mail, et reçus envoyés dès qu'un paiement est enregistré.", href: '/automation' },
         { title: 'Rapports pour les facultés et la direction', text: 'Rapports de présence, d’inscriptions et de frais qui se font tout seuls, par faculté, cours ou semestre.', href: '/automation' },
@@ -363,24 +363,24 @@ const fr: typeof en = {
       ],
       spotlight: {
         eyebrow: "Notre produit pour l'enseignement supérieur",
-        heading: 'Sengeti Attendance',
-        text: "Les étudiants pointent depuis leur propre téléphone en scannant un code QR qui change toutes les 15 secondes : une photo partagée dans un groupe ne sert donc à rien. Les enseignants voient qui est présent en direct, et les listes d'admissibilité aux examens se font toutes seules.",
+        heading: 'Sengeti Campus',
+        text: "L'édition de SengetiEdu pour les universités. Les étudiants pointent en scannant un code QR qui change toutes les 15 secondes : une photo partagée dans un groupe ne sert à rien, et les listes d'admissibilité aux examens se font toutes seules. Autour : notes de cours, devoirs, quiz, semestres et inscription aux modules.",
         points: [
           'Code QR qui change toutes les 15 secondes',
           'Pointage par selfie quand un enseignant veut une preuve',
           "Listes d'admissibilité aux examens en un clic",
-          'Application Android et web, conçues pour les connexions lentes',
+          'Moodle, Google Classroom, LTI et authentification unique',
         ],
-        productCta: 'Découvrir Sengeti Attendance',
+        productCta: 'Découvrir Sengeti Campus',
         caseCta: "Lire l'étude de cas",
       },
       faqs: [
         {
           q: 'Proposez-vous des logiciels pour les universités au Zimbabwe ?',
-          a: 'Oui. Sengeti Attendance est notre système de gestion des présences pour les universités et écoles supérieures, et nous créons aussi des systèmes sur mesure pour les dossiers étudiants, les frais, les rapports et les finances.',
+          a: 'Oui. Sengeti Campus, l’édition universitaire de SengetiEdu, couvre les présences, l’enseignement, les semestres, les frais et les étudiants, et nous créons aussi des systèmes sur mesure pour les dossiers, les rapports et les finances.',
         },
         {
-          q: 'Comment Sengeti Attendance empêche-t-il les pointages par procuration ?',
+          q: 'Comment Sengeti Campus empêche-t-il les pointages par procuration ?',
           a: "Les étudiants pointent en scannant un code QR affiché en cours qui change toutes les 15 secondes : une photo du code envoyée à un ami ne fonctionne plus. L'enseignant peut aussi demander un selfie rapide s'il veut une preuve supplémentaire.",
         },
         {
@@ -631,7 +631,7 @@ const pt: typeof en = {
       audience: 'Universidades, institutos superiores e outras instituições de ensino superior',
       title: 'Software para universidades e institutos no Zimbabué | Sengeti Technologies',
       description:
-        'Software e automatização para universidades e institutos no Zimbabué e na região: Sengeti Attendance com registo por código QR rotativo e listas de elegibilidade para exames, processos de estudantes, lembretes de propinas e relatórios.',
+        'Software e automatização para universidades e institutos no Zimbabué e na região: Sengeti Campus com registo por código QR rotativo e listas de elegibilidade para exames, processos de estudantes, lembretes de propinas e relatórios.',
       eyebrow: 'Ensino superior',
       heading: 'Software para universidades e institutos',
       headingAccent: 'que tira o papel do campus.',
@@ -643,7 +643,7 @@ const pt: typeof en = {
         { title: 'Dados em muitas folhas de cálculo', text: 'Processos de estudantes, propinas e resultados estão em ficheiros diferentes, nunca iguais.' },
       ],
       builds: [
-        { title: 'Sengeti Attendance', text: 'Registo por código QR que muda a cada 15 segundos, aulas acompanhadas em tempo real e listas de elegibilidade para exames num clique.', href: '/products/attendance' },
+        { title: 'Sengeti Campus', text: 'Registo por código QR que muda a cada 15 segundos, aulas acompanhadas em tempo real e listas de elegibilidade para exames num clique.', href: '/products/sengetiedu#campus' },
         { title: 'Processos e matrículas de estudantes', text: 'Um só lugar para candidaturas, matrículas e processos de estudantes, em vez de folhas de cálculo dispersas.', href: '/software' },
         { title: 'Lembretes e recibos de propinas', text: 'Lembretes automáticos por SMS, WhatsApp ou e-mail, e recibos enviados assim que um pagamento é registado.', href: '/automation' },
         { title: 'Relatórios para faculdades e direção', text: 'Relatórios de presenças, matrículas e propinas que se fazem sozinhos, por faculdade, curso ou semestre.', href: '/automation' },
@@ -652,24 +652,24 @@ const pt: typeof en = {
       ],
       spotlight: {
         eyebrow: 'O nosso produto para o ensino superior',
-        heading: 'Sengeti Attendance',
-        text: 'Os estudantes registam a presença no próprio telemóvel lendo um código QR que muda a cada 15 segundos, por isso uma fotografia partilhada num grupo não serve de nada. Os docentes veem quem está presente em tempo real, e as listas de elegibilidade para exames fazem-se sozinhas.',
+        heading: 'Sengeti Campus',
+        text: 'A edição do SengetiEdu para universidades. Os estudantes registam a presença lendo um código QR que muda a cada 15 segundos, por isso uma fotografia partilhada num grupo não serve de nada, e as listas de elegibilidade para exames fazem-se sozinhas. À volta: apontamentos, trabalhos, testes, semestres e inscrição nas cadeiras.',
         points: [
           'Código QR que muda a cada 15 segundos',
           'Registo por selfie quando o docente precisa de prova',
           'Listas de elegibilidade para exames num clique',
-          'Aplicação Android e web, feitas para ligações lentas',
+          'Moodle, Google Classroom, LTI e acesso único',
         ],
-        productCta: 'Conhecer o Sengeti Attendance',
+        productCta: 'Conhecer o Sengeti Campus',
         caseCta: 'Ler o caso de estudo',
       },
       faqs: [
         {
           q: 'Têm software para universidades no Zimbabué?',
-          a: 'Sim. O Sengeti Attendance é o nosso sistema de presenças para universidades e institutos, e também criamos sistemas à medida para processos de estudantes, propinas, relatórios e finanças.',
+          a: 'Sim. O Sengeti Campus, a edição universitária do SengetiEdu, cobre presenças, ensino, semestres, propinas e estudantes, e também criamos sistemas à medida para processos, relatórios e finanças.',
         },
         {
-          q: 'Como é que o Sengeti Attendance impede presenças por procuração?',
+          q: 'Como é que o Sengeti Campus impede presenças por procuração?',
           a: 'Os estudantes registam a presença lendo um código QR projetado na aula que muda a cada 15 segundos, por isso uma fotografia do código enviada a um colega deixa de funcionar. O docente pode ainda pedir uma selfie rápida quando precisa de prova adicional.',
         },
         {

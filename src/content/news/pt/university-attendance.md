@@ -20,3 +20,7 @@ Agora os estudantes registam a presença lendo um código QR que muda a cada 15 
 - Presenças falsas bloqueadas
 - Listas de elegibilidade num clique
 - Um novo semestre configurado numa hora
+
+## O que veio a seguir
+
+O sistema deu origem ao [Sengeti Campus](/pt/products/sengetiedu#campus), a edição para universidades do SengetiEdu, a nossa plataforma escolar do pré-escolar à universidade.
