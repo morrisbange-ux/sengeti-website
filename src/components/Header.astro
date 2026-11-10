@@ -46,6 +46,7 @@ const links: NavLink[] = [
     children: [
       { href: '/products', label: nav.allProducts },
       { href: '/products/sengetiedu', label: nav.sengetiedu },
+      { href: '/school-demo', label: schoolDemo[lang].nav },
       { href: '/demo', label: nav.demo },
     ],
   },
@@ -76,6 +77,7 @@ const mobileLinks: NavLink[] = [{ href: '/', label: nav.home }, ...links];
 const switchPath = path === '/404' ? '/' : path;
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
 const inSection = (l: NavLink) => isCurrent(l.href) || !!l.children?.some((c) => isCurrent(c.href));
+import { schoolDemo } from '../i18n/pages/schools';
 ---
 
 <header class="site-header">

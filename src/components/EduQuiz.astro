@@ -1,0 +1,390 @@
+---
+/**
+ * "Which SengetiEdu fits your school?" Three quick questions; the answer
+ * updates as the visitor picks, and the demo button carries their answers
+ * to the school demo form.
+ */
+import { localizePath, type Lang } from '../i18n';
+import { schoolQuiz } from '../i18n/pages/schools';
+import { editionNames } from '../i18n/pages/clients';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const q = schoolQuiz[lang];
+const order = ['junior', 'senior', 'campus'] as const;
+const demoHref = localizePath(lang, '/school-demo');
+---
+
+<div
+  class="quiz card"
+  data-quiz
+  data-several={q.several}
+  data-and={q.and}
+  data-size-note={q.sizeNote}
+  data-demo={demoHref}>
+  <form class="qs" onsubmit="return false">
+    <fieldset>
+      <legend><span class="n">1</span>{q.levelsQ}</legend>
+      <p class="hint">{q.levelsHint}</p>
+      <div class="opts">
+        {
+          order.map((e) => (
+            <label class:list={['opt', e]}>
+              <input type="checkbox" name="level" value={e} />
+              <span class="dot" aria-hidden="true" />
+              {q.levels[e]}
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend><span class="n">2</span>{q.boardingQ}</legend>
+      <div class="opts row">
+        <label class="opt"><input type="radio" name="boarding" value="yes" />{q.yes}</label>
+        <label class="opt"><input type="radio" name="boarding" value="no" />{q.no}</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend><span class="n">3</span>{q.sizeQ}</legend>
+      <div class="opts grid2">
+        {
+          q.sizes.map((s, i) => (
+            <label class="opt">
+              <input type="radio" name="size" value={String(i)} data-label={s} />
+              {s}
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+  </form>
+
+  <div class="result" aria-live="polite">
+    <p class="empty">{q.resultEmpty}</p>
+    <div class="out" hidden>
+      <span class="eyebrow">{q.resultEyebrow}</span>
+      <div class="picks">
+        {
+          order.map((e) => (
+            <a class:list={['pick', e]} data-ed={e} href={`#${e}`} hidden>
+              <span class="dot" aria-hidden="true" />
+              <strong>{editionNames[e]}</strong>
+            </a>
+          ))
+        }
+      </div>
+      <p class="note several" hidden></p>
+      <p class="note board-yes" hidden>{q.boardingIncluded}</p>
+      <p class="note board-campus" hidden>{q.boardingCampus}</p>
+      <p class="note size" hidden></p>
+      <div class="actions">
+        <a class="btn btn-primary book" href={demoHref}>{q.book}</a>
+        <a class="link see" href="#junior">{q.seeIncluded} →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-quiz]').forEach((quiz) => {
+    const form = quiz.querySelector('form')!;
+    const out = quiz.querySelector<HTMLElement>('.out')!;
+    const empty = quiz.querySelector<HTMLElement>('.empty')!;
+    const several = quiz.querySelector<HTMLElement>('.several')!;
+    const boardYes = quiz.querySelector<HTMLElement>('.board-yes')!;
+    const boardCampus = quiz.querySelector<HTMLElement>('.board-campus')!;
+    const sizeNote = quiz.querySelector<HTMLElement>('.size')!;
+    const book = quiz.querySelector<HTMLAnchorElement>('.book')!;
+    const see = quiz.querySelector<HTMLAnchorElement>('.see')!;
+    const picks = [...quiz.querySelectorAll<HTMLAnchorElement>('.pick')];
+
+    const update = () => {
+      const levels = [...form.querySelectorAll<HTMLInputElement>('input[name="level"]:checked')].map((i) => i.value);
+      const boarding = form.querySelector<HTMLInputElement>('input[name="boarding"]:checked')?.value;
+      const size = form.querySelector<HTMLInputElement>('input[name="size"]:checked');
+      const has = levels.length > 0;
+      out.hidden = !has;
+      empty.hidden = has;
+      quiz.classList.toggle('answered', has);
+      if (!has) return;
+
+      const shown = picks.filter((p) => {
+        const on = levels.includes(p.dataset.ed!);
+        p.hidden = !on;
+        return on;
+      });
+      const names = shown.map((p) => p.querySelector('strong')!.textContent);
+      several.hidden = names.length < 2;
+      if (names.length > 1) {
+        const list = names.slice(0, -1).join(', ') + ` ${quiz.dataset.and} ` + names.at(-1);
+        several.textContent = quiz.dataset.several!.replace('{list}', list);
+      }
+      const schools = levels.some((l) => l !== 'campus');
+      boardYes.hidden = !(boarding === 'yes' && schools);
+      boardCampus.hidden = !(boarding === 'yes' && !schools);
+      sizeNote.hidden = !size;
+      if (size) {
+        const label = size.dataset.label!;
+        sizeNote.textContent = quiz.dataset.sizeNote!.replace('{size}', label.charAt(0).toLowerCase() + label.slice(1));
+      }
+
+      const first = shown[0]?.dataset.ed ?? 'junior';
+      see.href = `#${first}`;
+      const params = new URLSearchParams({ edition: levels.length === 1 ? first : 'unsure' });
+      if (boarding) params.set('boarding', boarding);
+      if (size) params.set('learners', size.value);
+      book.href = `${quiz.dataset.demo}?${params}#form`;
+    };
+    form.addEventListener('change', update);
+    update();
+  });
+</script>
+
+<style>
+  .quiz {
+    display: grid;
+    gap: 28px;
+    padding: clamp(20px, 4vw, 36px);
+  }
+
+  .junior {
+    --c: var(--ed-junior);
+  }
+
+  .senior {
+    --c: var(--ed-senior);
+  }
+
+  .campus {
+    --c: var(--ed-campus);
+  }
+
+  .qs {
+    display: grid;
+    gap: 24px;
+    align-content: center;
+  }
+
+  fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    padding: 0;
+  }
+
+  .n {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--red-soft);
+    color: var(--red-text);
+    font-size: 0.85rem;
+    flex: none;
+  }
+
+  .hint {
+    margin: -6px 0 12px;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .opts {
+    display: grid;
+    gap: 8px;
+  }
+
+  .opts.row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .opts.grid2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .opt {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgb(var(--tint) / 0.03);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s,
+      transform 0.2s;
+  }
+
+  .opt:hover {
+    border-color: rgb(var(--tint) / 0.3);
+  }
+
+  .opt input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .opt:has(input:focus-visible) {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  .opt:has(input:checked) {
+    border-color: var(--c, var(--red));
+    background: color-mix(in srgb, var(--c, var(--red)) 12%, transparent);
+  }
+
+  .opt .dot,
+  .pick .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex: none;
+    background: var(--c);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 25%, transparent);
+  }
+
+  .result {
+    position: relative;
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px dashed var(--border);
+    display: grid;
+    align-content: center;
+    min-height: 220px;
+    transition:
+      border-color 0.3s,
+      background-color 0.3s;
+  }
+
+  .answered .result {
+    border-style: solid;
+    border-color: rgb(255 49 48 / 0.35);
+    background: radial-gradient(ellipse 90% 70% at 100% 0%, rgb(255 49 48 / 0.12), transparent 70%), rgb(var(--tint) / 0.03);
+  }
+
+  .empty {
+    margin: 0;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .out {
+    display: grid;
+    gap: 14px;
+    animation: rise 0.4s ease both;
+  }
+
+  .out[hidden] {
+    display: none;
+  }
+
+  .picks {
+    display: grid;
+    gap: 8px;
+  }
+
+  .pick {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: clamp(1.3rem, 3vw, 1.6rem);
+    color: var(--white);
+    text-decoration: none;
+    animation: rise 0.4s ease both;
+  }
+
+  .pick[hidden] {
+    display: none;
+  }
+
+  .pick .dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  .pick:hover strong {
+    text-decoration: underline;
+    text-decoration-color: var(--c);
+    text-underline-offset: 4px;
+  }
+
+  .note {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-top: 4px;
+  }
+
+  .link {
+    color: var(--red-text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .out,
+    .pick {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .quiz {
+      grid-template-columns: 1.5fr 1fr;
+      align-items: stretch;
+    }
+
+    .qs {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 24px;
+    }
+
+    .qs fieldset:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .qs fieldset:first-child .opts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

@@ -10,12 +10,44 @@ interface Props {
   emailSubject: string;
   /** Label above the subject list (defaults to "Subject"). */
   subjectLabel?: string;
-  /** Extra optional drop-downs, such as budget and timeline. */
-  extraSelects?: { name: string; label: string; options: string[] }[];
+  /** Form field name for the subject list (defaults to "subject"). */
+  subjectName?: string;
+  /**
+   * Extra drop-downs, such as budget and timeline. An option can carry a key,
+   * so a link like ?edition=senior can pick it (see the page's own script).
+   */
+  extraSelects?: { name: string; label: string; options: (string | { key: string; label: string })[] }[];
+  /** Extra text boxes, shown after the organisation row. */
+  extraInputs?: { name: string; label: string; autocomplete?: string; required?: boolean }[];
+  /** Label for the organisation box (defaults to "Organisation"). */
+  organisationLabel?: string;
+  organisationRequired?: boolean;
+  phoneRequired?: boolean;
+  /** Label for the phone box (defaults to the optional phone label). */
+  phoneLabel?: string;
+  /** Text on the send button (defaults to "Send message"). */
+  submitLabel?: string;
   /** Label above the message box (defaults to "Message"). */
   messageLabel?: string;
+  messageRequired?: boolean;
 }
-const { lang, heading, subjects, emailSubject, subjectLabel, extraSelects = [], messageLabel } = Astro.props;
+const {
+  lang,
+  heading,
+  subjects,
+  emailSubject,
+  subjectLabel,
+  subjectName = 'subject',
+  extraSelects = [],
+  extraInputs = [],
+  organisationLabel,
+  organisationRequired = false,
+  phoneRequired = false,
+  phoneLabel,
+  submitLabel,
+  messageLabel,
+  messageRequired = true,
+} = Astro.props;
 const { contact } = t(lang);
 ---
 
@@ -42,17 +74,29 @@ const { contact } = t(lang);
   </div>
   <div class="row">
     <label>
-      <span>{contact.phone}</span>
-      <input name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+      <span>{phoneLabel ?? contact.phone}</span>
+      <input name="phone" type="tel" autocomplete="tel" inputmode="tel" required={phoneRequired} />
     </label>
     <label>
-      <span>{contact.organisation}</span>
-      <input name="organisation" type="text" autocomplete="organization" />
+      <span>{organisationLabel ?? contact.organisation}</span>
+      <input name="organisation" type="text" autocomplete="organization" required={organisationRequired} />
     </label>
   </div>
+  {
+    extraInputs.length > 0 && (
+      <div class="row">
+        {extraInputs.map((f) => (
+          <label>
+            <span>{f.label}</span>
+            <input name={f.name} type="text" autocomplete={f.autocomplete} required={f.required} />
+          </label>
+        ))}
+      </div>
+    )
+  }
   <label>
     <span>{subjectLabel ?? contact.subject}</span>
-    <select name="subject">
+    <select name={subjectName}>
       {subjects.map((s) => <option>{s}</option>)}
     </select>
   </label>
@@ -63,9 +107,7 @@ const { contact } = t(lang);
           <label>
             <span>{sel.label}</span>
             <select name={sel.name}>
-              {sel.options.map((o) => (
-                <option>{o}</option>
-              ))}
+              {sel.options.map((o) => (typeof o === 'string' ? <option>{o}</option> : <option data-key={o.key}>{o.label}</option>))}
             </select>
           </label>
         ))}
@@ -74,11 +116,11 @@ const { contact } = t(lang);
   }
   <label>
     <span>{messageLabel ?? contact.message}</span>
-    <textarea name="message" rows="6" required></textarea>
+    <textarea name="message" rows="6" required={messageRequired}></textarea>
   </label>
   <!-- Spam trap: people never see or fill this field. -->
   <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true" />
-  <button class="btn btn-primary" type="submit">{contact.send}</button>
+  <button class="btn btn-primary" type="submit">{submitLabel ?? contact.send}</button>
   <p class="status" role="status" aria-live="polite"></p>
 </form>
 

@@ -7,6 +7,7 @@ import { phoneLink, site, whatsappLink } from '../config/site';
 import { getNews } from '../lib/content';
 import SocialIcons from './SocialIcons.astro';
 import NewsletterForm from './NewsletterForm.astro';
+import { schoolDemo } from '../i18n/pages/schools';
 
 interface Props {
   lang: Lang;
@@ -52,6 +53,7 @@ const hasNews = (await getNews(lang)).length > 0;
         <li><a href={localizePath(lang, '/industries')}>{nav.industries}</a></li>
         <li><a href={localizePath(lang, '/products')}>{nav.products}</a></li>
         <li><a href={localizePath(lang, '/products/sengetiedu')}>SengetiEdu</a></li>
+        <li><a href={localizePath(lang, '/school-demo')}>{schoolDemo[lang].nav}</a></li>
         <li><a href={localizePath(lang, '/demo')}>{nav.demo}</a></li>
       </ul>
     </div>

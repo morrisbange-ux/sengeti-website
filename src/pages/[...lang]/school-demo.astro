@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import ContactChannels from '../../components/ContactChannels.astro';
+import { langPaths, localizePath, type Lang } from '../../i18n';
+import { brochure, schoolDemo, schoolQuiz } from '../../i18n/pages/schools';
+import { editionNames } from '../../i18n/pages/clients';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const d = schoolDemo[lang];
+const q = schoolQuiz[lang];
+---
+
+<BaseLayout lang={lang} title={d.title} description={d.description} path="/school-demo">
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <span class="eyebrow">{d.eyebrow}</span>
+      <h1>{d.heading} <span class="gradient-text">{d.headingAccent}</span></h1>
+      <p class="lead">{d.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container">
+      <ol class="steps">
+        {
+          d.steps.map((step, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <span class="num">{i + 1}</span>
+              <h2>{step.title}</h2>
+              <p class="muted">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section top0" id="form">
+    <div class="container layout">
+      <div data-school-form>
+        <ContactForm
+          lang={lang}
+          heading={d.formHeading}
+          subjectLabel={d.roleLabel}
+          subjectName="role"
+          subjects={d.roles}
+          organisationLabel={d.schoolLabel}
+          organisationRequired
+          phoneRequired
+          phoneLabel={d.phoneLabel}
+          submitLabel={d.submit}
+          extraInputs={[{ name: 'town', label: d.townLabel, autocomplete: 'address-level2' }]}
+          extraSelects={[
+            {
+              name: 'edition',
+              label: d.editionLabel,
+              options: [
+                { key: 'unsure', label: d.unsure },
+                { key: 'junior', label: editionNames.junior },
+                { key: 'senior', label: editionNames.senior },
+                { key: 'campus', label: editionNames.campus },
+              ],
+            },
+            { name: 'learners', label: d.learnersLabel, options: q.sizes.map((s, i) => ({ key: String(i), label: s })) },
+            { name: 'boarding', label: d.boardingLabel, options: [{ key: 'no', label: q.no }, { key: 'yes', label: q.yes }] },
+            { name: 'format', label: d.formatLabel, options: d.formats },
+          ]}
+          messageLabel={d.messageLabel}
+          messageRequired={false}
+          emailSubject="New SengetiEdu school demo request"
+        />
+      </div>
+      <aside class="details">
+        <h2 class="aside-heading">{d.preferWhatsApp}</h2>
+        <ContactChannels lang={lang} showLocation={false} />
+        <a class="quiz-link" href={localizePath(lang, '/products/sengetiedu') + '#quiz'}>{d.quizLink} →</a>
+        <a class="quiz-link" href={brochure[lang].href} download>{brochure[lang].label}</a>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Answers from the edition quiz arrive as ?edition=senior&learners=1&boarding=yes.
+  const params = new URLSearchParams(location.search);
+  const form = document.querySelector('[data-school-form] form');
+  for (const name of ['edition', 'learners', 'boarding']) {
+    const key = params.get(name);
+    const select = form?.querySelector<HTMLSelectElement>(`select[name="${name}"]`);
+    const option = key && select ? [...select.options].find((o) => o.dataset.key === key) : undefined;
+    if (select && option) select.value = option.value;
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    max-width: 20ch;
+  }
+
+  .top0 {
+    padding-top: 24px;
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .steps li {
+    padding: 20px 20px 20px 0;
+    border-top: 2px solid var(--border);
+  }
+
+  .steps li:first-child {
+    border-top-color: var(--red);
+  }
+
+  .steps h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3em;
+  }
+
+  .steps p {
+    margin: 0;
+  }
+
+  .num {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--red-soft);
+    color: var(--red-text);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .layout {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .aside-heading {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+
+  .quiz-link {
+    display: block;
+    width: fit-content;
+    margin-top: 20px;
+    color: var(--red-text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .quiz-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 1.6fr 1fr;
+    }
+  }
+</style>

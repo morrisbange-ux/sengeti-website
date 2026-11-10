@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import ogImages from './integrations/og-images.mjs';
 import { site } from './src/config/site.ts';
 
 export default defineConfig({
@@ -16,5 +17,5 @@ export default defineConfig({
     '/fr/products/attendance': '/fr/products/sengetiedu',
     '/pt/products/attendance': '/pt/products/sengetiedu',
   },
-  integrations: [sitemap()],
+  integrations: [sitemap(), ogImages()],
 });

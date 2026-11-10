@@ -21,10 +21,12 @@ interface Props {
   noindex?: boolean;
 }
 
-const { lang, title, description, path, image = '/og-image.png', schema = [], noindex = false } = Astro.props;
+const { lang, title, description, path, image, schema = [], noindex = false } = Astro.props;
 const dict = t(lang);
 const canonical = new URL(localizePath(lang, path), site.url).href;
-const imageUrl = new URL(image, site.url).href;
+// Each page gets its own share picture, made after the build by integrations/og-images.mjs.
+const ogKey = localizePath(lang, path).replace(/^\/+|\/+$/g, '') || 'index';
+const imageUrl = new URL(image ?? (noindex ? '/og-image.png' : `/og/${ogKey}.png`), site.url).href;
 
 const organization = {
   '@context': 'https://schema.org',
