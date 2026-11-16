@@ -9,7 +9,7 @@ const en = {
   eyebrow: 'SengetiEdu platform',
   heading: 'One platform for every school,',
   headingAccent: 'from ECD to university.',
-  lead: 'Attendance, teaching, results, fees and families on every phone. Three editions, one foundation, built in Zimbabwe for how schools here really work.',
+  lead: 'Attendance, teaching, results, fees and families on every phone. Three editions, one foundation, built in Zimbabwe around how schools here run.',
   ctaDemo: 'Book a free demonstration',
   ctaTry: 'Try the attendance demo',
   jump: 'Jump to',

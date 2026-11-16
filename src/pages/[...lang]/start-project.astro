@@ -53,10 +53,10 @@ const { project } = t(lang);
         messageLabel={project.messageLabel}
         emailSubject="New project enquiry"
       />
-      <aside class="details">
+      <div class="details">
         <h2 class="aside-heading">{project.preferWhatsApp}</h2>
         <ContactChannels lang={lang} showLocation={false} />
-      </aside>
+      </div>
     </div>
   </section>
 </BaseLayout>

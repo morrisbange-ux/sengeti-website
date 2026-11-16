@@ -2,6 +2,7 @@
 /** Cards linking to the solution pages, shown on Home and Services. */
 import Icon from './Icon.astro';
 import { localizePath, t, type Lang } from '../i18n';
+import { homeExtras } from '../i18n/pages/home';
 
 interface Props {
   lang: Lang;
@@ -19,6 +20,7 @@ const cards = [
 <section class="section">
   <div class="container">
     <div class="section-head" data-reveal>
+      <span class="eyebrow">{homeExtras[lang].kickers.solutions}</span>
       <h2>{solutions.teaserHeading}</h2>
       <p class="lead">{solutions.teaserLead}</p>
     </div>

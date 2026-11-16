@@ -62,7 +62,7 @@ const en = {
     eyebrow: 'Automation · Software · Cloud',
     heading: 'We automate the work that',
     headingAccent: 'slows business down.',
-    lead: 'Process automation, systems integration and custom software for organisations in Zimbabwe and beyond. Reliable, affordable and built for the way your team really works.',
+    lead: 'Process automation, systems integration and custom software for organisations in Zimbabwe and beyond. Reliable, affordable and shaped around the way your team already works.',
     primaryCta: 'See our services',
     secondaryCta: 'Talk to us',
     stackLabel: 'We connect with the tools you already use',
@@ -86,7 +86,7 @@ const en = {
     caseStudiesHeading: 'Our work',
     whyHeading: 'Why Sengeti',
     why: [
-      { title: 'Local and accessible', text: 'A Zimbabwean team that understands how organisations in the region really work.' },
+      { title: 'Local and accessible', text: 'A Zimbabwean team that knows how organisations in the region run, day to day.' },
       { title: 'Practical and affordable', text: 'Solutions sized to your budget, with value you can see quickly.' },
       { title: 'Mobile first', text: 'Built for phones and patchy connections, and works offline where it matters.' },
       { title: 'Secure by design', text: 'Two-step sign-in, backups, and data kept private and separate.' },
@@ -104,7 +104,7 @@ const en = {
     lead: 'Sengeti Technologies is a Zimbabwean technology company that helps organisations replace slow, manual work with reliable digital systems.',
     storyHeading: 'Who we are',
     story: [
-      'We start by understanding how work really gets done: the paper forms, the spreadsheets, the copy-paste between systems, the approvals that wait in someone’s inbox. Then we automate it.',
+      'We start where the work happens: the paper forms, the spreadsheets, the copy-paste between systems, the approvals that wait in someone’s inbox. Then we automate it.',
       'The result is less time lost, fewer mistakes, and information leaders can trust when they need it.',
     ],
     missionHeading: 'Our mission',
@@ -187,7 +187,7 @@ const en = {
     process: [
       {
         title: 'Discover',
-        text: 'We sit with your team and watch how the work is really done. We find the bottlenecks, the repeated steps and the errors, and estimate what fixing them is worth.',
+        text: 'We sit with your team and watch the work as it happens. We find the bottlenecks, the repeated steps and the errors, and estimate what fixing them is worth.',
       },
       {
         title: 'Design',
@@ -289,7 +289,7 @@ const en = {
     heading: 'How we build',
     lead: 'The engineering choices behind every Sengeti product and client project.',
     pillars: [
-      { icon: 'phone', title: 'Mobile first', text: 'Designed for the phones people really use, with Android apps that work offline where it matters.' },
+      { icon: 'phone', title: 'Mobile first', text: 'Designed for the phones people carry, with Android apps that work offline where it matters.' },
       { icon: 'cloud', title: 'Cloud native', text: 'Hosted on modern cloud infrastructure that scales from one office or campus to many.' },
       { icon: 'lock', title: 'Secure by design', text: 'Two-step sign-in, encrypted connections and regular backups protect your data.' },
       { icon: 'signal', title: 'Light on data', text: 'Small, efficient apps and pages that stay quick on slow or expensive connections.' },
@@ -618,7 +618,7 @@ const en = {
       eyebrow: 'Custom software development',
       heading: 'Software built',
       headingAccent: 'around how you work.',
-      lead: 'We design and build web and mobile software that fits your organisation exactly: fast, secure, easy to use and ready for the connections your users really have.',
+      lead: 'We design and build web and mobile software that fits your organisation exactly: fast, secure, easy to use and ready for slow and patchy connections.',
       teaser: 'Web apps, mobile apps, portals and APIs, designed with you and built to last.',
       capabilities: [
         { icon: 'web-mobile', title: 'Web applications', text: 'Business systems, dashboards and portals that run in any browser, on any device.' },

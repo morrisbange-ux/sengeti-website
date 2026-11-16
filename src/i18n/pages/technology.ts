@@ -28,7 +28,7 @@ const en = {
     {
       icon: 'phone',
       title: 'Mobile',
-      text: 'Apps for the phones people really use.',
+      text: 'Apps for the phones people carry.',
       items: ['Android', 'Kotlin', 'Flutter', 'React Native', 'Progressive web apps', 'Offline sync'],
     },
     {
@@ -88,7 +88,7 @@ const fr: typeof en = {
     {
       icon: 'phone',
       title: 'Mobile',
-      text: 'Des applications pour les téléphones que les gens utilisent vraiment.',
+      text: 'Des applications pour les téléphones que les gens ont en poche.',
       items: ['Android', 'Kotlin', 'Flutter', 'React Native', 'Applications web progressives', 'Synchronisation hors ligne'],
     },
     {
@@ -148,7 +148,7 @@ const pt: typeof en = {
     {
       icon: 'phone',
       title: 'Móvel',
-      text: 'Aplicações para os telemóveis que as pessoas realmente usam.',
+      text: 'Aplicações para os telemóveis que as pessoas têm no bolso.',
       items: ['Android', 'Kotlin', 'Flutter', 'React Native', 'Aplicações web progressivas', 'Sincronização offline'],
     },
     {

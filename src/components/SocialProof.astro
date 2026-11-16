@@ -10,16 +10,20 @@ import { getClients, getTestimonials } from '../lib/content';
 
 interface Props {
   lang: Lang;
+  /** 'logos' draws only the slim logo strip, 'quotes' only the testimonials. */
+  part?: 'all' | 'logos' | 'quotes';
 }
-const { lang } = Astro.props;
+const { lang, part = 'all' } = Astro.props;
 const { home } = t(lang);
 const cp = clientsPage[lang];
-const [clients, testimonials] = await Promise.all([getClients(), getTestimonials()]);
+const [allClients, allTestimonials] = await Promise.all([getClients(), getTestimonials()]);
+const clients = part === 'quotes' ? [] : allClients;
+const testimonials = part === 'logos' ? [] : allTestimonials;
 ---
 
 {
   (clients.length > 0 || testimonials.length > 0) && (
-    <section class="section">
+    <section class:list={['section', { strip: part === 'logos' }]}>
       <div class="container">
         {clients.length > 0 && (
           <div class="clients" data-reveal>
@@ -67,6 +71,49 @@ const [clients, testimonials] = await Promise.all([getClients(), getTestimonials
 }
 
 <style>
+  /* The slim strip under the home hero: label, logos and link on one line. */
+  .strip {
+    padding-block: 8px 24px;
+  }
+
+  .strip .clients {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px 28px;
+    margin: 0;
+    padding: 18px 24px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgb(var(--tint) / 0.025);
+  }
+
+  .strip .eyebrow {
+    margin: 0;
+  }
+
+  .strip .clients li a {
+    height: 56px;
+    min-width: 0;
+    padding: 6px 14px;
+    border-radius: 12px;
+  }
+
+  .strip .clients img {
+    height: 44px;
+  }
+
+  .strip .more {
+    margin: 0;
+  }
+
+  @media (max-width: 640px) {
+    .strip .clients {
+      border-radius: 24px;
+    }
+  }
+
   .clients {
     text-align: center;
     margin-bottom: clamp(40px, 6vw, 72px);

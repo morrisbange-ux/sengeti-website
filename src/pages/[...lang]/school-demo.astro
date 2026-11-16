@@ -76,12 +76,12 @@ const q = schoolQuiz[lang];
           emailSubject="New SengetiEdu school demo request"
         />
       </div>
-      <aside class="details">
+      <div class="details">
         <h2 class="aside-heading">{d.preferWhatsApp}</h2>
         <ContactChannels lang={lang} showLocation={false} />
         <a class="quiz-link" href={localizePath(lang, '/products/sengetiedu') + '#quiz'}>{d.quizLink} →</a>
         <a class="quiz-link" href={brochure[lang].href} download>{brochure[lang].label}</a>
-      </aside>
+      </div>
     </div>
   </section>
 </BaseLayout>

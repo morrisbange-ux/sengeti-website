@@ -61,7 +61,7 @@ const pt: Dict = {
     eyebrow: 'Automação · Software · Cloud',
     heading: 'Automatizamos o trabalho que',
     headingAccent: 'atrasa a sua organização.',
-    lead: 'Automação de processos, integração de sistemas e software à medida para organizações no Zimbabué e além. Fiável, acessível e pensado para a forma como a sua equipa realmente trabalha.',
+    lead: 'Automação de processos, integração de sistemas e software à medida para organizações no Zimbabué e além. Fiável, acessível e pensado à volta da forma como a sua equipa já trabalha.',
     primaryCta: 'Ver os nossos serviços',
     secondaryCta: 'Fale connosco',
     stackLabel: 'Ligamo-nos às ferramentas que já utiliza',
@@ -85,7 +85,7 @@ const pt: Dict = {
     caseStudiesHeading: 'O nosso trabalho',
     whyHeading: 'Porquê a Sengeti',
     why: [
-      { title: 'Próximos e acessíveis', text: 'Uma equipa zimbabueana que entende como as organizações da região realmente funcionam.' },
+      { title: 'Próximos e acessíveis', text: 'Uma equipa zimbabueana que conhece o dia a dia das organizações da região.' },
       { title: 'Práticos e acessíveis', text: 'Soluções ajustadas ao seu orçamento, com resultados visíveis rapidamente.' },
       { title: 'Pensado para o telemóvel', text: 'Feito para telemóveis e ligações instáveis, e funciona offline onde é importante.' },
       { title: 'Seguro desde a conceção', text: 'Início de sessão em dois passos, cópias de segurança e dados privados e separados.' },
@@ -103,7 +103,7 @@ const pt: Dict = {
     lead: 'A Sengeti Technologies é uma empresa de tecnologia zimbabueana que ajuda as organizações a substituir trabalho manual e lento por sistemas digitais fiáveis.',
     storyHeading: 'Quem somos',
     story: [
-      'Começamos por perceber como o trabalho é realmente feito: os formulários em papel, as folhas de cálculo, o copiar e colar entre sistemas, as aprovações à espera na caixa de correio de alguém. Depois automatizamo-lo.',
+      'Começamos onde o trabalho acontece: os formulários em papel, as folhas de cálculo, o copiar e colar entre sistemas, as aprovações à espera na caixa de correio de alguém. Depois automatizamo-lo.',
       'O resultado é menos tempo perdido, menos erros e informação em que os líderes podem confiar, quando precisam dela.',
     ],
     missionHeading: 'A nossa missão',
@@ -186,7 +186,7 @@ const pt: Dict = {
     process: [
       {
         title: 'Descobrir',
-        text: 'Sentamo-nos com a sua equipa e observamos como o trabalho é realmente feito. Encontramos os estrangulamentos, os passos repetidos e os erros, e estimamos quanto vale resolvê-los.',
+        text: 'Sentamo-nos com a sua equipa e observamos o trabalho tal como acontece. Encontramos os estrangulamentos, os passos repetidos e os erros, e estimamos quanto vale resolvê-los.',
       },
       {
         title: 'Desenhar',
@@ -288,7 +288,7 @@ const pt: Dict = {
     heading: 'Como construímos',
     lead: 'As escolhas técnicas por trás de cada produto Sengeti e de cada projeto de cliente.',
     pillars: [
-      { icon: 'phone', title: 'Telemóvel primeiro', text: 'Pensado para os telemóveis que as pessoas realmente usam, com aplicações Android que funcionam offline onde é importante.' },
+      { icon: 'phone', title: 'Telemóvel primeiro', text: 'Pensado para os telemóveis que as pessoas têm no bolso, com aplicações Android que funcionam offline onde é importante.' },
       { icon: 'cloud', title: 'Nativo da cloud', text: 'Alojado em infraestrutura cloud moderna que cresce de um escritório ou campus para muitos.' },
       { icon: 'lock', title: 'Seguro desde a conceção', text: 'Início de sessão em dois passos, ligações encriptadas e cópias de segurança regulares protegem os seus dados.' },
       { icon: 'signal', title: 'Leve nos dados', text: 'Aplicações e páginas pequenas e eficientes que se mantêm rápidas em ligações lentas ou caras.' },
@@ -617,7 +617,7 @@ const pt: Dict = {
       eyebrow: 'Desenvolvimento de software à medida',
       heading: 'Software feito',
       headingAccent: 'à medida da sua forma de trabalhar.',
-      lead: 'Desenhamos e desenvolvemos software web e móvel que se ajusta exatamente à sua organização: rápido, seguro, fácil de usar e preparado para as ligações que os seus utilizadores realmente têm.',
+      lead: 'Desenhamos e desenvolvemos software web e móvel que se ajusta exatamente à sua organização: rápido, seguro, fácil de usar e preparado para ligações lentas ou instáveis.',
       teaser: 'Aplicações web e móveis, portais e APIs, desenhados consigo e feitos para durar.',
       capabilities: [
         { icon: 'web-mobile', title: 'Aplicações web', text: 'Sistemas de gestão, painéis e portais que funcionam em qualquer navegador e dispositivo.' },
