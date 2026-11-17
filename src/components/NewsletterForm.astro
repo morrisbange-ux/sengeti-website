@@ -1,0 +1,145 @@
+---
+/** Email sign-up in the footer. Sends to the same form service as the contact form. */
+import { t, type Lang } from '../i18n';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { extras, contact } = t(lang);
+---
+
+<form
+  class="newsletter"
+  action={site.formEndpoint}
+  method="POST"
+  data-newsletter
+  data-sending={contact.sending}
+  data-success={extras.newsletterSuccess}
+  data-error={contact.error}>
+  <div class="copy">
+    <h2>{extras.newsletterHeading}</h2>
+    <p class="muted">{extras.newsletterText}</p>
+  </div>
+  <input type="hidden" name="_subject" value="Newsletter sign-up" />
+  <input type="hidden" name="language" value={lang} />
+  <div class="field">
+    <label class="sr-only" for={`newsletter-email-${lang}`}>{extras.newsletterEmail}</label>
+    <input
+      id={`newsletter-email-${lang}`}
+      name="email"
+      type="email"
+      autocomplete="email"
+      inputmode="email"
+      placeholder={extras.newsletterEmail}
+      required
+    />
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="trap" aria-hidden="true" />
+    <button class="btn btn-primary" type="submit">{extras.newsletterButton}</button>
+  </div>
+  <p class="status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const label = button.textContent;
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      button.disabled = true;
+      button.textContent = form.dataset.sending ?? '';
+      status.textContent = '';
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        status.textContent = form.dataset.success ?? '';
+        status.dataset.state = 'ok';
+      } catch {
+        status.textContent = form.dataset.error ?? '';
+        status.dataset.state = 'err';
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
+  });
+</script>
+
+<style>
+  .newsletter {
+    display: grid;
+    gap: 16px 40px;
+    align-items: center;
+    padding: clamp(22px, 3vw, 32px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(ellipse 60% 120% at 100% 0%, rgb(255 49 48 / 0.16), transparent 70%),
+      var(--surface);
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.3em;
+  }
+
+  .copy p {
+    margin: 0;
+  }
+
+  .field {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  input[type='email'] {
+    flex: 1 1 220px;
+    min-width: 0;
+    min-height: 48px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--black);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0 18px;
+  }
+
+  input[type='email']:focus {
+    outline: none;
+    border-color: var(--red);
+  }
+
+  .trap {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .status {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .status:empty {
+    display: none;
+  }
+
+  .status[data-state='ok'] {
+    color: var(--green);
+  }
+
+  .status[data-state='err'] {
+    color: var(--red-text);
+  }
+
+  @media (min-width: 860px) {
+    .newsletter {
+      grid-template-columns: 1fr 1.1fr;
+    }
+  }
+</style>

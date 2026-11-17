@@ -1,0 +1,937 @@
+---
+/**
+ * A phone drawn in HTML and CSS that cycles through the three SengetiEdu editions:
+ * a Campus QR check-in, a Senior learner's day and a Junior parent's alert.
+ * The tabs above it switch editions by hand; cycling stops for reduced motion.
+ */
+import { sengetiEdu } from '../i18n/pages/sengetiedu';
+import { editionNames } from '../i18n/pages/clients';
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Show the edition tabs above the phone. */
+  tabs?: boolean;
+}
+const { lang, tabs = true } = Astro.props;
+const p = sengetiEdu[lang].phone;
+const editions = ['campus', 'senior', 'junior'] as const;
+const uid = `edu-${Math.random().toString(36).slice(2, 8)}`;
+
+// A QR-like pattern (decorative only): three corner squares plus fixed noise.
+const N = 21;
+const finder = (r: number, c: number) => {
+  for (const [fr, fc] of [[0, 0], [0, N - 7], [N - 7, 0]]) {
+    const y = r - fr, x = c - fc;
+    if (y >= 0 && y < 7 && x >= 0 && x < 7) {
+      return y === 0 || y === 6 || x === 0 || x === 6 || (y >= 2 && y <= 4 && x >= 2 && x <= 4);
+    }
+    if (y >= -1 && y <= 7 && x >= -1 && x <= 7) return false;
+  }
+  return null;
+};
+const qr = Array.from({ length: N * N }, (_, i) => {
+  const r = Math.floor(i / N), c = i % N;
+  return finder(r, c) ?? (((r * 73856093) ^ (c * 19349663) ^ (r * c * 83492791)) >>> 0) % 7 < 3;
+});
+// One SVG path with a square per dark module: sharp at any size and screen density.
+const qrPath = qr.map((on, i) => (on ? `M${i % N} ${Math.floor(i / N)}h1v1h-1z` : '')).join('');
+---
+
+<div class="edu" data-edu-phone data-active="campus">
+  {
+    tabs && (
+      <div class="tabs" role="tablist" aria-label="SengetiEdu">
+        {editions.map((e, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`${uid}-tab-${e}`}
+            class:list={['tab', e]}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-controls={`${uid}-phone`}
+            data-edition={e}
+          >
+            {editionNames[e].replace('Sengeti ', '')}
+          </button>
+        ))}
+      </div>
+    )
+  }
+  <div class="stage">
+    <div class="halo" aria-hidden="true"></div>
+    <div class="phone force-dark" id={`${uid}-phone`} role="img" aria-label={p.label}>
+      <span class="btn-side power" aria-hidden="true"></span>
+      <span class="btn-side vol1" aria-hidden="true"></span>
+      <span class="btn-side vol2" aria-hidden="true"></span>
+      <div class="screen" aria-hidden="true">
+        <div class="status">
+          <span class="clock">9:41</span>
+          <span class="island"></span>
+          <span class="icons">
+            <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="5.5" width="3" height="6.5" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
+            <svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0L8 11.5Zm-4.2-4.3L2.3 5.7a8 8 0 0 1 11.4 0l-1.5 1.5a5.9 5.9 0 0 0-8.4 0ZM.5 3.9-.9 2.5a12.6 12.6 0 0 1 17.8 0l-1.4 1.4a10.6 10.6 0 0 0-15 0Z"></path></svg>
+            <span class="batt"><i></i></span>
+          </span>
+        </div>
+        <div class="appbar">
+          <svg class="crest" viewBox="0 0 28 32"><path d="M14 1 26 5v10c0 8-5.4 13.4-12 16C7.4 28.4 2 23 2 15V5l12-4Z"></path><text x="14" y="19.5" text-anchor="middle">YS</text></svg>
+          <span class="who">
+            <small>{p.campus.greeting}</small>
+            <span class="appname">{p.school}</span>
+          </span>
+          <span class="ed">{editionNames.campus}</span>
+          <span class="ed">{editionNames.senior}</span>
+          <span class="ed">{editionNames.junior}</span>
+        </div>
+
+        <div class="views">
+          <div class="view campus">
+            <p class="title">{p.campus.title}</p>
+            <p class="sub">{p.campus.cls}</p>
+            <div class="qr">
+              <svg viewBox={`0 0 ${N} ${N}`} shape-rendering="crispEdges">
+                <path d={qrPath}></path>
+              </svg>
+              <span class="scanline"></span>
+            </div>
+            <p class="sub small">{p.campus.hint}</p>
+            <p class="timer">
+              {p.campus.refresh} <strong>15s</strong>
+              <span class="ring"></span>
+            </p>
+            <div class="present">
+              <span class="faces"><i>TM</i><i>RC</i><i>NK</i><i>+</i></span>
+              <span class="count"><strong>42</strong>/56 {p.campus.present}</span>
+              <span class="bar"><i></i></span>
+            </div>
+          </div>
+
+          <div class="view senior">
+            <p class="title small">{p.senior.title}</p>
+            <ul class="tt">
+              {p.senior.timetable.map((row, i) => (
+                <li class:list={{ now: i === 1 }} style={`--i:${i}`}>
+                  <span class="time">{row.time}</span>
+                  <span>{row.subject}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="card hw">
+              <small>{p.senior.homeworkLabel}</small>
+              <span>{p.senior.homework}</span>
+            </div>
+            <div class="card mark">
+              <span>
+                <small>{p.senior.markLabel}</small>
+                <span>{p.senior.mark}</span>
+              </span>
+              <svg class="gauge" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" pathLength="100"></circle><circle class="val" cx="22" cy="22" r="18" pathLength="100"></circle><text x="22" y="26.5" text-anchor="middle">78%</text></svg>
+            </div>
+          </div>
+
+          <div class="view junior">
+            <div class="alert">
+              <span class="bell">
+                <svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4l2-2Zm4 4h4"></path></svg>
+              </span>
+              <span>
+                <strong>{p.junior.alertTitle}</strong>
+                <small>{p.junior.alertText}</small>
+              </span>
+            </div>
+            <div class="card fees">
+              <small>{p.junior.feesLabel}</small>
+              <strong>US$120.00</strong>
+              <span class="pay">{p.junior.pay}</span>
+            </div>
+            <div class="card notice">
+              <small>{p.junior.noticeLabel}</small>
+              <span>{p.junior.notice}</span>
+            </div>
+          </div>
+        </div>
+
+        <nav class="tabbar">
+          <svg viewBox="0 0 24 24" class="on"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"></path></svg>
+          <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"></path></svg>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+        </nav>
+        <span class="home-bar"></span>
+      </div>
+      <span class="glare" aria-hidden="true"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .edu {
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+  }
+
+  /* Edition tabs */
+  .tabs {
+    display: inline-flex;
+    padding: 4px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgb(var(--tint) / 0.04);
+  }
+
+  .tab {
+    position: relative;
+    padding: 7px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .tab[aria-selected='true'] {
+    color: #fff;
+    background: #d11f1f;
+  }
+
+  /* A thin bar inside the active tab shows when the phone moves on to the next edition. */
+  .tab[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 3px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 0.7);
+    transform-origin: left;
+    animation: progress var(--cycle, 5s) linear;
+  }
+
+  .edu.paused .tab::after {
+    display: none;
+  }
+
+  @keyframes progress {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  /* Phone: a stage with a soft red halo, the handset, and the glass on top. */
+  .stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: 6px 18px 18px;
+  }
+
+  .halo {
+    position: absolute;
+    inset: 8% -6% 0;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(255 49 48 / 0.42), rgb(255 49 48 / 0.12) 55%, transparent);
+    filter: blur(28px);
+    animation: breathe 7s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    50% {
+      opacity: 0.6;
+      transform: scale(0.94);
+    }
+  }
+
+  .phone {
+    position: relative;
+    width: min(272px, 68vw);
+    aspect-ratio: 9 / 19.2;
+    border-radius: 46px;
+    padding: 9px;
+    /* A brushed metal rim, then a thin black bezel around the glass. */
+    background:
+      linear-gradient(#08080a, #08080a) padding-box,
+      linear-gradient(150deg, #6b6b73, #1d1d21 30%, #3a3a40 55%, #111114 80%, #5a5a62) border-box;
+    border: 2.5px solid transparent;
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.6),
+      inset 0 0 0 1px rgb(255 255 255 / 0.06),
+      0 40px 80px -24px rgb(0 0 0 / 0.75),
+      0 30px 70px -30px rgb(255 49 48 / 0.55);
+  }
+
+  .btn-side {
+    position: absolute;
+    width: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #2c2c31, #55555c);
+  }
+
+  .power {
+    right: -5px;
+    top: 26%;
+    height: 13%;
+  }
+
+  .vol1,
+  .vol2 {
+    left: -5px;
+    height: 8%;
+    transform: scaleX(-1);
+  }
+
+  .vol1 {
+    top: 22%;
+  }
+
+  .vol2 {
+    top: 32%;
+  }
+
+  .glare {
+    position: absolute;
+    inset: 9px;
+    border-radius: 38px;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgb(255 255 255 / 0.1) 0%, rgb(255 255 255 / 0.03) 28%, transparent 42%);
+    mix-blend-mode: screen;
+  }
+
+  .screen {
+    position: relative;
+    height: 100%;
+    border-radius: 38px;
+    overflow: hidden;
+    background: #f4f5f8;
+    color: #15161a;
+    font-size: 12px;
+    line-height: 1.35;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Status bar with the camera island */
+  .status {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 2;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 22px 0 26px;
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .island {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 30%;
+    height: 22px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #000;
+  }
+
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .icons svg {
+    height: 10px;
+    width: auto;
+    fill: currentColor;
+  }
+
+  .batt {
+    position: relative;
+    width: 22px;
+    height: 11px;
+    border-radius: 3.5px;
+    border: 1.2px solid rgb(255 255 255 / 0.55);
+    padding: 1.2px;
+  }
+
+  .batt::after {
+    content: '';
+    position: absolute;
+    right: -3.5px;
+    top: 3px;
+    width: 1.8px;
+    height: 3.5px;
+    border-radius: 0 1px 1px 0;
+    background: rgb(255 255 255 / 0.55);
+  }
+
+  .batt i {
+    display: block;
+    width: 78%;
+    height: 100%;
+    border-radius: 1.5px;
+    background: #fff;
+  }
+
+  .appbar {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 48px 14px 14px;
+    background: linear-gradient(160deg, #1d3a8a, #12235a 70%);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13.5px;
+    transition: background 0.5s;
+  }
+
+  /* Each school shows in its own colours: these three stand in for three schools. */
+  [data-active='senior'] .appbar {
+    background: linear-gradient(160deg, #187148, #0f5132 70%);
+  }
+
+  [data-active='junior'] .appbar {
+    background: linear-gradient(160deg, #8f2a4e, #6b1f3a 70%);
+  }
+
+  .crest {
+    flex: none;
+    width: 26px;
+    height: 30px;
+  }
+
+  .crest path {
+    fill: #fff;
+  }
+
+  .crest text {
+    fill: #12235a;
+    font-size: 10px;
+    font-weight: 800;
+    font-family: var(--font-display);
+    transition: fill 0.5s;
+  }
+
+  [data-active='senior'] .crest text {
+    fill: #0f5132;
+  }
+
+  [data-active='junior'] .crest text {
+    fill: #6b1f3a;
+  }
+
+  .who {
+    flex: 1;
+    display: grid;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  .who small {
+    font-family: var(--font-body, inherit);
+    font-size: 10px;
+    font-weight: 500;
+    opacity: 0.75;
+  }
+
+  .appname {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ed {
+    display: none;
+    flex: none;
+    font-family: var(--font-body, inherit);
+    font-size: 9.5px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  [data-active='campus'] .ed:nth-of-type(2),
+  [data-active='senior'] .ed:nth-of-type(3),
+  [data-active='junior'] .ed:nth-of-type(4) {
+    display: inline;
+  }
+
+  /* App tab bar and the home indicator */
+  .tabbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 18px 22px;
+    background: #fff;
+    border-top: 1px solid #e8e9ee;
+  }
+
+  .tabbar svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: #9a9ba5;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .tabbar svg.on {
+    stroke: #12235a;
+    fill: rgb(18 35 90 / 0.12);
+    transition: stroke 0.5s;
+  }
+
+  [data-active='senior'] .tabbar svg.on {
+    stroke: #0f5132;
+    fill: rgb(15 81 50 / 0.12);
+  }
+
+  [data-active='junior'] .tabbar svg.on {
+    stroke: #6b1f3a;
+    fill: rgb(107 31 58 / 0.12);
+  }
+
+  .home-bar {
+    position: absolute;
+    left: 50%;
+    bottom: 7px;
+    width: 34%;
+    height: 4px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #15161a;
+  }
+
+  .views {
+    position: relative;
+    flex: 1;
+  }
+
+  .view {
+    position: absolute;
+    inset: 0;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(16px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  [data-active='campus'] .view.campus,
+  [data-active='senior'] .view.senior,
+  [data-active='junior'] .view.junior {
+    opacity: 1;
+    transform: none;
+  }
+
+  .view p {
+    margin: 0;
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .title.small {
+    font-size: 15px;
+  }
+
+  .sub {
+    color: #55555e;
+    font-weight: 500;
+  }
+
+  .sub.small {
+    font-size: 11px;
+  }
+
+  /* Campus: who has checked in so far */
+  .present {
+    width: 100%;
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.06);
+    text-align: left;
+  }
+
+  .faces {
+    display: flex;
+  }
+
+  .faces i {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin-left: -7px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    font-style: normal;
+    font-size: 7px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: #fff;
+    background: #1d3a8a;
+  }
+
+  .faces i:first-child {
+    margin-left: 0;
+  }
+
+  .faces i:nth-child(2) {
+    background: #d11f1f;
+  }
+
+  .faces i:nth-child(3) {
+    background: #0f6e33;
+  }
+
+  .faces i:nth-child(4) {
+    background: #e8e9ee;
+    color: #55555e;
+  }
+
+  .count {
+    font-size: 11px;
+    color: #55555e;
+  }
+
+  .count strong {
+    color: #15161a;
+    font-size: 13px;
+  }
+
+  .bar {
+    grid-column: 1 / -1;
+    height: 5px;
+    border-radius: 999px;
+    background: #eceef3;
+    overflow: hidden;
+  }
+
+  .bar i {
+    display: block;
+    height: 100%;
+    width: 75%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #1d3a8a, #ff3130);
+    transform-origin: left;
+    animation: fill 5s cubic-bezier(0.3, 0.7, 0.2, 1) infinite;
+  }
+
+  @keyframes fill {
+    from {
+      transform: scaleX(0.55);
+    }
+  }
+
+  /* Campus: QR check-in */
+  .view.campus {
+    align-items: center;
+    text-align: center;
+    padding-top: 22px;
+  }
+
+  .qr {
+    position: relative;
+    width: 64%;
+    aspect-ratio: 1;
+    padding: 9px;
+    margin: 6px 0 2px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow:
+      0 0 0 2px #ff3130,
+      0 10px 28px rgb(255 49 48 / 0.28);
+    overflow: hidden;
+  }
+
+  .qr svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .qr path {
+    fill: #15161a;
+  }
+
+  .scanline {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    top: 10%;
+    height: 2px;
+    background: var(--red);
+    box-shadow: 0 0 12px 2px rgb(255 49 48 / 0.7);
+    animation: scan 2.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes scan {
+    from {
+      top: 6%;
+    }
+    to {
+      top: 92%;
+    }
+  }
+
+  .timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #55555e;
+  }
+
+  .timer strong {
+    color: #d11f1f;
+  }
+
+  .ring {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #d11f1f;
+    border-right-color: #ececf0;
+    animation: spin 1.5s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Senior: a learner's day */
+  .tt {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  .tt li {
+    display: flex;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.05);
+    font-weight: 600;
+  }
+
+  .tt li.now {
+    box-shadow: inset 3px 0 0 #0f5132, 0 1px 6px rgb(0 0 0 / 0.05);
+  }
+
+  .time {
+    color: #6b6b74;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  .card {
+    display: grid;
+    gap: 2px;
+    padding: 11px 12px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 1px 6px rgb(0 0 0 / 0.05);
+  }
+
+  .card small {
+    color: #6b6b74;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .card > span {
+    font-weight: 600;
+  }
+
+  .mark {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .mark > span {
+    display: grid;
+  }
+
+  .gauge {
+    width: 46px;
+    height: 46px;
+    transform: rotate(-90deg);
+  }
+
+  .gauge circle {
+    fill: none;
+    stroke: #e3f1e8;
+    stroke-width: 5;
+  }
+
+  .gauge .val {
+    stroke: #0f6e33;
+    stroke-linecap: round;
+    stroke-dasharray: 78 100;
+  }
+
+  .gauge text {
+    transform: rotate(90deg);
+    transform-origin: 22px 22px;
+    fill: #0f6e33;
+    font-family: var(--font-display);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  /* Junior: a parent's phone */
+  .alert {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow:
+      inset 3px 0 0 #d11f1f,
+      0 6px 18px rgb(0 0 0 / 0.08);
+    animation: nudge 5s ease-in-out infinite;
+  }
+
+  @keyframes nudge {
+    0%,
+    80%,
+    100% {
+      transform: none;
+    }
+    85% {
+      transform: translateX(-3px);
+    }
+    90% {
+      transform: translateX(3px);
+    }
+  }
+
+  .alert > span:last-child {
+    display: grid;
+    gap: 2px;
+  }
+
+  .alert small {
+    color: #6b6b74;
+  }
+
+  .bell {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #fde4e4;
+  }
+
+  .bell svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: #d11f1f;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .fees strong {
+    font-family: var(--font-display);
+    font-size: 22px;
+  }
+
+  .pay {
+    justify-self: start;
+    margin-top: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #0b5ed7;
+    color: #fff;
+    font-size: 11px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .view {
+      transition: none;
+    }
+
+    .halo,
+    .bar i {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Moves to the next edition every few seconds until someone picks one.
+  const CYCLE = 5000;
+  const editions = ['campus', 'senior', 'junior'];
+  for (const root of document.querySelectorAll<HTMLElement>('[data-edu-phone]')) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-edition]')];
+    root.style.setProperty('--cycle', `${CYCLE}ms`);
+    const show = (edition: string) => {
+      root.dataset.active = edition;
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.edition === edition)));
+    };
+    let timer = 0;
+    const stop = () => {
+      clearInterval(timer);
+      root.classList.add('paused');
+    };
+    tabs.forEach((t) =>
+      t.addEventListener('click', () => {
+        stop();
+        show(t.dataset.edition!);
+      }),
+    );
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      root.classList.add('paused');
+    } else {
+      timer = window.setInterval(() => {
+        // Only move on while the phone is on screen and the tab is visible.
+        if (document.hidden) return;
+        const next = editions[(editions.indexOf(root.dataset.active!) + 1) % editions.length];
+        show(next);
+        // Restart the progress bar on the newly selected tab.
+        tabs.forEach((t) => t.getAnimations({ subtree: true }).forEach((a) => (a.currentTime = 0)));
+      }, CYCLE);
+    }
+  }
+</script>

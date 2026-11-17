@@ -1,0 +1,1058 @@
+---
+import type { ComponentProps } from 'astro/types';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import RedLight from '../../../components/RedLight.astro';
+import Icon from '../../../components/Icon.astro';
+import EduPhone from '../../../components/EduPhone.astro';
+import { langPaths, localizePath, type Lang } from '../../../i18n';
+import { editionMatrix, sengetiEdu } from '../../../i18n/pages/sengetiedu';
+import { editionNames } from '../../../i18n/pages/clients';
+import { site, whatsappLink } from '../../../config/site';
+
+type IconName = ComponentProps<typeof Icon>['name'];
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const s = sengetiEdu[lang];
+const editions = ['campus', 'senior', 'junior'] as const;
+const path = '/products/sengetiedu';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'SengetiEdu',
+    description: s.description,
+    applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Web, Android, iOS',
+    url: `${site.url}${localizePath(lang, path)}`,
+    publisher: { '@id': `${site.url}/#organization` },
+    featureList: s.core.map((c) => c.title),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: s.faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+import EduQuiz from '../../../components/EduQuiz.astro';
+import { brochure, schoolQuiz } from '../../../i18n/pages/schools';
+const quiz = schoolQuiz[lang];
+---
+
+<BaseLayout lang={lang} title={s.title} description={s.description} path={path} schema={schema}>
+  <section class="hero">
+    <RedLight />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div>
+        <span class="eyebrow">{s.eyebrow}</span>
+        <h1>{s.heading} <span class="gradient-text">{s.headingAccent}</span></h1>
+        <p class="lead">{s.lead}</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href={localizePath(lang, '/school-demo')}>{s.ctaDemo}</a>
+          <a class="btn btn-ghost" href={localizePath(lang, '/demo')}>{s.ctaTry}</a>
+        </div>
+        <ul class="ed-line" aria-label="SengetiEdu">
+          {editions.map((e) => (
+            <li class={e}>
+              <a href={`#${e}`}>{editionNames[e]}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <EduPhone lang={lang} />
+    </div>
+  </section>
+
+  <!-- The family: three editions -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{s.familyEyebrow}</span>
+        <h2>{s.familyHeading} <span class="gradient-text">{s.familyAccent}</span></h2>
+        <p class="muted intro">{s.familyLead}</p>
+      </div>
+      <div class="editions">
+        {
+          editions.map((e, i) => (
+            <a class:list={['edition', 'card-hover', e]} href={`#${e}`} data-reveal style={`--d:${i}`}>
+              <span class="ring" aria-hidden="true">
+                <Icon name={e === 'campus' ? 'cap' : e === 'senior' ? 'book' : 'users'} size={26} />
+              </span>
+              <span class="range">{s.editions[e].range}</span>
+              <h3>{editionNames[e]}</h3>
+              <p class="aud">{s.editions[e].audience}</p>
+              <p class="muted">{s.editions[e].text}</p>
+              <span class="go">→</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Which edition fits? -->
+  <section class="section" id="quiz">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{quiz.eyebrow}</span>
+        <h2>{quiz.heading} <span class="gradient-text">{quiz.headingAccent}</span></h2>
+        <p class="muted intro">{quiz.lead}</p>
+      </div>
+      <div data-reveal>
+        <EduQuiz lang={lang} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Shared core -->
+  <section class="section band">
+    <div class="container">
+      <div class="section-head" data-reveal><h2>{s.coreHeading}</h2></div>
+      <div class="grid core">
+        {
+          s.core.map((c, i) => (
+            <article class="card card-hover" data-reveal style={`--d:${i % 3}`}>
+              <span class="icon">
+                <Icon name={c.icon as IconName} size={24} />
+              </span>
+              <h3>{c.title}</h3>
+              <p class="muted">{c.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Each edition in detail -->
+  {
+    editions.map((e) => (
+      <section class:list={['section', 'detail', e]} id={e}>
+        <div class="container detail-inner">
+          <div class="detail-head" data-reveal>
+            <span class="pill">{s.editions[e].range}</span>
+            <h2>{editionNames[e]}</h2>
+            <p class="aud">{s.editions[e].audience}</p>
+            <p class="muted">{s.editions[e].intro}</p>
+          </div>
+          <div class="groups">
+            {s.editions[e].groups.map((g, i) => (
+              <div class="group" data-reveal style={`--d:${i}`}>
+                <h3>{g.title}</h3>
+                <ul>
+                  {g.items.map((item) => (
+                    <li>
+                      <Icon name="check" size={18} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          {e === 'campus' && (
+            <div class="chips-block" data-reveal>
+              <h3>{s.integrationsHeading}</h3>
+              <ul class="chips">
+                {s.integrations.map((x) => (
+                  <li>{x}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {e === 'junior' && (
+            <div class="chips-block" data-reveal>
+              <h3>{s.modulesHeading}</h3>
+              <ul class="chips">
+                {s.modules.map((x) => (
+                  <li>{x}</li>
+                ))}
+              </ul>
+              <p class="note">{s.modulesNote}</p>
+            </div>
+          )}
+        </div>
+      </section>
+    ))
+  }
+
+  <!-- Comparison -->
+  <section class="section">
+    <div class="container narrow">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{s.compareEyebrow}</span>
+        <h2>{s.compareHeading} <span class="gradient-text">{s.compareAccent}</span></h2>
+      </div>
+      <div class="table-wrap" data-reveal>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{s.feature}</th>
+              {editions.map((e) => (
+                <th scope="col" class={e}>
+                  {editionNames[e].replace('Sengeti ', '')}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {s.rows.map((row, r) => (
+              <tr>
+                <th scope="row">{row}</th>
+                {editionMatrix[r].map((on, c) => (
+                  <td class={editions[c]}>
+                    <span class:list={['mark', { on }]} role="img" aria-label={on ? s.included : s.notIncluded} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Your school, your brand -->
+  <section class="section band">
+    <div class="container brand-layout">
+      <div data-reveal>
+        <span class="eyebrow">{s.brandEyebrow}</span>
+        <h2>{s.brandHeading} <span class="gradient-text">{s.brandAccent}</span></h2>
+        <p class="muted">{s.brandLead}</p>
+        <ul class="brand-points">
+          {s.brand.map((b) => (
+            <li>
+              <h3>{b.title}</h3>
+              <p class="muted">{b.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="browser force-dark" data-reveal aria-hidden="true">
+        <div class="browser-bar">
+          <span class="dots"><i /><i /><i /></span>
+          <span class="url">
+            <Icon name="lock" size={12} />
+            {s.address[0].standardText}
+          </span>
+        </div>
+        <div class="signin">
+          <span class="crest">YS</span>
+          <strong>{s.signIn.school}</strong>
+          <span class="welcome">{s.signIn.welcome}</span>
+          <span class="field">{s.signIn.user}</span>
+          <span class="field">{s.signIn.password}</span>
+          <span class="submit">{s.signIn.button}</span>
+          <span class="code">
+            {s.signIn.code}: <b>4F7K-2Q</b>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h3 class="sub-heading" data-reveal>{s.addressHeading}</h3>
+      <div class="grid address">
+        {s.address.map((a, i) => (
+          <div class="card" data-reveal style={`--d:${i}`}>
+            <h4>{a.title}</h4>
+            <div class="opt">
+              <span class="tag">{a.standard}</span>
+              <code>{a.standardText}</code>
+            </div>
+            <div class="opt up">
+              <span class="tag">{a.upgrade}</span>
+              <code>{a.upgradeText}</code>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Safe, private and yours; built to grow -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal><h2>{s.safeEyebrow}</h2></div>
+      <div class="grid four">
+        {s.safe.map((c, i) => (
+          <article class="card" data-reveal style={`--d:${i}`}>
+            <span class="icon">
+              <Icon name={c.icon as IconName} size={22} />
+            </span>
+            <h3>{c.title}</h3>
+            <p class="muted">{c.text}</p>
+          </article>
+        ))}
+      </div>
+      <div class="section-head grow-head" data-reveal><h2>{s.growHeading}</h2></div>
+      <div class="grid grid-3">
+        {s.grow.map((c, i) => (
+          <article class="card" data-reveal style={`--d:${i}`}>
+            <span class="icon">
+              <Icon name={c.icon as IconName} size={22} />
+            </span>
+            <h3>{c.title}</h3>
+            <p class="muted">{c.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Four weeks -->
+  <section class="section band">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow">{s.startEyebrow}</span>
+        <h2>{s.startHeading} <span class="gradient-text">{s.startAccent}</span></h2>
+        <p class="muted intro">{s.startLead}</p>
+      </div>
+      <ol class="weeks">
+        {s.weeks.map((w, i) => (
+          <li data-reveal style={`--d:${i}`}>
+            <span class="num">{i + 1}</span>
+            <span class="week">{w.label}</span>
+            <h3>{w.title}</h3>
+            <p class="muted">{w.text}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="grid grid-2 terms">
+        <div class="card" data-reveal>
+          <span class="icon"><Icon name="receipt" size={22} /></span>
+          <h3>{s.pricingTitle}</h3>
+          <p class="muted">{s.pricingText}</p>
+        </div>
+        <div class="card" data-reveal style="--d:1">
+          <span class="icon"><Icon name="help" size={22} /></span>
+          <h3>{s.supportTitle}</h3>
+          <p class="muted">{s.supportText}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container narrow">
+      <h2 data-reveal>{s.faqHeading}</h2>
+      <div class="faqs">
+        {s.faqs.map((f, i) => (
+          <details class="faq" data-reveal style={`--d:${i}`}>
+            <summary>{f.q}</summary>
+            <p class="muted">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{s.ctaHeading}</h2>
+        <p>{s.ctaText}</p>
+        <div class="btn-row center">
+          <a class="btn btn-primary" href={localizePath(lang, '/school-demo')}>{s.ctaDemo}</a>
+          <a class="btn btn-ghost" href={whatsappLink(s.whatsappMessage)} target="_blank" rel="noopener">{s.askWhatsApp}</a>
+        </div>
+        <p class="contact-line">{site.phone} · {site.email}</p>
+        <p class="contact-line">
+          <a class="dl" href={brochure[lang].href} download>
+            <Icon name="download" size={16} />
+            {brochure[lang].label}
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .campus {
+    --c: var(--ed-campus);
+    --ct: var(--ed-campus-text);
+  }
+
+  .senior {
+    --c: var(--ed-senior);
+    --ct: var(--ed-senior-text);
+  }
+
+  .junior {
+    --c: var(--ed-junior);
+    --ct: var(--ed-junior-text);
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(56px, 9vw, 112px) clamp(32px, 5vw, 64px);
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .hero h1 {
+    max-width: 17ch;
+  }
+
+  .hero .lead {
+    margin-bottom: 2rem;
+  }
+
+  .ed-line {
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+  }
+
+  .ed-line li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ed-line li::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 10px var(--c);
+  }
+
+  .ed-line a {
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .ed-line a:hover {
+    color: var(--white);
+    text-decoration: underline;
+  }
+
+  .intro {
+    max-width: 62ch;
+  }
+
+  /* Edition cards */
+  .editions {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  }
+
+  .edition {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 28px;
+    border-radius: calc(var(--radius) * 1.3);
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(ellipse 90% 60% at 100% 0%, color-mix(in srgb, var(--c) 18%, transparent), transparent 70%),
+      var(--surface);
+    color: inherit;
+    text-decoration: none;
+    overflow: hidden;
+    transition:
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s;
+  }
+
+  .edition::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: var(--c);
+  }
+
+  .edition:hover {
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--c) 60%, transparent);
+  }
+
+  .edition h3 {
+    font-size: 1.45rem;
+    margin: 6px 0 0;
+  }
+
+  .edition p {
+    margin: 0;
+  }
+
+  .ring {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    color: var(--ct, var(--c));
+    background: color-mix(in srgb, var(--c) 14%, transparent);
+    margin-bottom: 10px;
+  }
+
+  .range,
+  .pill {
+    justify-self: start;
+    align-self: flex-start;
+    padding: 3px 11px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+    color: var(--text);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .aud {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .go {
+    margin-top: auto;
+    padding-top: 14px;
+    color: var(--ct, var(--c));
+    font-size: 1.3rem;
+    transition: transform 0.3s;
+  }
+
+  .edition:hover .go {
+    transform: translateX(6px);
+  }
+
+  .band {
+    background: linear-gradient(180deg, transparent, rgb(255 49 48 / 0.05), transparent);
+  }
+
+  .core {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--red-soft);
+    color: var(--red-text);
+    margin-bottom: 16px;
+  }
+
+  /* Edition detail */
+  .detail {
+    scroll-margin-top: 72px;
+    position: relative;
+  }
+
+  .detail::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c) 50%, transparent), transparent);
+  }
+
+  .detail-inner {
+    display: grid;
+    gap: 36px;
+  }
+
+  .detail-head {
+    max-width: 62ch;
+  }
+
+  .detail-head h2 {
+    margin: 14px 0 6px;
+  }
+
+  .detail-head h2::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 3px;
+    margin-top: 14px;
+    border-radius: 2px;
+    background: var(--c);
+  }
+
+  .groups {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  }
+
+  .group {
+    padding: 22px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: rgb(var(--tint) / 0.02);
+  }
+
+  .group h3 {
+    font-size: 1.05rem;
+  }
+
+  .group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .group li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--text);
+  }
+
+  .group li :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--ct, var(--c));
+  }
+
+  .chips-block h3 {
+    font-size: 1.05rem;
+  }
+
+  .chips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .chips li {
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.92rem;
+    transition:
+      border-color 0.2s,
+      transform 0.2s;
+  }
+
+  .chips li:hover {
+    border-color: color-mix(in srgb, var(--c) 60%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .note {
+    margin: 22px 0 0;
+    padding: 16px 20px;
+    border-left: 3px solid var(--c);
+    border-radius: 0 12px 12px 0;
+    background: rgb(var(--tint) / 0.03);
+    color: var(--text);
+    max-width: 70ch;
+  }
+
+  /* Comparison table */
+  .narrow {
+    max-width: 880px;
+  }
+
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  thead th {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  thead th:not(:first-child),
+  td {
+    text-align: center;
+    width: 17%;
+  }
+
+  thead th.campus,
+  thead th.senior,
+  thead th.junior {
+    color: var(--ct, var(--c));
+  }
+
+  tbody th {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  tbody tr {
+    transition: background 0.2s;
+  }
+
+  tbody tr:hover {
+    background: rgb(var(--tint) / 0.03);
+  }
+
+  .mark {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgb(var(--tint) / 0.12);
+  }
+
+  .mark.on {
+    background: var(--c);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--c) 60%, transparent);
+  }
+
+  /* Brand */
+  .brand-layout {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .brand-points {
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
+    display: grid;
+    gap: 18px;
+  }
+
+  .brand-points li {
+    padding-left: 18px;
+    border-left: 3px solid var(--red);
+  }
+
+  .brand-points h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.25em;
+  }
+
+  .brand-points p {
+    margin: 0;
+  }
+
+  .browser {
+    width: 100%;
+    max-width: 480px;
+    justify-self: center;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: #1a1a1d;
+    box-shadow: 0 40px 90px -30px rgb(255 49 48 / 0.35);
+    transform: perspective(1200px) rotateY(-6deg) rotateX(3deg);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .browser:hover {
+    transform: none;
+  }
+
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3a3a40;
+  }
+
+  .dots i:first-child {
+    background: #ff3130;
+  }
+
+  .url {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #0b0b0c;
+    color: #c8c8ce;
+    font-size: 0.82rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .signin {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 36px 28px 30px;
+    background: linear-gradient(180deg, #12235a, #0c1638);
+    color: #fff;
+    text-align: center;
+  }
+
+  .crest {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 16px 16px 30px 30px;
+    background: #fff;
+    color: #12235a;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.2rem;
+  }
+
+  .signin strong {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+  }
+
+  .welcome {
+    color: #c6cde6;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .field {
+    width: 100%;
+    max-width: 280px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgb(255 255 255 / 0.1);
+    border: 1px solid rgb(255 255 255 / 0.18);
+    color: #c6cde6;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .submit {
+    width: 100%;
+    max-width: 280px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #f5c518;
+    color: #12235a;
+    font-weight: 700;
+  }
+
+  .code {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: #c6cde6;
+  }
+
+  .code b {
+    letter-spacing: 0.08em;
+    color: #fff;
+  }
+
+  .sub-heading {
+    margin-top: clamp(40px, 6vw, 64px);
+  }
+
+  .address {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  }
+
+  .address h4 {
+    margin: 0 0 14px;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--white);
+  }
+
+  .opt {
+    display: grid;
+    gap: 4px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .tag {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .opt.up .tag {
+    color: var(--red-text);
+  }
+
+  .opt code {
+    font-size: 0.92rem;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+
+  .four {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  }
+
+  .grow-head {
+    margin-top: clamp(48px, 7vw, 80px);
+  }
+
+  /* Four weeks */
+  .weeks {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    position: relative;
+  }
+
+  .weeks li {
+    position: relative;
+    padding: 22px 20px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .weeks li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: calc((var(--d, 0) + 1) * 25%);
+    background: linear-gradient(90deg, var(--red), #ff7a5c);
+    border-radius: 0 3px 0 0;
+  }
+
+  .num {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--red);
+    color: var(--on-red);
+    font-weight: 700;
+    margin-right: 10px;
+  }
+
+  .week {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red-text);
+  }
+
+  .weeks h3 {
+    margin: 14px 0 6px;
+  }
+
+  .weeks p {
+    margin: 0;
+  }
+
+  .btn-row.center {
+    justify-content: center;
+  }
+
+  .contact-line {
+    margin: 18px 0 0 !important;
+    font-size: 0.92rem;
+  }
+
+  .dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: inherit;
+  }
+
+  @media (min-width: 960px) {
+    .hero-inner {
+      grid-template-columns: 1.2fr 1fr;
+    }
+
+    .brand-layout {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    th,
+    td {
+      padding: 10px 8px;
+    }
+
+    tbody th {
+      font-size: 0.88rem;
+    }
+
+    thead th {
+      font-size: 0.66rem;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .browser {
+      transform: none;
+    }
+  }
+</style>

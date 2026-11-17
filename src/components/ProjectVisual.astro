@@ -1,0 +1,331 @@
+---
+/** A small drawn screen for a portfolio project that has no screenshot yet. */
+interface Props {
+  kind: 'attendance' | 'website' | 'dashboard' | 'workflow';
+}
+const { kind } = Astro.props;
+// A fixed pattern that reads as a QR code.
+const qr = '1110101111100010110110111011010101101011100101111000110101110110101'.split('');
+---
+
+<div class={`screen ${kind}`} aria-hidden="true">
+  <div class="bar"><i></i><i></i><i></i></div>
+  <div class="body">
+    {
+      kind === 'attendance' && (
+        <div class="att">
+          <div class="qr">
+            {qr.slice(0, 49).map((c) => (
+              <b class={c === '1' ? 'on' : ''} />
+            ))}
+          </div>
+          <div class="att-side">
+            <strong>112</strong>
+            <span>/ 120</span>
+            <div class="meter">
+              <i />
+            </div>
+            <em>●</em>
+          </div>
+        </div>
+      )
+    }
+    {
+      kind === 'website' && (
+        <div class="site">
+          <div class="nav">
+            <i />
+            <i />
+            <i />
+            <b />
+          </div>
+          <div class="hero">
+            <i class="h1" />
+            <i class="h2" />
+            <i class="p" />
+            <b />
+          </div>
+          <div class="cols">
+            <i />
+            <i />
+            <i />
+          </div>
+        </div>
+      )
+    }
+    {
+      kind === 'dashboard' && (
+        <div class="dash">
+          {[40, 65, 52, 80, 70, 92, 60].map((h, i) => (
+            <i style={`--h:${h}%;--i:${i}`} />
+          ))}
+        </div>
+      )
+    }
+    {
+      kind === 'workflow' && (
+        <div class="wf">
+          {[0, 1, 2, 3].map((i) => (
+            <i style={`--i:${i}`} />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .screen {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    box-shadow: 0 30px 60px -30px rgb(255 49 48 / 0.45);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.project:hover) .screen {
+    transform: perspective(900px) rotateY(-4deg) rotateX(2deg) translateY(-4px);
+  }
+
+  .bar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgb(var(--tint) / 0.15);
+  }
+
+  .bar i:first-child {
+    background: var(--red);
+  }
+
+  .body {
+    aspect-ratio: 16 / 9;
+    padding: 6%;
+    display: grid;
+  }
+
+  /* Attendance */
+  .att {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8%;
+    align-items: center;
+  }
+
+  .qr {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    width: clamp(90px, 22vw, 150px);
+    padding: 10px;
+    background: #fff;
+    border-radius: 10px;
+    animation: qr 3s steps(1) infinite;
+  }
+
+  .qr b {
+    aspect-ratio: 1;
+    border-radius: 2px;
+  }
+
+  .qr b.on {
+    background: #0b0b0c;
+  }
+
+  .att-side strong {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .att-side span {
+    color: var(--muted);
+    margin-left: 6px;
+  }
+
+  .meter {
+    margin-top: 14px;
+    height: 8px;
+    border-radius: 4px;
+    background: rgb(var(--tint) / 0.1);
+    overflow: hidden;
+  }
+
+  .meter i {
+    display: block;
+    width: 93%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), #ff7a5c);
+    animation: fill 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .att-side em {
+    display: block;
+    margin-top: 12px;
+    font-style: normal;
+    color: var(--red-text);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+
+  /* Website */
+  .site {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 8%;
+  }
+
+  .site i,
+  .site b {
+    display: block;
+    border-radius: 4px;
+  }
+
+  .nav {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .nav i {
+    width: 12%;
+    height: 6px;
+    background: rgb(var(--tint) / 0.18);
+  }
+
+  .nav b {
+    margin-left: auto;
+    width: 18%;
+    height: 12px;
+    background: var(--red);
+    border-radius: 999px;
+  }
+
+  .hero .h1 {
+    width: 70%;
+    height: 14px;
+    background: rgb(var(--tint) / 0.85);
+    margin-bottom: 8px;
+  }
+
+  .hero .h2 {
+    width: 50%;
+    height: 14px;
+    background: linear-gradient(90deg, var(--red), #ff7a5c);
+    margin-bottom: 12px;
+  }
+
+  .hero .p {
+    width: 60%;
+    height: 6px;
+    background: rgb(var(--tint) / 0.2);
+    margin-bottom: 12px;
+  }
+
+  .hero b {
+    width: 22%;
+    height: 14px;
+    background: var(--red);
+    border-radius: 999px;
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .cols i {
+    height: 34px;
+    background: rgb(var(--tint) / 0.06);
+    border: 1px solid var(--border);
+  }
+
+  /* Dashboard */
+  .dash {
+    display: flex;
+    align-items: flex-end;
+    gap: 6%;
+  }
+
+  .dash i {
+    flex: 1;
+    height: var(--h);
+    border-radius: 6px 6px 2px 2px;
+    background: linear-gradient(180deg, #ff7a5c, var(--red));
+    transform-origin: bottom;
+    animation: grow 1s calc(var(--i) * 0.08s) cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Workflow */
+  .wf {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8%;
+    align-items: center;
+  }
+
+  .wf i {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    animation: node 4s calc(var(--i) * 0.8s) infinite;
+  }
+
+  @keyframes qr {
+    50% {
+      transform: scaleX(-1);
+    }
+  }
+
+  @keyframes fill {
+    from {
+      width: 0;
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  @keyframes grow {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  @keyframes node {
+    0%,
+    100% {
+      background: transparent;
+    }
+    20%,
+    50% {
+      background: var(--red);
+      border-color: var(--red);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .qr,
+    .meter i,
+    .att-side em,
+    .dash i,
+    .wf i {
+      animation: none;
+    }
+    :global(.project:hover) .screen {
+      transform: none;
+    }
+  }
+</style>

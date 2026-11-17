@@ -1,0 +1,247 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RedLight from '../../components/RedLight.astro';
+import Icon from '../../components/Icon.astro';
+import BuildSection from '../../components/BuildSection.astro';
+import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
+import { langPaths, localizePath, t, type Lang } from '../../i18n';
+import { serviceIcon, servicePage } from '../../lib/services';
+import { site } from '../../config/site';
+
+export const getStaticPaths = langPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { services, home } = t(lang);
+// Industry page for each sector card, in the order of `services.sectors`.
+const sectorPages = ['universities', 'retail', 'finance', 'ngos', 'healthcare', 'government'];
+
+const schema = services.items.map((s) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: s.title,
+  description: s.text,
+  provider: { '@id': `${site.url}/#organization` },
+  areaServed: site.areaServed,
+}));
+---
+
+<BaseLayout lang={lang} title={services.title} description={services.description} path="/services" schema={schema}>
+  <section class="page-hero hero">
+    <RedLight variant="subtle" />
+    <div class="dot-grid" aria-hidden="true"></div>
+    <div class="container inner">
+      <h1>{services.heading}</h1>
+      <p class="lead">{services.lead}</p>
+    </div>
+  </section>
+
+  <section class="section top0">
+    <div class="container grid list">
+      {
+        services.items.map((s, i) => (
+          <article class="card card-hover service" id={s.id} data-reveal style={`--d:${i % 2}`}>
+            <div class="head">
+              <span class="icon">
+                <Icon name={serviceIcon(s.id)} size={26} />
+              </span>
+              <span class="index">{String(i + 1).padStart(2, '0')}</span>
+            </div>
+            <h2>{s.title}</h2>
+            <p class="muted">{s.text}</p>
+            {servicePage(s.id) && (
+              <a class="more" href={localizePath(lang, servicePage(s.id))}>
+                {t(lang).solutions.learnMore} <Icon name="arrow" size={18} />
+              </a>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <SolutionsTeaser lang={lang} />
+
+  <section class="section tools">
+    <div class="container" data-reveal>
+      <h2>{services.toolsHeading}</h2>
+      <ul class="chips">
+        {home.stack.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal><h2>{services.processHeading}</h2></div>
+      <ol class="grid grid-process">
+        {
+          services.process.map((step, i) => (
+            <li class="card" data-reveal style={`--d:${i}`}>
+              <span class="num">{i + 1}</span>
+              <h3>{step.title}</h3>
+              <p class="muted">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="start-small" data-reveal>
+        <h3>{services.startSmallHeading}</h3>
+        <p class="muted">{services.startSmallText}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2>{services.sectorsHeading}</h2>
+        <p class="lead">{services.sectorsLead}</p>
+      </div>
+      <div class="grid grid-3">
+        {
+          services.sectors.map((sector, i) => (
+            <div class="card card-hover" data-reveal style={`--d:${i % 3}`}>
+              <h3>{sector.title}</h3>
+              <ul class="ticks">
+                {sector.points.map((p) => (
+                  <li>{p}</li>
+                ))}
+              </ul>
+              <a class="more sector-link" href={localizePath(lang, `/industries/${sectorPages[i]}`)}>
+                {t(lang).solutions.learnMore} <Icon name="arrow" size={18} />
+              </a>
+            </div>
+          ))
+        }
+        <a class="card other" href={localizePath(lang, '/contact')} data-reveal>
+          <h3>{services.otherSectorHeading}</h3>
+          <p class="muted">{services.otherSectorText}</p>
+          <span class="more">{services.ctaButton} <Icon name="arrow" size={18} /></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <BuildSection lang={lang} />
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band" data-reveal>
+        <h2>{services.ctaHeading}</h2>
+        <p>{home.ctaText}</p>
+        <a class="btn btn-primary" href={localizePath(lang, '/start-project')}>{t(lang).nav.cta}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .top0 {
+    padding-top: 24px;
+  }
+
+  .list {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .service {
+    scroll-margin-top: 90px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sector-link {
+    margin-top: 14px;
+    text-decoration: none;
+  }
+
+  .service .more {
+    text-decoration: none;
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .index {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: rgb(var(--tint) / 0.12);
+  }
+
+  .service h2 {
+    font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+  }
+
+  .icon {
+    display: inline-grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--red-soft);
+    color: var(--red-text);
+  }
+
+  .tools {
+    padding-block: 24px;
+  }
+
+  .tools h2 {
+    font-size: 1.3rem;
+  }
+
+  .grid-process {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+
+  .start-small {
+    margin-top: 24px;
+    padding: 24px 28px;
+    border-left: 3px solid var(--red);
+    background: linear-gradient(90deg, var(--red-soft), transparent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .start-small p {
+    margin: 0;
+  }
+
+  .other {
+    text-decoration: none;
+    border-style: dashed;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .other:hover {
+    border-color: var(--red);
+  }
+
+  .more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--red-text);
+    font-weight: 700;
+  }
+</style>

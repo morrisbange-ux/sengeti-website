@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RedLight from '../components/RedLight.astro';
+import { defaultLang, localizePath, t } from '../i18n';
+
+const lang = defaultLang;
+const { notFound } = t(lang);
+---
+
+<BaseLayout lang={lang} title={notFound.title} description={notFound.text} path="/404" noindex>
+  <section class="hero">
+    <RedLight />
+    <div class="container inner">
+      <p class="eyebrow">404</p>
+      <h1>{notFound.heading}</h1>
+      <p class="lead">{notFound.text}</p>
+      <a class="btn btn-primary" href={localizePath(lang, '/')}>{notFound.home}</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
+  }
+</style>
