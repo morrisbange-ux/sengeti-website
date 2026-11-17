@@ -1,0 +1,385 @@
+---
+/**
+ * "Ten countries, seven languages": a dotted world map with the countries SengetiEdu is set up
+ * for lit in red, arcs from the head office to each one, and the seven app languages written
+ * in their own scripts. Map data comes from scripts/world-dots.mjs.
+ */
+import { t, type Lang } from '../i18n';
+import { landDots, litDots, pins } from '../lib/world-dots';
+import { world, worldCountries, worldLanguages } from '../i18n/pages/world';
+
+interface Props {
+  lang: Lang;
+  /** Shows the four "adapts to your country" points under the map. */
+  details?: boolean;
+}
+const { lang, details = true } = Astro.props;
+const w = world[lang];
+const names = new Intl.DisplayNames([t(lang).langCode], { type: 'region' });
+// The browser's own name for DR Congo reads "Congo - Kinshasa"; this is friendlier.
+const drc = { en: 'DR Congo', fr: 'RD Congo', pt: 'RD Congo' }[lang];
+const nameOf = (c: string) => (c === 'CD' ? drc : names.of(c));
+const [hq, ...rest] = pins;
+
+// A gentle arc from the head office to each country, bowed upwards in proportion to its length.
+const arcs = rest.map((p) => {
+  const mx = (hq.x + p.x) / 2;
+  const my = (hq.y + p.y) / 2;
+  const len = Math.hypot(p.x - hq.x, p.y - hq.y);
+  return { code: p.code, d: `M${hq.x} ${hq.y}Q${mx} ${my - len * 0.35} ${p.x} ${p.y}`, len: Math.round(len * 1.2) };
+});
+// Frame Africa, the Gulf, Europe and South Asia: the part of the world with pins.
+const view = { x: 596, y: 36, w: 508, h: 420 };
+---
+
+<section class="section world">
+  <div class="container">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">{w.eyebrow}</span>
+      <h2>{w.heading} <span class="gradient-text">{w.headingAccent}</span></h2>
+      <p class="lead">{w.lead}</p>
+    </div>
+
+    <div class="stage" data-reveal>
+      <svg viewBox={`${view.x} ${view.y} ${view.w} ${view.h}`} role="img" aria-label={w.label} preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="wr-glow">
+            <stop offset="0" stop-color="#ff3130" stop-opacity="0.55"></stop>
+            <stop offset="1" stop-color="#ff3130" stop-opacity="0"></stop>
+          </radialGradient>
+          <linearGradient id="wr-arc" x1="0" x2="1">
+            <stop offset="0" stop-color="#ff3130" stop-opacity="0.2"></stop>
+            <stop offset="1" stop-color="#ff7a5c"></stop>
+          </linearGradient>
+        </defs>
+        <path class="land" d={landDots}></path>
+        <path class="lit" d={litDots}></path>
+        <g class="arcs">
+          {arcs.map((a, i) => <path class="arc" data-c={a.code} d={a.d} style={`--len:${a.len};--i:${i}`} />)}
+        </g>
+        <circle class="hq-glow" cx={hq.x} cy={hq.y} r="26" fill="url(#wr-glow)"></circle>
+        {
+          pins.map((p, i) => (
+            <g class:list={['pin', { hq: i === 0 }]} data-c={p.code} transform={`translate(${p.x} ${p.y})`} style={`--i:${i}`}>
+              <circle class="ring" r="6" />
+              <circle class="dot" r={i === 0 ? 3.6 : 2.6} />
+            </g>
+          ))
+        }
+      </svg>
+      <p class="hq-tag" style={`left:${((hq.x - view.x) / view.w) * 100}%;top:${((hq.y - view.y) / view.h) * 100}%`}>
+        {w.hq}
+      </p>
+    </div>
+
+    <div class="facts">
+      <div class="fact" data-reveal>
+        <h3 class="fact-label">{w.countriesLabel}</h3>
+        <ul class="countries">
+          {
+            worldCountries.map((c, i) => (
+              <li data-c={c} class:list={{ home: i === 0 }}>
+                {nameOf(c)}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="fact" data-reveal style="--d:1">
+        <h3 class="fact-label">{w.languagesLabel}</h3>
+        <ul class="langs">
+          {
+            worldLanguages.map((l) => (
+              <li lang={l.code} dir={'dir' in l ? l.dir : undefined}>
+                {l.name}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="muted note">{w.languagesNote}</p>
+      </div>
+    </div>
+
+    {
+      details && (
+        <ul class="adapts">
+          {w.adapts.map((a, i) => (
+            <li data-reveal style={`--d:${i}`}>
+              <strong>{a.title}</strong>
+              <span class="muted">{a.text}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  /* Tiny subsets of Noto Sans (OFL) holding only the letters of the three language names below,
+     for phones and computers that have no font for these scripts. */
+  @font-face {
+    font-family: 'Noto Sans Arabic Name';
+    src: url('/fonts/noto-arabic-name.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+    unicode-range: U+0600-06FF;
+  }
+
+  @font-face {
+    font-family: 'Noto Sans Sinhala Name';
+    src: url('/fonts/noto-sinhala-name.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+    unicode-range: U+0D80-0DFF, U+200C-200D;
+  }
+
+  @font-face {
+    font-family: 'Noto Sans Tamil Name';
+    src: url('/fonts/noto-tamil-name.woff2') format('woff2');
+    font-weight: 600;
+    font-display: swap;
+    unicode-range: U+0B80-0BFF;
+  }
+
+  .world {
+    overflow: hidden;
+  }
+
+  .stage {
+    position: relative;
+    margin-inline: auto;
+    max-width: 980px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(ellipse 60% 70% at 55% 60%, rgb(255 49 48 / 0.1), transparent 70%),
+      linear-gradient(180deg, rgb(var(--tint) / 0.03), transparent);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .land,
+  .lit {
+    fill: none;
+    stroke-linecap: round;
+    stroke-width: 4.2;
+  }
+
+  .land {
+    stroke: rgb(var(--tint) / 0.16);
+  }
+
+  .lit {
+    stroke: var(--red);
+  }
+
+  .arc {
+    fill: none;
+    stroke: url(#wr-arc);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-dasharray: var(--len);
+    stroke-dashoffset: var(--len);
+    transition: stroke-width 0.2s;
+  }
+
+  :global(.js) .is-visible .arc,
+  :global(html:not(.js)) .arc {
+    animation: draw 1.4s calc(0.2s + var(--i) * 0.12s) cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .pin .dot {
+    fill: #fff;
+    stroke: var(--red);
+    stroke-width: 1.6;
+  }
+
+  .pin.hq .dot {
+    fill: var(--red);
+    stroke: #fff;
+  }
+
+  .pin .ring {
+    fill: none;
+    stroke: var(--red);
+    stroke-width: 1.2;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ring 3.2s calc(var(--i) * 0.32s) ease-out infinite;
+  }
+
+  @keyframes ring {
+    0% {
+      opacity: 0.9;
+      transform: scale(0.4);
+    }
+    70%,
+    100% {
+      opacity: 0;
+      transform: scale(1.8);
+    }
+  }
+
+  .hq-glow {
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Pointing at a country in the list brings its arc and pin forward. */
+  .world:has(.countries li[data-c='MZ']:hover) :is(.arc, .pin)[data-c='MZ'],
+  .world:has(.countries li[data-c='CD']:hover) :is(.arc, .pin)[data-c='CD'],
+  .world:has(.countries li[data-c='CM']:hover) :is(.arc, .pin)[data-c='CM'],
+  .world:has(.countries li[data-c='KE']:hover) :is(.arc, .pin)[data-c='KE'],
+  .world:has(.countries li[data-c='NA']:hover) :is(.arc, .pin)[data-c='NA'],
+  .world:has(.countries li[data-c='BW']:hover) :is(.arc, .pin)[data-c='BW'],
+  .world:has(.countries li[data-c='AE']:hover) :is(.arc, .pin)[data-c='AE'],
+  .world:has(.countries li[data-c='PL']:hover) :is(.arc, .pin)[data-c='PL'],
+  .world:has(.countries li[data-c='LK']:hover) :is(.arc, .pin)[data-c='LK'] {
+    stroke-width: 3;
+    filter: drop-shadow(0 0 6px rgb(255 49 48 / 0.9));
+  }
+
+  .hq-tag {
+    position: absolute;
+    margin: 0;
+    transform: translate(calc(-100% - 14px), -50%);
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #d91c1b;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 6px 18px -6px rgb(255 49 48 / 0.8);
+  }
+
+  .facts {
+    display: grid;
+    gap: 16px;
+    max-width: 980px;
+    margin: 20px auto 0;
+  }
+
+  @media (min-width: 860px) {
+    .facts {
+      grid-template-columns: 1.15fr 1fr;
+    }
+  }
+
+  .fact {
+    padding: 22px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: rgb(var(--tint) / 0.025);
+  }
+
+  .fact-label {
+    margin: 0 0 14px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .countries,
+  .langs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .countries li {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.9rem;
+    cursor: default;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .countries li:hover,
+  .countries li.home {
+    border-color: rgb(255 49 48 / 0.55);
+    color: var(--white);
+  }
+
+  .langs {
+    gap: 6px 18px;
+    align-items: baseline;
+  }
+
+  .langs li {
+    font-family: var(--font-display), 'Noto Sans Arabic Name', 'Noto Sans Sinhala Name', 'Noto Sans Tamil Name', system-ui, sans-serif;
+    font-size: clamp(1.25rem, 2.6vw, 1.6rem);
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--white);
+  }
+
+  .langs li:nth-child(odd) {
+    color: var(--red-text);
+  }
+
+  .note {
+    margin: 12px 0 0;
+    font-size: 0.9rem;
+  }
+
+  .adapts {
+    list-style: none;
+    margin: 16px auto 0;
+    padding: 0;
+    max-width: 980px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+
+  .adapts li {
+    display: grid;
+    gap: 4px;
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--red);
+    font-size: 0.92rem;
+  }
+
+  .adapts strong {
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arc {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

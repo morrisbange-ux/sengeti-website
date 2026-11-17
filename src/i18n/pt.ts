@@ -46,7 +46,7 @@ const pt: Dict = {
     company: 'Empresa',
     getInTouch: 'Contacte-nos',
     followUs: 'Siga-nos',
-    madeIn: 'Feito no Zimbabué.',
+    madeIn: 'Software para escolas e equipas em todo o mundo.',
     rights: 'Todos os direitos reservados.',
     legal: 'Informação legal',
     privacy: 'Política de Privacidade',
@@ -57,15 +57,15 @@ const pt: Dict = {
   home: {
     title: 'Sengeti Technologies | Automação de processos e software à medida',
     description:
-      'A Sengeti Technologies ajuda as organizações a substituir trabalho manual e lento por sistemas digitais fiáveis: automação de processos, integração de sistemas e software à medida, do Zimbabué para toda a região.',
+      'A Sengeti Technologies ajuda as organizações a substituir trabalho manual e lento por sistemas digitais fiáveis: automação de processos, integração de sistemas e software à medida para organizações em todo o mundo.',
     eyebrow: 'Automação · Software · Cloud',
     heading: 'Automatizamos o trabalho que',
     headingAccent: 'atrasa a sua organização.',
-    lead: 'Automação de processos, integração de sistemas e software à medida para organizações no Zimbabué e além. Fiável, acessível e pensado à volta da forma como a sua equipa já trabalha.',
+    lead: 'Automação de processos, integração de sistemas e software à medida para organizações em todo o mundo. Fiável, acessível e pensado à volta da forma como a sua equipa já trabalha.',
     primaryCta: 'Ver os nossos serviços',
     secondaryCta: 'Fale connosco',
     stackLabel: 'Ligamo-nos às ferramentas que já utiliza',
-    stack: ['WhatsApp', 'E-mail e SMS', 'Excel e Google Sheets', 'Software de contabilidade', 'EcoCash e pagamentos com cartão', 'Aplicações web e Android'],
+    stack: ['WhatsApp', 'E-mail e SMS', 'Excel e Google Sheets', 'Software de contabilidade', 'Dinheiro móvel e pagamentos com cartão', 'Aplicações web e Android'],
     problemsHeading: 'Onde as organizações perdem tempo todos os dias',
     problemsLead: 'A maioria das equipas não precisa de mais pessoas. Precisa de menos trabalho manual. Estes são os padrões que vemos repetidamente:',
     problems: [
@@ -85,7 +85,7 @@ const pt: Dict = {
     caseStudiesHeading: 'O nosso trabalho',
     whyHeading: 'Porquê a Sengeti',
     why: [
-      { title: 'Próximos e acessíveis', text: 'Uma equipa zimbabueana que conhece o dia a dia das organizações da região.' },
+      { title: 'Perto da sua equipa', text: 'Trabalhamos ao lado das pessoas que usam o sistema, na língua delas e ao ritmo delas.' },
       { title: 'Práticos e acessíveis', text: 'Soluções ajustadas ao seu orçamento, com resultados visíveis rapidamente.' },
       { title: 'Pensado para o telemóvel', text: 'Feito para telemóveis e ligações instáveis, e funciona offline onde é importante.' },
       { title: 'Seguro desde a conceção', text: 'Início de sessão em dois passos, cópias de segurança e dados privados e separados.' },
@@ -98,9 +98,9 @@ const pt: Dict = {
   about: {
     title: 'Sobre nós | Sengeti Technologies',
     description:
-      'A Sengeti Technologies é uma empresa de tecnologia zimbabueana que ajuda as organizações a substituir trabalho manual e lento por sistemas digitais fiáveis. Fundada por Morris N. Bangezhano.',
+      'A Sengeti Technologies é uma empresa de tecnologia que ajuda organizações em todo o mundo a substituir trabalho manual e lento por sistemas digitais fiáveis. Fundada por Morris N. Bangezhano.',
     heading: 'Encontramos problemas. Automatizamo-los.',
-    lead: 'A Sengeti Technologies é uma empresa de tecnologia zimbabueana que ajuda as organizações a substituir trabalho manual e lento por sistemas digitais fiáveis.',
+    lead: 'A Sengeti Technologies é uma empresa de tecnologia que ajuda organizações em todo o mundo a substituir trabalho manual e lento por sistemas digitais fiáveis.',
     storyHeading: 'Quem somos',
     story: [
       'Começamos onde o trabalho acontece: os formulários em papel, as folhas de cálculo, o copiar e colar entre sistemas, as aprovações à espera na caixa de correio de alguém. Depois automatizamo-lo.',
@@ -247,8 +247,8 @@ const pt: Dict = {
         a: 'Sim. Usamos ligações encriptadas, início de sessão em dois passos, cópias de segurança regulares e mantemos os dados de cada organização privados e separados. Consulte a nossa Política de Privacidade para mais detalhes.',
       },
       {
-        q: 'Trabalham com organizações fora do Zimbabué?',
-        a: 'Sim. Trabalhamos com organizações no Zimbabué e nos países vizinhos, em inglês, francês e português.',
+        q: 'Trabalham com organizações noutros países?',
+        a: 'Sim. Trabalhamos com organizações em todo o mundo. A nossa equipa trabalha em inglês, francês e português, e o SengetiEdu funciona em sete línguas.',
       },
       {
         q: 'Quanto custa?',
@@ -261,7 +261,7 @@ const pt: Dict = {
 
   contact: {
     title: 'Contacto | Sengeti Technologies',
-    description: 'Contacte a Sengeti Technologies em Mutare, Zimbabué, por WhatsApp, telefone, e-mail ou pelo formulário de contacto.',
+    description: 'Contacte a Sengeti Technologies por WhatsApp, telefone, e-mail ou pelo formulário de contacto, esteja onde estiver.',
     heading: 'Contacte-nos',
     lead: 'Fale-nos do processo que lhe rouba tempo. A primeira conversa é gratuita.',
     formHeading: 'Enviar uma mensagem',
@@ -297,7 +297,7 @@ const pt: Dict = {
       { value: 'Android', label: 'e aplicações web' },
       { value: 'Cloud', label: 'alojado e com cópias de segurança' },
       { value: '2 passos', label: 'início de sessão seguro' },
-      { value: 'EN · FR · PT', label: 'suporte em toda a região' },
+      { value: 'EN · FR · PT', label: 'suporte na sua língua' },
     ],
   },
 
@@ -376,7 +376,7 @@ const pt: Dict = {
       {
         id: 'contact',
         keywords: ['contacto', 'contato', 'mail', 'telefone', 'ligar', 'onde', 'morada', 'endereco', 'escritorio', 'mutare'],
-        text: 'Estamos em Mutare, no Zimbabué, e trabalhamos em toda a região. Contacte-nos por WhatsApp, telefone ou e-mail.',
+        text: 'A nossa sede é em Mutare, no Zimbabué, e trabalhamos com organizações em todo o mundo. Contacte-nos por WhatsApp, telefone ou e-mail.',
         link: { label: 'Os nossos contactos', href: '/contact' },
       },
       {
@@ -412,7 +412,7 @@ const pt: Dict = {
       {
         id: 'countries',
         keywords: ['pais', 'paises', 'mocambique', 'zambia', 'botsuana', 'africa do sul', 'malawi', 'angola', 'frances', 'portugues', 'idioma', 'lingua', 'regiao'],
-        text: 'Sim, trabalhamos com organizações no Zimbabué e nos países vizinhos, em inglês, francês e português.',
+        text: 'Sim, trabalhamos com organizações em todo o mundo. O SengetiEdu está preparado para escolas em dez países e funciona em sete línguas.',
       },
       {
         id: 'demo',
@@ -457,7 +457,7 @@ const pt: Dict = {
     ai: {
       title: 'Soluções de IA | Sengeti Technologies',
       description:
-        'Inteligência artificial prática para organizações no Zimbabué e na região: assistentes de IA e chatbots no WhatsApp, processamento de documentos, relatórios inteligentes, previsões e pesquisa em documentos.',
+        'Inteligência artificial prática para organizações em todo o mundo: assistentes de IA e chatbots no WhatsApp, processamento de documentos, relatórios inteligentes, previsões e pesquisa em documentos.',
       eyebrow: 'Inteligência artificial',
       heading: 'IA prática que',
       headingAccent: 'faz trabalho a sério.',
@@ -522,7 +522,7 @@ const pt: Dict = {
       capabilities: [
         { icon: 'wallet', title: 'Finanças e contabilidade', text: 'Razão geral, despesas, orçamentos e reconciliação bancária, com demonstrações prontas quando precisar.' },
         { icon: 'box', title: 'Inventário e armazéns', text: 'Níveis de stock em tempo real em todas as filiais, alertas de reposição e contagens no telemóvel.' },
-        { icon: 'receipt', title: 'Vendas e faturação', text: 'Cotações, faturas e recibos, com pagamentos EcoCash, M-Pesa e por cartão registados automaticamente.' },
+        { icon: 'receipt', title: 'Vendas e faturação', text: 'Cotações, faturas e recibos, com pagamentos por dinheiro móvel e cartão registados automaticamente.' },
         { icon: 'cart', title: 'Compras e fornecedores', text: 'Pedidos de compra, aprovações e encomendas, com o registo completo de cada fornecedor.' },
         { icon: 'users', title: 'RH e salários', text: 'Fichas de pessoal, férias, salários e recibos de vencimento, com aprovações que avançam sozinhas.' },
         { icon: 'chat', title: 'Clientes', text: 'Histórico de clientes, acompanhamentos e lembretes, incluindo no WhatsApp.' },
@@ -567,7 +567,7 @@ const pt: Dict = {
     automation: {
       title: 'Automatização de processos | Sengeti Technologies',
       description:
-        'Automatização de processos e fluxos de trabalho para organizações no Zimbabué e na região: aprovações, introdução de dados, relatórios, lembretes e integrações que funcionam sozinhos.',
+        'Automatização de processos e fluxos de trabalho para organizações em todo o mundo: aprovações, introdução de dados, relatórios, lembretes e integrações que funcionam sozinhos.',
       eyebrow: 'Automatização de processos',
       heading: 'Deixe o trabalho de rotina',
       headingAccent: 'fazer-se sozinho.',
@@ -623,7 +623,7 @@ const pt: Dict = {
         { icon: 'web-mobile', title: 'Aplicações web', text: 'Sistemas de gestão, painéis e portais que funcionam em qualquer navegador e dispositivo.' },
         { icon: 'phone', title: 'Aplicações móveis', text: 'Aplicações Android e iPhone que funcionam offline e sincronizam quando a ligação volta.' },
         { icon: 'users', title: 'Portais de clientes e colaboradores', text: 'Portais de autosserviço para estudantes, clientes, membros ou colaboradores, com acesso seguro.' },
-        { icon: 'plug', title: 'APIs e integrações', text: 'Ligação ao EcoCash, M-Pesa, bancos, gateways de SMS, WhatsApp e aos sistemas que já usa.' },
+        { icon: 'plug', title: 'APIs e integrações', text: 'Ligação a dinheiro móvel, pagamentos com cartão, bancos, gateways de SMS, WhatsApp e aos sistemas que já usa.' },
         { icon: 'cloud', title: 'Alojamento na cloud', text: 'Alojamento fiável, cópias de segurança e monitorização, para o software estar sempre rápido e disponível.' },
         { icon: 'shield', title: 'Suporte e manutenção', text: 'Atualizações, correções e novas funcionalidades depois do lançamento, por uma equipa que conhece o seu sistema.' },
       ],

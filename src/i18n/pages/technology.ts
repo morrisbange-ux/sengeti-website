@@ -47,7 +47,7 @@ const en = {
       icon: 'plug',
       title: 'Integrations',
       text: 'Connecting the tools you already use.',
-      items: ['WhatsApp Business', 'EcoCash', 'SMS gateways', 'Email', 'Excel', 'Google Sheets', 'Accounting software', 'Card payments', 'REST APIs and webhooks'],
+      items: ['WhatsApp Business', 'Mobile money', 'SMS gateways', 'Email', 'Excel', 'Google Sheets', 'Accounting software', 'Card payments', 'REST APIs and webhooks'],
     },
     {
       icon: 'bolt',
@@ -107,7 +107,7 @@ const fr: typeof en = {
       icon: 'plug',
       title: 'Intégrations',
       text: 'Relier les outils que vous utilisez déjà.',
-      items: ['WhatsApp Business', 'EcoCash', 'Passerelles SMS', 'E-mail', 'Excel', 'Google Sheets', 'Logiciels de comptabilité', 'Paiements par carte', 'API REST et webhooks'],
+      items: ['WhatsApp Business', 'Mobile money', 'Passerelles SMS', 'E-mail', 'Excel', 'Google Sheets', 'Logiciels de comptabilité', 'Paiements par carte', 'API REST et webhooks'],
     },
     {
       icon: 'bolt',
@@ -167,7 +167,7 @@ const pt: typeof en = {
       icon: 'plug',
       title: 'Integrações',
       text: 'Ligamos as ferramentas que já utiliza.',
-      items: ['WhatsApp Business', 'EcoCash', 'Gateways de SMS', 'E-mail', 'Excel', 'Google Sheets', 'Software de contabilidade', 'Pagamentos com cartão', 'APIs REST e webhooks'],
+      items: ['WhatsApp Business', 'Mobile money', 'Gateways de SMS', 'E-mail', 'Excel', 'Google Sheets', 'Software de contabilidade', 'Pagamentos com cartão', 'APIs REST e webhooks'],
     },
     {
       icon: 'bolt',

@@ -26,19 +26,19 @@ const extra = {
   en: {
     scan: 'Scan to book a free demo',
     or: 'or',
-    families: 'Three editions. One foundation.',
+    families: 'Three products. One foundation.',
     pricing: 'Pricing',
   },
   fr: {
     scan: 'Scannez pour réserver une démo gratuite',
     or: 'ou',
-    families: 'Trois éditions. Une seule base.',
+    families: 'Trois produits. Une seule base.',
     pricing: 'Tarifs',
   },
   pt: {
     scan: 'Leia para marcar uma demo grátis',
     or: 'ou',
-    families: 'Três edições. Uma só base.',
+    families: 'Três produtos. Uma só base.',
     pricing: 'Preços',
   },
 };
@@ -65,7 +65,7 @@ async function page(lang) {
   ${[500, 600, 700].map((w) => `@font-face{font-family:Poppins;font-weight:${w};src:url(${fonts[w]}) format('woff2')}`).join('')}
   @page { size: A4; margin: 0 }
   * { box-sizing: border-box }
-  body { margin: 0; font-family: Poppins, sans-serif; font-weight: 500; color: #1b1b1f; font-size: 9pt; line-height: 1.42 }
+  body { margin: 0; font-family: Poppins, sans-serif; font-weight: 500; color: #1b1b1f; font-size: 8.6pt; line-height: 1.38 }
   .sheet { width: 210mm; height: 297mm; position: relative; overflow: hidden; page-break-after: always; display: flex; flex-direction: column }
   .hero { flex: none; background: #0b0b0c; color: #fff; padding: 14mm 14mm 12mm; position: relative; overflow: hidden }
   .hero::before { content: ''; position: absolute; width: 140mm; height: 140mm; right: -50mm; top: -70mm; border-radius: 50%;

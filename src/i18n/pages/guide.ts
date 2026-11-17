@@ -31,7 +31,7 @@ const en = {
       items: [
         { title: 'Creating invoices', why: 'Invoices can be generated the moment a job or order is complete, with no retyping.' },
         { title: 'Payment reminders', why: 'Polite reminders go out on time, so overdue invoices do not depend on someone remembering.' },
-        { title: 'Matching payments to invoices', why: 'Bank and EcoCash payments can be matched automatically instead of line by line.' },
+        { title: 'Matching payments to invoices', why: 'Bank and mobile money payments can be matched automatically instead of line by line.' },
         { title: 'Expense claims and approvals', why: 'Claims reach the right approver at once and nothing sits forgotten in an inbox.' },
       ],
     },
@@ -107,7 +107,7 @@ const fr: typeof en = {
       items: [
         { title: 'Établir les factures', why: "Les factures peuvent être créées dès qu'un travail ou une commande est terminé, sans ressaisie." },
         { title: 'Relances de paiement', why: "Des relances courtoises partent à temps : les impayés ne dépendent plus de la mémoire de quelqu'un." },
-        { title: 'Rapprocher paiements et factures', why: 'Les paiements bancaires et EcoCash peuvent être rapprochés automatiquement, pas ligne par ligne.' },
+        { title: 'Rapprocher paiements et factures', why: 'Les paiements bancaires et par mobile money peuvent être rapprochés automatiquement, pas ligne par ligne.' },
         { title: 'Notes de frais et validations', why: "Les demandes arrivent tout de suite chez la bonne personne et rien ne reste oublié dans une boîte mail." },
       ],
     },
@@ -183,7 +183,7 @@ const pt: typeof en = {
       items: [
         { title: 'Emitir faturas', why: 'As faturas podem ser criadas assim que um trabalho ou encomenda termina, sem voltar a digitar.' },
         { title: 'Lembretes de pagamento', why: 'Lembretes cordiais saem a tempo, e as faturas em atraso deixam de depender da memória de alguém.' },
-        { title: 'Conciliar pagamentos e faturas', why: 'Os pagamentos bancários e por EcoCash podem ser conciliados automaticamente, e não linha a linha.' },
+        { title: 'Conciliar pagamentos e faturas', why: 'Os pagamentos bancários e por dinheiro móvel podem ser conciliados automaticamente, e não linha a linha.' },
         { title: 'Despesas e aprovações', why: 'Os pedidos chegam logo a quem aprova e nada fica esquecido numa caixa de correio.' },
       ],
     },

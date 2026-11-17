@@ -26,7 +26,7 @@ const en = {
   featureLegend: '3. Anything extra? (optional)',
   features: {
     accounts: 'User accounts and roles',
-    payments: 'Payments (EcoCash, cards, M-Pesa)',
+    payments: 'Payments (mobile money, cards, bank)',
     notifications: 'WhatsApp or SMS notifications',
     reports: 'Reports and dashboards',
     offline: 'Works offline',
@@ -79,7 +79,7 @@ const fr: typeof en = {
   featureLegend: '3. Des options ? (facultatif)',
   features: {
     accounts: 'Comptes utilisateurs et rôles',
-    payments: 'Paiements (EcoCash, cartes, M-Pesa)',
+    payments: 'Paiements (mobile money, cartes, banque)',
     notifications: 'Notifications WhatsApp ou SMS',
     reports: 'Rapports et tableaux de bord',
     offline: 'Fonctionne hors ligne',
@@ -132,7 +132,7 @@ const pt: typeof en = {
   featureLegend: '3. Algo mais? (opcional)',
   features: {
     accounts: 'Contas de utilizador e perfis',
-    payments: 'Pagamentos (EcoCash, cartões, M-Pesa)',
+    payments: 'Pagamentos (dinheiro móvel, cartões, banco)',
     notifications: 'Notificações por WhatsApp ou SMS',
     reports: 'Relatórios e painéis',
     offline: 'Funciona offline',

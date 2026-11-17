@@ -1,6 +1,6 @@
 ---
 title: 'School fee arrears: 6 practical ways to collect more, on time'
-description: Fee arrears squeeze every school's budget. Six practical steps, from clear invoices to paying from home with EcoCash, that help schools collect more without damaging relationships with families.
+description: Fee arrears squeeze every school's budget. Six practical steps, from clear invoices to paying from home with mobile money, that help schools collect more without damaging relationships with families.
 date: 2026-11-10
 type: article
 ---
@@ -13,7 +13,7 @@ Families plan around what they know. An invoice that arrives before the term, li
 
 ## 2. Make paying from home easy
 
-Every trip to the school office or the bank is a reason to put it off. Let parents pay from home with the methods they already use, such as EcoCash or a card, and send a receipt straight away so they know it arrived.
+Every trip to the school office or the bank is a reason to put it off. Let parents pay from home with the methods they already use, such as mobile money or a card, and send a receipt straight away so they know it arrived.
 
 ## 3. Let parents see their balance at any time
 
@@ -33,4 +33,4 @@ Families who are struggling respond better to a private message and an offer of 
 
 ## How SengetiEdu helps
 
-[SengetiEdu](/products/sengetiedu) includes invoices, receipts, debtors lists, sponsors, messages to families by SMS and WhatsApp, a balance check by text message, and paying from home with EcoCash or a card, all carrying your school's name. [Book a free demo](/school-demo) and we will show you the fees screens with your own school's name on them.
+[SengetiEdu](/products/sengetiedu) includes invoices, receipts, debtors lists, sponsors, messages to families by SMS and WhatsApp, a balance check by text message, and paying from home with mobile money or a card, all carrying your school's name. [Book a free demo](/school-demo) and we will show you the fees screens with your own school's name on them.

@@ -24,11 +24,11 @@ const en = {
   index: {
     title: 'Industries we serve | Sengeti Technologies',
     description:
-      'Software and automation for universities, NGOs, retailers and SMEs, microfinance institutions, healthcare providers and government offices in Zimbabwe and neighbouring countries.',
+      'Software and automation for universities, NGOs, retailers and SMEs, microfinance institutions, healthcare providers and government offices around the world.',
     eyebrow: 'Industries',
     heading: 'Software and automation',
     headingAccent: 'for your industry.',
-    lead: 'Every sector has its own paperwork. We build systems for universities, NGOs, shops, microfinance institutions, clinics and government offices in Zimbabwe and neighbouring countries.',
+    lead: 'Every sector has its own paperwork. We build systems for universities, NGOs, shops, microfinance institutions, clinics and government offices around the world.',
     listHeading: 'Who we work with',
     cardCta: 'See what we build',
     otherHeading: "Don't see your industry?",
@@ -51,13 +51,13 @@ const en = {
       summary: 'Attendance, exam eligibility, student records and fee reminders that run themselves.',
       points: ['Attendance and exam eligibility', 'Student records and enrolment', 'Fee reminders and receipts'],
       audience: 'Universities, colleges and other higher education institutions',
-      title: 'Software for universities and colleges in Zimbabwe | Sengeti Technologies',
+      title: 'Software for universities and colleges | Sengeti Technologies',
       description:
-        'Software and automation for universities and colleges in Zimbabwe and the region: Sengeti Campus with rotating QR check-in and exam eligibility lists, student records, fee reminders and reports.',
+        'Software and automation for universities and colleges around the world: Sengeti Campus with rotating QR check-in and exam eligibility lists, student records, fee reminders and reports.',
       eyebrow: 'Higher education',
       heading: 'Software for universities and colleges',
       headingAccent: 'that takes paper off campus.',
-      lead: 'From attendance and exam eligibility to student records and fee reminders, we help universities and colleges in Zimbabwe and the region replace paper registers and spreadsheets with systems that run themselves.',
+      lead: 'From attendance and exam eligibility to student records and fee reminders, we help universities and colleges around the world replace paper registers and spreadsheets with systems that run themselves.',
       challenges: [
         { title: 'Paper registers', text: 'Roll call takes time from every lecture, and sheets get lost before anyone types them in.' },
         { title: 'Proxy sign-ins', text: 'Students sign in for friends who are not there, and nobody can prove who really attended.' },
@@ -87,7 +87,7 @@ const en = {
       },
       faqs: [
         {
-          q: 'Do you have software for universities in Zimbabwe?',
+          q: 'Do you have software for universities?',
           a: 'Yes. Sengeti Campus, the university edition of SengetiEdu, covers attendance, teaching, semesters, fees and students, and we also build custom systems for records, reporting and finance.',
         },
         {
@@ -105,13 +105,13 @@ const en = {
       summary: 'Beneficiary registration, field data on phones and donor reports in one click.',
       points: ['Beneficiary registration and tracking', 'Field data collection on phones', 'Donor reports in one click'],
       audience: 'Non-governmental organisations, charities and development programmes',
-      title: 'Software for NGOs in Zimbabwe | Sengeti Technologies',
+      title: 'Software for NGOs | Sengeti Technologies',
       description:
-        'Software and automation for NGOs in Zimbabwe and the region: beneficiary registration and tracking, mobile field data collection that works offline, donor reports in one click and approval workflows.',
+        'Software and automation for NGOs around the world: beneficiary registration and tracking, mobile field data collection that works offline, donor reports in one click and approval workflows.',
       eyebrow: 'NGOs and development programmes',
       heading: 'Software for NGOs',
       headingAccent: 'from the field to the donor report.',
-      lead: 'Register beneficiaries, collect data on phones in the field, even without a connection, and produce donor reports in one click. Systems built for NGOs working in Zimbabwe and across the region.',
+      lead: 'Register beneficiaries, collect data on phones in the field, even without a connection, and produce donor reports in one click. Systems built for NGOs working in the field, wherever that is.',
       challenges: [
         { title: 'Paper forms from the field', text: 'Data is written on paper, carried back to the office and typed in again weeks later.' },
         { title: 'Many versions of the truth', text: 'Each district or project keeps its own spreadsheet, and the numbers never quite match.' },
@@ -146,22 +146,22 @@ const en = {
       summary: 'Stock alerts, daily sales reports and customer follow-ups on WhatsApp.',
       points: ['Stock alerts and re-ordering', 'Sales reports every morning', 'Customer follow-ups on WhatsApp'],
       audience: 'Retailers, wholesalers and small and medium-sized businesses',
-      title: 'Software for retail and small businesses in Zimbabwe | Sengeti Technologies',
+      title: 'Software for retail and small businesses | Sengeti Technologies',
       description:
-        'Affordable software and automation for shops, wholesalers and SMEs in Zimbabwe and the region: stock control and re-order alerts, sales and invoicing with EcoCash and card payments, daily sales reports and WhatsApp follow-ups.',
+        'Affordable software and automation for shops, wholesalers and SMEs around the world: stock control and re-order alerts, sales and invoicing with mobile money and card payments, daily sales reports and WhatsApp follow-ups.',
       eyebrow: 'Retail and SMEs',
       heading: 'Software for shops and small businesses',
       headingAccent: 'that keeps stock and sales in check.',
-      lead: 'Stock alerts, a sales report on your phone every morning, invoices and customer follow-ups on WhatsApp. Affordable systems for retailers and small businesses in Zimbabwe and the region.',
+      lead: 'Stock alerts, a sales report on your phone every morning, invoices and customer follow-ups on WhatsApp. Affordable systems for retailers and small businesses around the world.',
       challenges: [
         { title: 'Stock surprises', text: 'Popular items run out without warning while slow ones pile up on the shelves.' },
         { title: 'Sales counted by hand', text: 'Sales are added up in exercise books or spreadsheets at the end of the day, if there is time.' },
-        { title: 'Mixed payments', text: 'Cash, EcoCash, card and more than one currency make the day hard to reconcile.' },
+        { title: 'Mixed payments', text: 'Cash, mobile money, card and more than one currency make the day hard to reconcile.' },
         { title: 'Customers forgotten', text: 'There is no easy way to follow up, remind or reward customers after they buy.' },
       ],
       builds: [
         { title: 'Stock control and re-order alerts', text: 'Live stock levels for every branch, with an alert before an item runs out.', href: '/erp' },
-        { title: 'Sales and invoicing', text: 'Quotes, invoices and receipts, with EcoCash and card payments recorded automatically.', href: '/erp' },
+        { title: 'Sales and invoicing', text: 'Quotes, invoices and receipts, with mobile money and card payments recorded automatically.', href: '/erp' },
         { title: 'Daily sales report on your phone', text: 'Yesterday’s sales, best sellers and low stock, sent to you every morning.', href: '/automation' },
         { title: 'Customer follow-ups on WhatsApp', text: 'Thank-you messages, reminders and offers sent automatically to the right customers.', href: '/automation' },
         { title: 'WhatsApp chatbot for orders', text: 'An AI assistant that answers questions about prices and stock and takes orders day and night.', href: '/ai' },
@@ -173,8 +173,8 @@ const en = {
           a: 'Yes. We size solutions to your budget. You can start with one thing, such as stock alerts or a daily sales report, and add more later.',
         },
         {
-          q: 'Can it record EcoCash and card payments?',
-          a: 'Yes. Payments by cash, EcoCash and card can be recorded automatically, in more than one currency.',
+          q: 'Can it record mobile money and card payments?',
+          a: 'Yes. Payments by cash, mobile money and card can be recorded automatically, in more than one currency.',
         },
         {
           q: 'Does it work for more than one shop?',
@@ -187,13 +187,13 @@ const en = {
       summary: 'Loan workflows, repayment reminders and statements that produce themselves.',
       points: ['Loan application workflows', 'Repayment reminders', 'Automatic statements and reports'],
       audience: 'Microfinance institutions, savings and credit cooperatives and financial service providers',
-      title: 'Software for microfinance and financial services in Zimbabwe | Sengeti Technologies',
+      title: 'Software for microfinance and financial services | Sengeti Technologies',
       description:
-        'Software and automation for microfinance institutions and financial service providers in Zimbabwe and the region: loan application workflows, repayment reminders, automatic statements, reports and secure client records.',
+        'Software and automation for microfinance institutions and financial service providers around the world: loan application workflows, repayment reminders, automatic statements, reports and secure client records.',
       eyebrow: 'Finance and microfinance',
       heading: 'Software for microfinance and financial services',
       headingAccent: 'from application to repayment.',
-      lead: 'Loan application workflows, repayment reminders by SMS and WhatsApp, automatic statements and reports. Systems for microfinance institutions, savings and credit cooperatives and financial service providers in Zimbabwe and the region.',
+      lead: 'Loan application workflows, repayment reminders by SMS and WhatsApp, automatic statements and reports. Systems for microfinance institutions, savings and credit cooperatives and financial service providers around the world.',
       challenges: [
         { title: 'Loan files on paper', text: 'Applications move from desk to desk, and nobody can say quickly where a file is.' },
         { title: 'Missed repayments', text: 'Reminders depend on staff finding the time to call every client.' },
@@ -228,13 +228,13 @@ const en = {
       summary: 'Appointment booking and reminders, patient records and medicine stock.',
       points: ['Appointment booking and reminders', 'Patient records', 'Medicine stock'],
       audience: 'Clinics, pharmacies, hospitals and other healthcare providers',
-      title: 'Software for clinics and healthcare in Zimbabwe | Sengeti Technologies',
+      title: 'Software for clinics and healthcare | Sengeti Technologies',
       description:
-        'Software and automation for clinics, pharmacies and healthcare providers in Zimbabwe and the region: appointment booking and reminders, digital patient records, medicine stock control and billing.',
+        'Software and automation for clinics, pharmacies and healthcare providers around the world: appointment booking and reminders, digital patient records, medicine stock control and billing.',
       eyebrow: 'Healthcare',
       heading: 'Software for clinics and healthcare providers',
       headingAccent: 'that keeps patients and stock on track.',
-      lead: 'Appointment booking and reminders, patient records and medicine stock control for clinics, pharmacies and healthcare providers in Zimbabwe and the region.',
+      lead: 'Appointment booking and reminders, patient records and medicine stock control for clinics, pharmacies and healthcare providers around the world.',
       challenges: [
         { title: 'Queues and missed appointments', text: 'Patients wait for hours, and booked slots are lost when people forget to come.' },
         { title: 'Paper patient files', text: 'Files are slow to find, hard to read and easy to misplace.' },
@@ -269,13 +269,13 @@ const en = {
       summary: 'Approvals, document tracking and HR onboarding without paper chasing.',
       points: ['Leave, purchase and payment approvals', 'Document tracking', 'HR onboarding checklists'],
       audience: 'Government departments, local authorities, public bodies and busy offices',
-      title: 'Software for government and offices in Zimbabwe | Sengeti Technologies',
+      title: 'Software for government and offices | Sengeti Technologies',
       description:
-        'Software and automation for government departments, local authorities and offices in Zimbabwe and the region: leave, purchase and payment approvals, document tracking, HR onboarding, online forms and reports.',
+        'Software and automation for government departments, local authorities and offices around the world: leave, purchase and payment approvals, document tracking, HR onboarding, online forms and reports.',
       eyebrow: 'Offices and government',
       heading: 'Software for government and busy offices',
       headingAccent: 'that keeps approvals moving.',
-      lead: 'Leave, purchase and payment approvals, document tracking and HR onboarding, made digital so nothing gets stuck in an inbox. For government departments, local authorities, public bodies and offices in Zimbabwe and the region.',
+      lead: 'Leave, purchase and payment approvals, document tracking and HR onboarding, made digital so nothing gets stuck in an inbox. For government departments, local authorities, public bodies and offices around the world.',
       challenges: [
         { title: 'Approvals that wait', text: 'Paper forms move from desk to desk, and nobody is sure who has them.' },
         { title: 'Files that go missing', text: 'Documents are hard to find, easy to lose and impossible to track.' },
@@ -313,11 +313,11 @@ const fr: typeof en = {
   index: {
     title: 'Secteurs que nous servons | Sengeti Technologies',
     description:
-      'Logiciels et automatisation pour les universités, les ONG, les commerces et PME, les institutions de microfinance, les acteurs de la santé et les administrations au Zimbabwe et dans les pays voisins.',
+      'Logiciels et automatisation pour les universités, les ONG, les commerces et PME, les institutions de microfinance, les acteurs de la santé et les administrations partout dans le monde.',
     eyebrow: 'Secteurs',
     heading: 'Logiciels et automatisation',
     headingAccent: 'pour votre secteur.',
-    lead: "Chaque secteur a sa propre paperasse. Nous créons des systèmes pour les universités, les ONG, les commerces, les institutions de microfinance, les cliniques et les administrations au Zimbabwe et dans les pays voisins.",
+    lead: "Chaque secteur a sa propre paperasse. Nous créons des systèmes pour les universités, les ONG, les commerces, les institutions de microfinance, les cliniques et les administrations partout dans le monde.",
     listHeading: 'Avec qui nous travaillons',
     cardCta: 'Voir ce que nous créons',
     otherHeading: 'Votre secteur ne figure pas ici ?',
@@ -340,13 +340,13 @@ const fr: typeof en = {
       summary: 'Présences, admissibilité aux examens, dossiers étudiants et rappels de frais qui se gèrent tout seuls.',
       points: ['Présences et admissibilité aux examens', 'Dossiers étudiants et inscriptions', 'Rappels de frais et reçus'],
       audience: "Universités, écoles supérieures et autres établissements d'enseignement supérieur",
-      title: 'Logiciels pour universités et écoles supérieures au Zimbabwe | Sengeti Technologies',
+      title: 'Logiciels pour universités et écoles supérieures | Sengeti Technologies',
       description:
-        "Logiciels et automatisation pour les universités et écoles supérieures au Zimbabwe et dans la région : Sengeti Campus avec pointage par code QR tournant et listes d'admissibilité aux examens, dossiers étudiants, rappels de frais et rapports.",
+        "Logiciels et automatisation pour les universités et écoles supérieures partout dans le monde : Sengeti Campus avec pointage par code QR tournant et listes d'admissibilité aux examens, dossiers étudiants, rappels de frais et rapports.",
       eyebrow: 'Enseignement supérieur',
       heading: 'Des logiciels pour les universités et écoles supérieures',
       headingAccent: 'qui font disparaître le papier du campus.',
-      lead: "Des présences et de l'admissibilité aux examens jusqu'aux dossiers étudiants et aux rappels de frais, nous aidons les universités et écoles supérieures du Zimbabwe et de la région à remplacer les feuilles de présence et les tableurs par des systèmes qui tournent tout seuls.",
+      lead: "Des présences et de l'admissibilité aux examens jusqu'aux dossiers étudiants et aux rappels de frais, nous aidons les universités et écoles supérieures du monde entier à remplacer les feuilles de présence et les tableurs par des systèmes qui tournent tout seuls.",
       challenges: [
         { title: 'Feuilles de présence papier', text: "L'appel prend du temps à chaque cours, et les feuilles se perdent avant d'être saisies." },
         { title: 'Pointages par procuration', text: "Des étudiants signent pour des camarades absents, et personne ne peut prouver qui était vraiment là." },
@@ -376,7 +376,7 @@ const fr: typeof en = {
       },
       faqs: [
         {
-          q: 'Proposez-vous des logiciels pour les universités au Zimbabwe ?',
+          q: 'Proposez-vous des logiciels pour les universités ?',
           a: 'Oui. Sengeti Campus, l’édition universitaire de SengetiEdu, couvre les présences, l’enseignement, les semestres, les frais et les étudiants, et nous créons aussi des systèmes sur mesure pour les dossiers, les rapports et les finances.',
         },
         {
@@ -394,13 +394,13 @@ const fr: typeof en = {
       summary: 'Enregistrement des bénéficiaires, données terrain sur téléphone et rapports aux bailleurs en un clic.',
       points: ['Enregistrement et suivi des bénéficiaires', 'Collecte de données terrain sur téléphone', 'Rapports aux bailleurs en un clic'],
       audience: 'Organisations non gouvernementales, associations caritatives et programmes de développement',
-      title: 'Logiciels pour ONG au Zimbabwe | Sengeti Technologies',
+      title: 'Logiciels pour ONG | Sengeti Technologies',
       description:
-        'Logiciels et automatisation pour les ONG au Zimbabwe et dans la région : enregistrement et suivi des bénéficiaires, collecte de données terrain sur mobile même hors ligne, rapports aux bailleurs en un clic et circuits de validation.',
+        'Logiciels et automatisation pour les ONG partout dans le monde : enregistrement et suivi des bénéficiaires, collecte de données terrain sur mobile même hors ligne, rapports aux bailleurs en un clic et circuits de validation.',
       eyebrow: 'ONG et programmes de développement',
       heading: 'Des logiciels pour les ONG',
       headingAccent: 'du terrain au rapport pour les bailleurs.',
-      lead: 'Enregistrez les bénéficiaires, collectez les données sur téléphone sur le terrain, même sans connexion, et produisez vos rapports aux bailleurs en un clic. Des systèmes conçus pour les ONG qui travaillent au Zimbabwe et dans toute la région.',
+      lead: 'Enregistrez les bénéficiaires, collectez les données sur téléphone sur le terrain, même sans connexion, et produisez vos rapports aux bailleurs en un clic. Des systèmes conçus pour les ONG qui travaillent sur le terrain, où qu’il soit.',
       challenges: [
         { title: 'Formulaires papier sur le terrain', text: 'Les données sont notées sur papier, rapportées au bureau et ressaisies des semaines plus tard.' },
         { title: 'Plusieurs versions des chiffres', text: 'Chaque district ou projet tient son propre tableur, et les chiffres ne concordent jamais tout à fait.' },
@@ -435,22 +435,22 @@ const fr: typeof en = {
       summary: 'Alertes de stock, rapports de ventes quotidiens et relances clients sur WhatsApp.',
       points: ['Alertes de stock et réapprovisionnement', 'Rapports de ventes chaque matin', 'Relances clients sur WhatsApp'],
       audience: 'Commerçants, grossistes et petites et moyennes entreprises',
-      title: 'Logiciels pour le commerce et les PME au Zimbabwe | Sengeti Technologies',
+      title: 'Logiciels pour le commerce et les PME | Sengeti Technologies',
       description:
-        "Logiciels et automatisation abordables pour les commerces, grossistes et PME au Zimbabwe et dans la région : gestion de stock et alertes de réapprovisionnement, ventes et facturation avec paiements EcoCash et par carte, rapports de ventes quotidiens et relances sur WhatsApp.",
+        "Logiciels et automatisation abordables pour les commerces, grossistes et PME partout dans le monde : gestion de stock et alertes de réapprovisionnement, ventes et facturation avec paiements par mobile money et par carte, rapports de ventes quotidiens et relances sur WhatsApp.",
       eyebrow: 'Commerce et PME',
       heading: 'Des logiciels pour les commerces et les petites entreprises',
       headingAccent: 'pour garder la main sur le stock et les ventes.',
-      lead: 'Alertes de stock, un rapport de ventes sur votre téléphone chaque matin, factures et relances clients sur WhatsApp. Des systèmes abordables pour les commerçants et les petites entreprises au Zimbabwe et dans la région.',
+      lead: 'Alertes de stock, un rapport de ventes sur votre téléphone chaque matin, factures et relances clients sur WhatsApp. Des systèmes abordables pour les commerçants et les petites entreprises partout dans le monde.',
       challenges: [
         { title: 'Mauvaises surprises de stock', text: 'Les articles populaires manquent sans prévenir, pendant que les autres s’accumulent en rayon.' },
         { title: 'Ventes comptées à la main', text: 'Les ventes sont additionnées dans un cahier ou un tableur en fin de journée, quand il reste du temps.' },
-        { title: 'Paiements mélangés', text: 'Espèces, EcoCash, carte et plusieurs devises rendent la clôture de la journée difficile.' },
+        { title: 'Paiements mélangés', text: 'Espèces, mobile money, carte et plusieurs devises rendent la clôture de la journée difficile.' },
         { title: 'Clients oubliés', text: "Aucun moyen simple de relancer, rappeler ou fidéliser les clients après l'achat." },
       ],
       builds: [
         { title: 'Gestion de stock et alertes', text: "Des niveaux de stock en temps réel pour chaque magasin, avec une alerte avant qu'un article ne manque.", href: '/erp' },
-        { title: 'Ventes et facturation', text: 'Devis, factures et reçus, avec les paiements EcoCash et par carte enregistrés automatiquement.', href: '/erp' },
+        { title: 'Ventes et facturation', text: 'Devis, factures et reçus, avec les paiements par mobile money et par carte enregistrés automatiquement.', href: '/erp' },
         { title: 'Rapport de ventes quotidien sur votre téléphone', text: 'Les ventes de la veille, les meilleures ventes et le stock bas, envoyés chaque matin.', href: '/automation' },
         { title: 'Relances clients sur WhatsApp', text: 'Remerciements, rappels et offres envoyés automatiquement aux bons clients.', href: '/automation' },
         { title: 'Chatbot WhatsApp pour les commandes', text: 'Un assistant IA qui répond sur les prix et le stock et prend les commandes jour et nuit.', href: '/ai' },
@@ -462,8 +462,8 @@ const fr: typeof en = {
           a: "Oui. Nous adaptons nos solutions à votre budget. Vous pouvez commencer par une seule chose, comme les alertes de stock ou un rapport de ventes quotidien, et ajouter le reste plus tard.",
         },
         {
-          q: 'Peut-on enregistrer les paiements EcoCash et par carte ?',
-          a: 'Oui. Les paiements en espèces, EcoCash et par carte peuvent être enregistrés automatiquement, dans plusieurs devises.',
+          q: 'Peut-on enregistrer les paiements par mobile money et par carte ?',
+          a: 'Oui. Les paiements en espèces, par mobile money et par carte peuvent être enregistrés automatiquement, dans plusieurs devises.',
         },
         {
           q: 'Est-ce que cela fonctionne avec plusieurs magasins ?',
@@ -476,13 +476,13 @@ const fr: typeof en = {
       summary: 'Circuits de prêt, rappels de remboursement et relevés qui se produisent tout seuls.',
       points: ['Circuits de demande de prêt', 'Rappels de remboursement', 'Relevés et rapports automatiques'],
       audience: "Institutions de microfinance, coopératives d'épargne et de crédit et prestataires de services financiers",
-      title: 'Logiciels pour la microfinance et les services financiers au Zimbabwe | Sengeti Technologies',
+      title: 'Logiciels pour la microfinance et les services financiers | Sengeti Technologies',
       description:
-        "Logiciels et automatisation pour les institutions de microfinance et les prestataires de services financiers au Zimbabwe et dans la région : circuits de demande de prêt, rappels de remboursement, relevés automatiques, rapports et dossiers clients sécurisés.",
+        "Logiciels et automatisation pour les institutions de microfinance et les prestataires de services financiers partout dans le monde : circuits de demande de prêt, rappels de remboursement, relevés automatiques, rapports et dossiers clients sécurisés.",
       eyebrow: 'Finance et microfinance',
       heading: 'Des logiciels pour la microfinance et les services financiers',
       headingAccent: "de la demande au remboursement.",
-      lead: "Circuits de demande de prêt, rappels de remboursement par SMS et WhatsApp, relevés et rapports automatiques. Des systèmes pour les institutions de microfinance, les coopératives d'épargne et de crédit et les prestataires de services financiers au Zimbabwe et dans la région.",
+      lead: "Circuits de demande de prêt, rappels de remboursement par SMS et WhatsApp, relevés et rapports automatiques. Des systèmes pour les institutions de microfinance, les coopératives d'épargne et de crédit et les prestataires de services financiers partout dans le monde.",
       challenges: [
         { title: 'Dossiers de prêt papier', text: "Les demandes passent de bureau en bureau, et personne ne sait vite où se trouve un dossier." },
         { title: 'Remboursements manqués', text: "Les rappels dépendent du temps que le personnel trouve pour appeler chaque client." },
@@ -517,13 +517,13 @@ const fr: typeof en = {
       summary: 'Prise de rendez-vous et rappels, dossiers patients et stock de médicaments.',
       points: ['Prise de rendez-vous et rappels', 'Dossiers patients', 'Stock de médicaments'],
       audience: 'Cliniques, pharmacies, hôpitaux et autres acteurs de la santé',
-      title: 'Logiciels pour cliniques et acteurs de la santé au Zimbabwe | Sengeti Technologies',
+      title: 'Logiciels pour cliniques et acteurs de la santé | Sengeti Technologies',
       description:
-        'Logiciels et automatisation pour les cliniques, pharmacies et acteurs de la santé au Zimbabwe et dans la région : prise de rendez-vous et rappels, dossiers patients numériques, gestion du stock de médicaments et facturation.',
+        'Logiciels et automatisation pour les cliniques, pharmacies et acteurs de la santé partout dans le monde : prise de rendez-vous et rappels, dossiers patients numériques, gestion du stock de médicaments et facturation.',
       eyebrow: 'Santé',
       heading: 'Des logiciels pour les cliniques et les acteurs de la santé',
       headingAccent: 'pour bien suivre patients et stocks.',
-      lead: 'Prise de rendez-vous et rappels, dossiers patients et gestion du stock de médicaments pour les cliniques, pharmacies et acteurs de la santé au Zimbabwe et dans la région.',
+      lead: 'Prise de rendez-vous et rappels, dossiers patients et gestion du stock de médicaments pour les cliniques, pharmacies et acteurs de la santé partout dans le monde.',
       challenges: [
         { title: 'Files d’attente et rendez-vous manqués', text: 'Les patients attendent des heures, et des créneaux sont perdus quand on oublie de venir.' },
         { title: 'Dossiers patients papier', text: 'Les dossiers sont longs à retrouver, difficiles à lire et faciles à égarer.' },
@@ -558,13 +558,13 @@ const fr: typeof en = {
       summary: 'Validations, suivi des documents et intégration RH sans courir après les papiers.',
       points: ['Validation des congés, achats et paiements', 'Suivi des documents', "Listes d'intégration RH"],
       audience: 'Ministères, collectivités locales, organismes publics et bureaux',
-      title: 'Logiciels pour administrations et bureaux au Zimbabwe | Sengeti Technologies',
+      title: 'Logiciels pour administrations et bureaux | Sengeti Technologies',
       description:
-        "Logiciels et automatisation pour les ministères, collectivités locales et bureaux au Zimbabwe et dans la région : validation des congés, achats et paiements, suivi des documents, intégration RH, formulaires en ligne et rapports.",
+        "Logiciels et automatisation pour les ministères, collectivités locales et bureaux partout dans le monde : validation des congés, achats et paiements, suivi des documents, intégration RH, formulaires en ligne et rapports.",
       eyebrow: 'Bureaux et administrations',
       heading: 'Des logiciels pour les administrations et les bureaux',
       headingAccent: 'pour que les validations avancent.',
-      lead: "Validation des congés, achats et paiements, suivi des documents et intégration RH, passés au numérique pour que rien ne reste bloqué dans une boîte de réception. Pour les ministères, collectivités locales, organismes publics et bureaux au Zimbabwe et dans la région.",
+      lead: "Validation des congés, achats et paiements, suivi des documents et intégration RH, passés au numérique pour que rien ne reste bloqué dans une boîte de réception. Pour les ministères, collectivités locales, organismes publics et bureaux partout dans le monde.",
       challenges: [
         { title: 'Des validations qui attendent', text: 'Les formulaires papier passent de bureau en bureau, et personne ne sait qui les a.' },
         { title: 'Des dossiers qui disparaissent', text: 'Les documents sont difficiles à retrouver, faciles à perdre et impossibles à suivre.' },
@@ -602,11 +602,11 @@ const pt: typeof en = {
   index: {
     title: 'Setores que servimos | Sengeti Technologies',
     description:
-      'Software e automatização para universidades, ONG, comércio e PME, instituições de microfinanças, prestadores de cuidados de saúde e serviços públicos no Zimbabué e nos países vizinhos.',
+      'Software e automatização para universidades, ONG, comércio e PME, instituições de microfinanças, prestadores de cuidados de saúde e serviços públicos em todo o mundo.',
     eyebrow: 'Setores',
     heading: 'Software e automatização',
     headingAccent: 'para o seu setor.',
-    lead: 'Cada setor tem a sua própria papelada. Criamos sistemas para universidades, ONG, lojas, instituições de microfinanças, clínicas e serviços públicos no Zimbabué e nos países vizinhos.',
+    lead: 'Cada setor tem a sua própria papelada. Criamos sistemas para universidades, ONG, lojas, instituições de microfinanças, clínicas e serviços públicos em todo o mundo.',
     listHeading: 'Com quem trabalhamos',
     cardCta: 'Ver o que criamos',
     otherHeading: 'Não encontra o seu setor?',
@@ -629,13 +629,13 @@ const pt: typeof en = {
       summary: 'Presenças, elegibilidade para exames, processos de estudantes e lembretes de propinas que funcionam sozinhos.',
       points: ['Presenças e elegibilidade para exames', 'Processos e matrículas de estudantes', 'Lembretes e recibos de propinas'],
       audience: 'Universidades, institutos superiores e outras instituições de ensino superior',
-      title: 'Software para universidades e institutos no Zimbabué | Sengeti Technologies',
+      title: 'Software para universidades e institutos | Sengeti Technologies',
       description:
-        'Software e automatização para universidades e institutos no Zimbabué e na região: Sengeti Campus com registo por código QR rotativo e listas de elegibilidade para exames, processos de estudantes, lembretes de propinas e relatórios.',
+        'Software e automatização para universidades e institutos em todo o mundo: Sengeti Campus com registo por código QR rotativo e listas de elegibilidade para exames, processos de estudantes, lembretes de propinas e relatórios.',
       eyebrow: 'Ensino superior',
       heading: 'Software para universidades e institutos',
       headingAccent: 'que tira o papel do campus.',
-      lead: 'Das presenças e da elegibilidade para exames aos processos de estudantes e lembretes de propinas, ajudamos universidades e institutos no Zimbabué e na região a substituir folhas de presença e folhas de cálculo por sistemas que funcionam sozinhos.',
+      lead: 'Das presenças e da elegibilidade para exames aos processos de estudantes e lembretes de propinas, ajudamos universidades e institutos em todo o mundo a substituir folhas de presença e folhas de cálculo por sistemas que funcionam sozinhos.',
       challenges: [
         { title: 'Folhas de presença em papel', text: 'A chamada rouba tempo a cada aula, e as folhas perdem-se antes de alguém as introduzir.' },
         { title: 'Presenças por procuração', text: 'Há estudantes que assinam por colegas ausentes, e ninguém consegue provar quem esteve realmente presente.' },
@@ -665,7 +665,7 @@ const pt: typeof en = {
       },
       faqs: [
         {
-          q: 'Têm software para universidades no Zimbabué?',
+          q: 'Têm software para universidades?',
           a: 'Sim. O Sengeti Campus, a edição universitária do SengetiEdu, cobre presenças, ensino, semestres, propinas e estudantes, e também criamos sistemas à medida para processos, relatórios e finanças.',
         },
         {
@@ -683,13 +683,13 @@ const pt: typeof en = {
       summary: 'Registo de beneficiários, dados de terreno no telemóvel e relatórios para doadores num clique.',
       points: ['Registo e acompanhamento de beneficiários', 'Recolha de dados no terreno por telemóvel', 'Relatórios para doadores num clique'],
       audience: 'Organizações não governamentais, instituições de solidariedade e programas de desenvolvimento',
-      title: 'Software para ONG no Zimbabué | Sengeti Technologies',
+      title: 'Software para ONG | Sengeti Technologies',
       description:
-        'Software e automatização para ONG no Zimbabué e na região: registo e acompanhamento de beneficiários, recolha de dados no terreno por telemóvel mesmo sem rede, relatórios para doadores num clique e fluxos de aprovação.',
+        'Software e automatização para ONG em todo o mundo: registo e acompanhamento de beneficiários, recolha de dados no terreno por telemóvel mesmo sem rede, relatórios para doadores num clique e fluxos de aprovação.',
       eyebrow: 'ONG e programas de desenvolvimento',
       heading: 'Software para ONG',
       headingAccent: 'do terreno ao relatório para o doador.',
-      lead: 'Registe beneficiários, recolha dados no terreno por telemóvel, mesmo sem ligação, e produza relatórios para doadores num clique. Sistemas feitos para ONG que trabalham no Zimbabué e em toda a região.',
+      lead: 'Registe beneficiários, recolha dados no terreno por telemóvel, mesmo sem ligação, e produza relatórios para doadores num clique. Sistemas feitos para ONG que trabalham no terreno, seja onde for.',
       challenges: [
         { title: 'Formulários em papel no terreno', text: 'Os dados são escritos em papel, levados para o escritório e introduzidos de novo semanas depois.' },
         { title: 'Várias versões dos números', text: 'Cada distrito ou projeto tem a sua própria folha de cálculo, e os números nunca batem certo.' },
@@ -724,13 +724,13 @@ const pt: typeof en = {
       summary: 'Alertas de stock, relatórios de vendas diários e seguimento de clientes no WhatsApp.',
       points: ['Alertas de stock e reposição', 'Relatórios de vendas todas as manhãs', 'Seguimento de clientes no WhatsApp'],
       audience: 'Lojas, grossistas e pequenas e médias empresas',
-      title: 'Software para comércio e PME no Zimbabué | Sengeti Technologies',
+      title: 'Software para comércio e PME | Sengeti Technologies',
       description:
-        'Software e automatização acessíveis para lojas, grossistas e PME no Zimbabué e na região: controlo de stock e alertas de reposição, vendas e faturação com pagamentos EcoCash, M-Pesa e por cartão, relatórios de vendas diários e seguimento no WhatsApp.',
+        'Software e automatização acessíveis para lojas, grossistas e PME em todo o mundo: controlo de stock e alertas de reposição, vendas e faturação com pagamentos por dinheiro móvel e cartão, relatórios de vendas diários e seguimento no WhatsApp.',
       eyebrow: 'Comércio e PME',
       heading: 'Software para lojas e pequenas empresas',
       headingAccent: 'que mantém o stock e as vendas sob controlo.',
-      lead: 'Alertas de stock, um relatório de vendas no telemóvel todas as manhãs, faturas e seguimento de clientes no WhatsApp. Sistemas acessíveis para lojas e pequenas empresas no Zimbabué e na região.',
+      lead: 'Alertas de stock, um relatório de vendas no telemóvel todas as manhãs, faturas e seguimento de clientes no WhatsApp. Sistemas acessíveis para lojas e pequenas empresas em todo o mundo.',
       challenges: [
         { title: 'Surpresas no stock', text: 'Os artigos mais procurados esgotam sem aviso, enquanto os outros se acumulam nas prateleiras.' },
         { title: 'Vendas contadas à mão', text: 'As vendas são somadas num caderno ou numa folha de cálculo no fim do dia, quando há tempo.' },
@@ -739,7 +739,7 @@ const pt: typeof en = {
       ],
       builds: [
         { title: 'Controlo de stock e alertas de reposição', text: 'Níveis de stock em tempo real em todas as lojas, com um alerta antes de um artigo esgotar.', href: '/erp' },
-        { title: 'Vendas e faturação', text: 'Cotações, faturas e recibos, com pagamentos EcoCash, M-Pesa e por cartão registados automaticamente.', href: '/erp' },
+        { title: 'Vendas e faturação', text: 'Cotações, faturas e recibos, com pagamentos por dinheiro móvel e cartão registados automaticamente.', href: '/erp' },
         { title: 'Relatório de vendas diário no telemóvel', text: 'As vendas de ontem, os artigos mais vendidos e o stock baixo, enviados todas as manhãs.', href: '/automation' },
         { title: 'Seguimento de clientes no WhatsApp', text: 'Agradecimentos, lembretes e promoções enviados automaticamente aos clientes certos.', href: '/automation' },
         { title: 'Chatbot de WhatsApp para encomendas', text: 'Um assistente de IA que responde sobre preços e stock e recebe encomendas de dia e de noite.', href: '/ai' },
@@ -751,7 +751,7 @@ const pt: typeof en = {
           a: 'Sim. Ajustamos as soluções ao seu orçamento. Pode começar por uma só coisa, como os alertas de stock ou um relatório de vendas diário, e acrescentar mais tarde.',
         },
         {
-          q: 'Consegue registar pagamentos EcoCash, M-Pesa e por cartão?',
+          q: 'Consegue registar pagamentos por dinheiro móvel e cartão?',
           a: 'Sim. Os pagamentos em dinheiro, por carteira móvel e por cartão podem ser registados automaticamente, em mais do que uma moeda.',
         },
         {
@@ -765,13 +765,13 @@ const pt: typeof en = {
       summary: 'Fluxos de crédito, lembretes de reembolso e extratos que se fazem sozinhos.',
       points: ['Fluxos de pedidos de crédito', 'Lembretes de reembolso', 'Extratos e relatórios automáticos'],
       audience: 'Instituições de microfinanças, cooperativas de poupança e crédito e prestadores de serviços financeiros',
-      title: 'Software para microfinanças e serviços financeiros no Zimbabué | Sengeti Technologies',
+      title: 'Software para microfinanças e serviços financeiros | Sengeti Technologies',
       description:
-        'Software e automatização para instituições de microfinanças e prestadores de serviços financeiros no Zimbabué e na região: fluxos de pedidos de crédito, lembretes de reembolso, extratos automáticos, relatórios e registos de clientes seguros.',
+        'Software e automatização para instituições de microfinanças e prestadores de serviços financeiros em todo o mundo: fluxos de pedidos de crédito, lembretes de reembolso, extratos automáticos, relatórios e registos de clientes seguros.',
       eyebrow: 'Finanças e microfinanças',
       heading: 'Software para microfinanças e serviços financeiros',
       headingAccent: 'do pedido ao reembolso.',
-      lead: 'Fluxos de pedidos de crédito, lembretes de reembolso por SMS e WhatsApp, extratos e relatórios automáticos. Sistemas para instituições de microfinanças, cooperativas de poupança e crédito e prestadores de serviços financeiros no Zimbabué e na região.',
+      lead: 'Fluxos de pedidos de crédito, lembretes de reembolso por SMS e WhatsApp, extratos e relatórios automáticos. Sistemas para instituições de microfinanças, cooperativas de poupança e crédito e prestadores de serviços financeiros em todo o mundo.',
       challenges: [
         { title: 'Processos de crédito em papel', text: 'Os pedidos passam de secretária em secretária, e ninguém sabe dizer depressa onde está um processo.' },
         { title: 'Reembolsos em falta', text: 'Os lembretes dependem de a equipa ter tempo para ligar a cada cliente.' },
@@ -806,13 +806,13 @@ const pt: typeof en = {
       summary: 'Marcação de consultas e lembretes, processos clínicos e stock de medicamentos.',
       points: ['Marcação de consultas e lembretes', 'Processos clínicos', 'Stock de medicamentos'],
       audience: 'Clínicas, farmácias, hospitais e outros prestadores de cuidados de saúde',
-      title: 'Software para clínicas e saúde no Zimbabué | Sengeti Technologies',
+      title: 'Software para clínicas e saúde | Sengeti Technologies',
       description:
-        'Software e automatização para clínicas, farmácias e prestadores de cuidados de saúde no Zimbabué e na região: marcação de consultas e lembretes, processos clínicos digitais, controlo do stock de medicamentos e faturação.',
+        'Software e automatização para clínicas, farmácias e prestadores de cuidados de saúde em todo o mundo: marcação de consultas e lembretes, processos clínicos digitais, controlo do stock de medicamentos e faturação.',
       eyebrow: 'Saúde',
       heading: 'Software para clínicas e prestadores de saúde',
       headingAccent: 'que mantém doentes e stock em dia.',
-      lead: 'Marcação de consultas e lembretes, processos clínicos e controlo do stock de medicamentos para clínicas, farmácias e prestadores de cuidados de saúde no Zimbabué e na região.',
+      lead: 'Marcação de consultas e lembretes, processos clínicos e controlo do stock de medicamentos para clínicas, farmácias e prestadores de cuidados de saúde em todo o mundo.',
       challenges: [
         { title: 'Filas e consultas falhadas', text: 'Os doentes esperam horas, e perdem-se vagas quando alguém se esquece de vir.' },
         { title: 'Processos clínicos em papel', text: 'Os processos demoram a encontrar, são difíceis de ler e fáceis de extraviar.' },
@@ -847,13 +847,13 @@ const pt: typeof en = {
       summary: 'Aprovações, acompanhamento de documentos e integração de RH sem andar atrás de papéis.',
       points: ['Aprovação de férias, compras e pagamentos', 'Acompanhamento de documentos', 'Listas de integração de RH'],
       audience: 'Ministérios, autarquias, organismos públicos e escritórios',
-      title: 'Software para o setor público e escritórios no Zimbabué | Sengeti Technologies',
+      title: 'Software para o setor público e escritórios | Sengeti Technologies',
       description:
-        'Software e automatização para ministérios, autarquias e escritórios no Zimbabué e na região: aprovação de férias, compras e pagamentos, acompanhamento de documentos, integração de RH, formulários online e relatórios.',
+        'Software e automatização para ministérios, autarquias e escritórios em todo o mundo: aprovação de férias, compras e pagamentos, acompanhamento de documentos, integração de RH, formulários online e relatórios.',
       eyebrow: 'Escritórios e governo',
       heading: 'Software para o setor público e escritórios',
       headingAccent: 'que mantém as aprovações a andar.',
-      lead: 'Aprovação de férias, compras e pagamentos, acompanhamento de documentos e integração de RH, em formato digital para que nada fique parado numa caixa de correio. Para ministérios, autarquias, organismos públicos e escritórios no Zimbabué e na região.',
+      lead: 'Aprovação de férias, compras e pagamentos, acompanhamento de documentos e integração de RH, em formato digital para que nada fique parado numa caixa de correio. Para ministérios, autarquias, organismos públicos e escritórios em todo o mundo.',
       challenges: [
         { title: 'Aprovações que esperam', text: 'Os formulários em papel passam de secretária em secretária, e ninguém sabe quem os tem.' },
         { title: 'Processos que desaparecem', text: 'Os documentos são difíceis de encontrar, fáceis de perder e impossíveis de acompanhar.' },

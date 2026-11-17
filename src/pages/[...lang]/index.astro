@@ -11,6 +11,7 @@ import NewsCard from '../../components/NewsCard.astro';
 import SolutionsTeaser from '../../components/SolutionsTeaser.astro';
 import StatsBand from '../../components/StatsBand.astro';
 import IntroVideo from '../../components/IntroVideo.astro';
+import WorldReach from '../../components/WorldReach.astro';
 import { getNews } from '../../lib/content';
 import { serviceIcon, servicePage } from '../../lib/services';
 import { langPaths, localizePath, t, type Lang } from '../../i18n';
@@ -204,6 +205,8 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
       </ol>
     </div>
   </section>
+
+  <WorldReach lang={lang} details={false} />
 
   <IntroVideo lang={lang} />
 
@@ -608,7 +611,7 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
     background: linear-gradient(var(--red), rgb(255 49 48 / 0.2));
   }
 
-  .js .flow .flow-step {
+  :global(.js) .flow .flow-step {
     opacity: 0;
     transform: translateX(-8px);
     transition:
@@ -616,15 +619,15 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
       transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .js .is-visible .flow .flow-step {
+  :global(.js) .is-visible .flow .flow-step {
     opacity: 1;
     transform: none;
   }
 
-  .js .is-visible .flow .flow-step:nth-of-type(2) { transition-delay: 0.25s; }
-  .js .is-visible .flow .flow-step:nth-of-type(3) { transition-delay: 0.45s; }
-  .js .is-visible .flow .flow-step:nth-of-type(4) { transition-delay: 0.65s; }
-  .js .is-visible .flow .flow-step:nth-of-type(5) { transition-delay: 0.85s; }
+  :global(.js) .is-visible .flow .flow-step:nth-of-type(2) { transition-delay: 0.25s; }
+  :global(.js) .is-visible .flow .flow-step:nth-of-type(3) { transition-delay: 0.45s; }
+  :global(.js) .is-visible .flow .flow-step:nth-of-type(4) { transition-delay: 0.65s; }
+  :global(.js) .is-visible .flow .flow-step:nth-of-type(5) { transition-delay: 0.85s; }
 
   /* Systems integration: the Sengeti hub on the left, the client's tools branching off it. */
   .hub-tree {
@@ -810,7 +813,7 @@ const caseStudies = (await getNews(lang)).filter((p) => p.data.type === 'case-st
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .js .flow .flow-step {
+    :global(.js) .flow .flow-step {
       opacity: 1;
       transform: none;
     }

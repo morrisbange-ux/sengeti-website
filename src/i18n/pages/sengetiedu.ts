@@ -3,162 +3,235 @@
  * platform overview. The edition names (Sengeti Campus, Senior, Junior) are not translated.
  */
 const en = {
-  title: 'SengetiEdu: one school platform from ECD to university | Sengeti Technologies',
-  description:
-    'SengetiEdu brings attendance, teaching, results, fees and families onto every phone. Three editions for universities, senior schools and junior schools, built in Zimbabwe.',
+  title: "SengetiEdu: school management from ECD to university | Sengeti Technologies",
+  description: "SengetiEdu is white-label school management for universities, secondary and primary schools: attendance, teaching, exams, fees and families on every phone. Set up for ten countries, in seven languages.",
   eyebrow: 'SengetiEdu platform',
   heading: 'One platform for every school,',
   headingAccent: 'from ECD to university.',
-  lead: 'Attendance, teaching, results, fees and families on every phone. Three editions, one foundation, built in Zimbabwe around how schools here run.',
+  lead: "Attendance, teaching, exams, fees and families on every phone, under your school's own name. Three products, one foundation, ready for ten countries and seven languages.",
   ctaDemo: 'Book a free demonstration',
   ctaTry: 'Try the attendance demo',
   jump: 'Jump to',
   familyEyebrow: 'The family',
   familyHeading: 'Three editions.',
   familyAccent: 'One foundation.',
-  familyLead:
-    "Every edition shares the same core: secure sign-in, attendance, fees and payments, notices, messages, an assistant and the parents' app. Each adds what its kind of school needs, and every school switches on only the modules it uses.",
+  familyLead: "Every product shares the same core: secure sign-in, attendance, fees and payments, notices, messages, an assistant and the parents' app. Each adds what its kind of school needs, and every feature can be switched on or off per school, so people only see what they use.",
   editions: {
-    campus: {
-      audience: 'Universities and colleges',
-      range: 'Faculties, programmes, campuses',
-      text: 'For administrators, lecturers and students across faculties, programmes and campuses.',
-      intro:
-        "Born from our university attendance project: check-in that can't be faked, eligibility that works itself out, and a full teaching platform around it.",
-      groups: [
+    "campus": {
+      "audience": "Universities and colleges",
+      "range": "Faculties, programmes, campuses",
+      "text": "For administrators, lecturers and students across faculties, programmes and campuses.",
+      "intro": "Check-in that can't be faked, exams you can trust, and a full teaching platform around them, connected to the systems your university already runs.",
+      "groups": [
         {
-          title: "Attendance that can't be faked",
-          items: [
-            'QR code on the screen that changes every 15 seconds',
-            'Optional selfie and location checks; offline queue',
-            'Exam eligibility lists from attendance, in one click',
-          ],
+          "title": "Attendance that can't be faked",
+          "items": [
+            "A QR code that changes every 15 seconds, with optional selfie and location checks",
+            "One phone checks in one student, so nobody signs in for a friend",
+            "Offline check-in, SMS and USSD fallback, door tablets and desk scanners",
+            "Online-class attendance from Zoom, Teams and Google Meet",
+            "Exam eligibility worked out for you, with warnings weeks ahead"
+          ]
         },
         {
-          title: 'Teaching and learning',
-          items: [
-            'Lecture notes, announcements and a forum per module',
-            'Assignments (individual or group), rubrics, similarity checks',
-            'Quizzes with a question bank; gradebook',
-          ],
+          "title": "Teaching and learning",
+          "items": [
+            "Notes, assignments, quizzes and a forum for every course",
+            "Gradebook with rubrics, and group work with peer rating",
+            "Question bank and calculated questions with different numbers per student",
+            "AI quiz builder, office hours, study planner and make-up classes"
+          ]
         },
         {
-          title: 'Semesters and programmes',
-          items: [
-            'Programmes, curriculum and module registration',
-            'Semester setup wizard, imports and rollover',
-            'Exam timetable and seating, fees clearance',
-          ],
+          "title": "Final exams",
+          "items": [
+            "Paper and marking guide, moderation, timetable and seating",
+            "Results released only after the exam board approves them",
+            "Extra time and rest breaks set once per student",
+            "A receipt for every handed-in exam"
+          ]
         },
         {
-          title: 'Student life',
-          items: [
-            'Online and make-up classes, office hours',
-            'Clubs, sports, facilities and certificates',
-            'Industrial attachment logbook, surveys, wellbeing',
-          ],
+          "title": "Online exams you can trust",
+          "items": [
+            "Camera on, with the student's own device checking who is there",
+            "A phone as a second camera, and lock-down to Safe Exam Browser or the app",
+            "Face match with the profile photo and an ID check at the start",
+            "Invigilator wall with live video, incident log and late passes",
+            "Hidden markers, answer timelines and flags for near-identical answers",
+            "Short oral video checks after the exam"
+          ]
         },
-      ],
+        {
+          "title": "Marking and appeals",
+          "items": [
+            "Anonymous and question-by-question marking",
+            "Blind second marking and appeals",
+            "Question quality statistics and a printable exam board pack"
+          ]
+        },
+        {
+          "title": "Campus life and records",
+          "items": [
+            "Clubs, sports, facility booking, events and hackathons",
+            "Hostels and keys, gate logs, visitors and lost property",
+            "Campus shop and canteen wallet",
+            "Transcripts and certificates with a QR check, graduation clearance and alumni",
+            "Capstone supervision, attachment logbooks and law-faculty tools"
+          ]
+        }
+      ]
     },
-    senior: {
-      audience: 'Senior schools',
-      range: 'Forms 1 to 6',
-      text: 'O-level and A-level, with students signing in on their own phones.',
-      intro: 'Learners get their own sign-in, teachers get a mark book that writes the report cards, and the office gets ZIMSEC lists without retyping.',
-      groups: [
+    "senior": {
+      "audience": "Secondary schools",
+      "range": "Forms 1 to 6",
+      "text": "For secondary schools, with students signing in on their own phones.",
+      "intro": "Registers that work with no signal, a mark book that writes the report cards, and exam board entries without retyping.",
+      "groups": [
         {
-          title: 'For learners',
-          items: [
-            "Students' own sign-in: timetable, homework, quizzes, marks",
-            'Study plan for the week and notes that open offline',
-            'Group work and class discussion boards',
-          ],
+          "title": "Every day",
+          "items": [
+            "Morning and lesson registers that work with no signal",
+            "Parents told at once when a child is absent or late",
+            "Timetable, homework, quizzes and online exams"
+          ]
         },
         {
-          title: 'For teachers and the office',
-          items: [
-            'Mark book, report cards with comments and positions',
-            'Subject choices for O-level and A-level, by block',
-            'ZIMSEC candidate lists and Ministry returns',
-          ],
+          "title": "Marks and exams",
+          "items": [
+            "Mark book, results and report cards",
+            "Exam entries for ZIMSEC, Cambridge and other boards",
+            "Mock analysis and a revision timetable"
+          ]
         },
         {
-          title: 'Exams and boarding',
-          items: ['Online exams with extra time for named students', 'Boarding: night roll call and exeats'],
+          "title": "School life",
+          "items": [
+            "Prefects, houses and careers guidance",
+            "Boarding, clubs, sports and competitions",
+            "Discipline and merits, sick bay and library"
+          ]
         },
-      ],
+        {
+          "title": "Head's tools",
+          "items": [
+            "Teaching Record and Early Warning",
+            "Executive Dashboard",
+            "Ministry and exam board returns"
+          ]
+        }
+      ]
     },
-    junior: {
-      audience: 'Junior schools',
-      range: 'ECD to Grade 7',
-      text: "Built around parents' phones and keeping families in the loop.",
-      intro: 'Parents hear at once when their child is absent, see homework and reports, and know exactly who may collect their child.',
-      groups: [
+    "junior": {
+      "audience": "Primary schools",
+      "range": "ECD to Grade 7",
+      "text": "Built around parents' phones and keeping families in the loop.",
+      "intro": "Parents hear at once when their child is absent, follow the day in the diary, and know exactly who may collect their child.",
+      "groups": [
         {
-          title: 'For families',
-          items: [
-            'Parents told at once when their child is absent',
-            'Homework and quizzes done together at home',
-            'Merits and conduct shared with parents',
-          ],
+          "title": "For families",
+          "items": [
+            "A parent app for attendance, homework, results and fees",
+            "Chat with teachers, and birthday messages",
+            "Fees paid from home"
+          ]
         },
         {
-          title: 'Reports',
-          items: ['Report cards approved by the head before parents see them'],
+          "title": "The school day",
+          "items": [
+            "Daily diary and reading log",
+            "Pick-up list: who may collect each child",
+            "Transport, sick bay and visitor log"
+          ]
         },
         {
-          title: 'Safety and care',
-          items: [
-            'Gate check: who may collect each child',
-            'Transport: routes, stops and runs, parents told',
-            'Sick bay with allergies on screen',
-            'ID cards for a whole class with QR code',
-          ],
+          "title": "Reports",
+          "items": [
+            "ECD skills report",
+            "Grade 7 practice results",
+            "Report cards approved by the head before parents see them"
+          ]
         },
-      ],
-    },
+        {
+          "title": "Learning from home",
+          "items": [
+            "Close the school, or some classes, in one step",
+            "Online lessons, a daily work plan and online tests",
+            "Junior never uses a camera"
+          ]
+        }
+      ]
+    }
   },
   coreHeading: 'Shared by every edition',
   core: [
-    { icon: 'check', title: 'Attendance', text: 'Phone registers that work offline, with alerts to families and reports for the head.' },
-    { icon: 'wallet', title: 'Fees and payments', text: 'Invoices, receipts, debtors, sponsors, and paying from home with EcoCash or card.' },
-    { icon: 'bell', title: 'Notices and events', text: 'Events, trips, sports and emergency messages, with replies.' },
-    { icon: 'chat', title: 'Messages', text: 'In the app, push notifications, SMS and WhatsApp; families choose how they hear.' },
-    { icon: 'sparkle', title: 'Assistant', text: 'Powered by Claude: balances, homework and absences answered in the app, on WhatsApp or by SMS.' },
-    { icon: 'chart', title: 'Reports', text: 'Executive dashboard, early warnings for learners at risk, analytics and an activity log.' },
+    {
+      "icon": "check",
+      "title": "Attendance",
+      "text": "Registers that work with no signal, with alerts to families and reports for the head."
+    },
+    {
+      "icon": "wallet",
+      "title": "Fees and payments",
+      "text": "Billing, receipts, payment plans, automatic discounts and reminders, and paying from home by mobile money, card or bank transfer."
+    },
+    {
+      "icon": "bell",
+      "title": "Notices and events",
+      "text": "Events, trips, sports and emergency messages, with replies and notice screens."
+    },
+    {
+      "icon": "chat",
+      "title": "Messages",
+      "text": "In the app, push notifications, SMS and WhatsApp from your school's own business account."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Assistant",
+      "text": "Powered by Claude: answers about balances, homework and absences in the app or on WhatsApp, and an AI quiz builder for teachers."
+    },
+    {
+      "icon": "chart",
+      "title": "Reports",
+      "text": "Executive dashboard, early warnings for learners at risk, analytics and an audit log."
+    }
   ],
   integrationsHeading: 'Campus connects with your systems',
   integrations: [
-    'Moodle and Google Classroom',
-    'LTI 1.3',
-    'SAML and OIDC single sign-on',
-    'API for ERP and SIS',
-    'Webhooks',
-    'SFTP file sync',
-    'Website widgets',
-    'Results export',
-    'Several campuses',
-    'Android and iOS apps',
+    "REST API and webhooks",
+    "LTI 1.3: Moodle, Canvas, Blackboard, Brightspace",
+    "Moodle and Google Classroom",
+    "SAML and OpenID Connect sign-in",
+    "Zoom, Teams and Google Meet",
+    "Safe Exam Browser",
+    "Nightly SFTP exchange",
+    "Website widgets",
+    "Android and iPhone apps"
   ],
-  modulesHeading: 'Optional modules for Senior and Junior',
+  modulesHeading: "Switch on what you need, in Senior and Junior",
   modules: [
-    'Timetable and relief lessons',
-    'Make-up and online lessons',
-    'Library and textbooks',
-    'Clubs, sports and facilities',
-    'Certificates with QR check',
-    'Meetings and parent requests',
-    'Surveys and wellbeing',
-    'Sponsors and BEAM',
-    'Uniform shop',
-    'Stores and assets',
-    'Payroll and HR',
-    'Admissions',
-    'Branches',
-    'Notice screens',
+    "Timetable",
+    "Learning from home",
+    "Online exams",
+    "Library",
+    "Clubs, sports and competitions",
+    "Boarding",
+    "Transport",
+    "Sick bay",
+    "Discipline and merits",
+    "Uniform shop and stores",
+    "Canteen",
+    "Gate fees clearance",
+    "Payroll",
+    "Admissions and ID cards",
+    "Notice screens",
+    "Surveys and wellbeing",
+    "Visitor log",
+    "WhatsApp assistant and AI helper",
+    "Branches",
+    "Custom access per account"
   ],
-  modulesNote:
-    'Every module can be switched on or off by the head. Start with attendance, fees and parents; add the rest when you are ready, with no new setup.',
+  modulesNote: "Every feature can be switched on or off for your school. Start with attendance, fees and parents, and add the rest when you are ready, with no new setup.",
   compareEyebrow: 'At a glance',
   compareHeading: 'Which edition',
   compareAccent: 'does what',
@@ -166,23 +239,26 @@ const en = {
   included: 'Included',
   notIncluded: 'Not included',
   rows: [
-    'Attendance',
-    'Fees, receipts and online payments',
+    "Attendance",
+    "Fees, receipts and online payments",
     "Parents' app and notifications",
-    'Assistant (app, WhatsApp, SMS)',
+    "Assistant powered by Claude",
     "Learners' own sign-in",
-    'Assignments, quizzes and marks',
-    'Report cards',
-    'Exam eligibility from attendance',
-    'Semesters and module registration',
-    'Subject choices and ZIMSEC lists',
-    'Boarding',
-    'Gate check and safe collection',
-    'Transport and sick bay',
-    'LMS, LTI and single sign-on',
-    'Offline registers',
+    "Assignments, quizzes and marks",
+    "Report cards",
+    "Exam eligibility from attendance",
+    "Semesters and module registration",
+    "Exam board entries (ZIMSEC, Cambridge and more)",
+    "Boarding and hostels",
+    "Gate check and safe collection",
+    "Transport and sick bay",
+    "LMS, LTI and single sign-on",
+    "Registers that work offline",
     "Your school's own brand and a school code for the app",
-    'Demo school to try, clearly marked DEMO',
+    "Demo school to try, clearly marked DEMO",
+    "Online exams with integrity checks",
+    "Learning from home",
+    "Seven languages, chosen by each person"
   ],
   brandEyebrow: 'Your school, your brand',
   brandHeading: 'Families see your school,',
@@ -210,7 +286,7 @@ const en = {
       standard: 'Standard, included',
       standardText: 'yourschool.sengeti.school',
       upgrade: 'Your own, an upgrade',
-      upgradeText: 'e.g. portal.yourschool.ac.zw',
+      upgradeText: "e.g. portal.yourschool.edu",
     },
     {
       title: 'Phone app',
@@ -223,36 +299,44 @@ const en = {
   signIn: { school: 'Your School', welcome: 'Welcome back', user: 'Phone or email', password: 'Password', button: 'Sign in', code: 'School code' },
   safeEyebrow: 'Safe, private and yours',
   safe: [
-    { icon: 'lock', title: 'Secure sign-in', text: 'Two-step sign-in, locked accounts after wrong passwords, and sign-out from every device.' },
     {
-      icon: 'shield',
-      title: 'Your data stays yours',
-      text: "Each school's data is private and separate, backed up daily, and the head can download everything at any time.",
+      "icon": "lock",
+      "title": "Secure sign-in",
+      "text": "Two-step sign-in, accounts locked after wrong passwords, and sign-out from every device. Our own team must use two-step sign-in too."
     },
     {
-      icon: 'eye',
-      title: 'Support only with permission',
-      text: 'Our support team can look, read-only, only while the head allows it, and every page they open is listed.',
+      "icon": "shield",
+      "title": "Your data stays yours",
+      "text": "Each school is fully separate and backed up daily. The school controls its data and we process it on its behalf; the head can download everything at any time."
     },
-    { icon: 'pin', title: 'Made for the region', text: 'Country, time zone and phone formats per school; English, French and Portuguese.' },
+    {
+      "icon": "eye",
+      "title": "Support only with permission",
+      "text": "Our team can look, read-only, only while the school allows it. On our side, exports and deletions need a second owner's approval."
+    },
+    {
+      "icon": "pin",
+      "title": "Made for your country",
+      "text": "Country, currency, exam boards, grading, time zone and phone formats per school, and seven languages, chosen by each person."
+    }
   ],
   growHeading: 'Built to grow, and fair to families',
   grow: [
     {
-      icon: 'bolt',
-      title: 'Fast for everyone at once',
-      text: 'Stays quick when every parent opens it on report day: messages go out in the background, long lists load in pages, busy pages are cached.',
+      "icon": "bolt",
+      "title": "Fast for everyone at once",
+      "text": "Stays quick when every parent opens it on report day: messages go out in the background, long lists load in pages, busy pages are cached."
     },
     {
-      icon: 'check',
-      title: 'Cookies, your choice',
-      text: 'A clear notice with Accept all, Reject all and Manage. Only the cookies needed to sign in are always on.',
+      "icon": "check",
+      "title": "No tracking",
+      "text": "No advertising or tracking cookies in the app. Only the cookies needed to sign in."
     },
     {
-      icon: 'cap',
-      title: 'Try it first',
-      text: 'Junior and Senior demo schools with sample learners and fees. Every page is marked DEMO, and no real messages are sent.',
-    },
+      "icon": "cap",
+      "title": "Try it first",
+      "text": "Junior and Senior demo schools with sample learners and fees. Every page is marked DEMO, no real messages are sent, and demo schools are never invoiced."
+    }
   ],
   startEyebrow: 'Getting started',
   startHeading: 'Running in',
@@ -272,37 +356,40 @@ const en = {
       text: 'Parents and learners get their sign-in and your school code by SMS, with a one-page guide.',
     },
   ],
-  pricingTitle: 'Simple pricing',
-  pricingText:
-    'A licence per learner per term, invoiced in advance, plus a one-off fee for setup and training. Hosting, backups, updates and support are included.',
+  pricingTitle: "Simple monthly pricing",
+  pricingText: "A monthly licence for your school, plus a one-off fee for setup and training. Renewal invoices are created for you, and a paid invoice renews the licence straight away. Hosting, backups, updates and support are included.",
   supportTitle: 'Support you can reach',
-  supportText: 'A named person at Sengeti for your school, by WhatsApp, phone and email, and a help centre inside the app.',
+  supportText: "A named person at Sengeti for your school, by WhatsApp, phone and email, a help centre inside the app, and support tickets that carry the page and any error automatically.",
   faqHeading: 'Questions schools ask',
   faqs: [
     {
-      q: 'Many of our parents have no data. Will it still work?',
-      a: 'Yes. Pages are light, registers work offline, and parents without data get SMS alerts and can text the assistant for balances, homework and absences.',
+      "q": "Many of our parents have no data. Will it still work?",
+      "a": "Yes. Pages are light, registers work offline, and parents without data get SMS alerts."
     },
     {
-      q: 'Will our teachers actually use it?',
-      a: 'Training is included, and taking the register takes under a minute on a phone. We train every group in person and keep going until it works.',
+      "q": "Will our teachers actually use it?",
+      "a": "Training is included, and taking the register takes under a minute on a phone. We train every group and keep going until it works."
     },
     {
-      q: 'What happens to our data?',
-      a: "It is private to your school, backed up daily and downloadable by the head at any time. Our support team can only look, read-only, while the head allows it.",
+      "q": "Does it work in our country and language?",
+      "a": "SengetiEdu is set up for Zimbabwe, Mozambique, DR Congo, Cameroon, Kenya, Namibia, Botswana, the United Arab Emirates, Poland and Sri Lanka. Your country sets terms, classes, currencies, exam boards and grading, and each person chooses English, French, Portuguese, Polish, Arabic, Sinhala or Tamil."
     },
     {
-      q: 'Can it look like our school?',
-      a: 'It does from day one: your name, logo and colours on every screen, receipt and message. Your own web address and your own app are optional upgrades.',
+      "q": "What happens to our data?",
+      "a": "Your school controls it, and we process it on your behalf. It is kept apart from every other school, backed up daily and downloadable by the head at any time. Our support team can only look, read-only, while you allow it."
     },
     {
-      q: 'How do parents pay fees?',
-      a: 'From home with EcoCash or card, or at the school as before. Receipts are issued automatically, and the bursar sees who has paid and who owes.',
+      "q": "Can it look like our school?",
+      "a": "From day one: your name, logo and colours on every screen, receipt and message, with only a small \"Powered by SengetiEdu\" line. Your own web address and your own app are optional upgrades."
     },
     {
-      q: 'How much does it cost?',
-      a: 'A licence per learner per term plus a one-off setup and training fee. Hosting, backups, updates and support are included. Ask us for a quote for your school.',
+      "q": "How do parents pay fees?",
+      "a": "Online by mobile money, card or bank transfer, depending on your country, or at the school as before. Receipts are issued automatically, and the bursar sees who has paid and who owes."
     },
+    {
+      "q": "How much does it cost?",
+      "a": "A monthly licence for your school plus a one-off setup and training fee. Hosting, backups, updates and support are included. Ask us for a quote for your school."
+    }
   ],
   ctaHeading: 'See SengetiEdu in your school.',
   ctaText: 'Book a free demonstration. We set it up with your school name so you can picture it in use.',
@@ -325,10 +412,10 @@ const en = {
       mark: 'Maths test',
     },
     junior: {
-      alertTitle: 'Tendai is absent today',
-      alertText: 'Marked at 07:45 by Mrs Moyo',
+      alertTitle: "Amara is absent today",
+      alertText: "Marked at 07:45 by Mrs Daniels",
       feesLabel: 'Fees balance',
-      pay: 'Pay with EcoCash',
+      pay: "Pay fees",
       noticeLabel: 'Notice',
       notice: 'Sports day on Friday. Bring a white T-shirt.',
     },
@@ -336,168 +423,235 @@ const en = {
 };
 
 const fr: typeof en = {
-  title: 'SengetiEdu : une plateforme scolaire de la maternelle à l’université | Sengeti Technologies',
-  description:
-    'SengetiEdu met les présences, l’enseignement, les résultats, les frais et les familles sur chaque téléphone. Trois éditions pour les universités, les écoles secondaires et primaires, conçues au Zimbabwe.',
+  title: "SengetiEdu : la gestion scolaire de la maternelle à l’université | Sengeti Technologies",
+  description: "SengetiEdu est une solution de gestion scolaire en marque blanche pour les universités, les écoles secondaires et primaires : présences, enseignement, examens, frais et familles sur chaque téléphone. Configuré pour dix pays, en sept langues.",
   eyebrow: 'Plateforme SengetiEdu',
   heading: 'Une plateforme pour chaque école,',
   headingAccent: 'de la maternelle à l’université.',
-  lead: 'Présences, enseignement, résultats, frais et familles sur chaque téléphone. Trois éditions, une même base, conçues au Zimbabwe pour la réalité des écoles d’ici.',
+  lead: "Présences, enseignement, examens, frais et familles sur chaque téléphone, au nom de votre école. Trois produits, une même base, prêts pour dix pays et sept langues.",
   ctaDemo: 'Réserver une démonstration gratuite',
   ctaTry: 'Essayer la démo des présences',
   jump: 'Aller à',
   familyEyebrow: 'La famille',
   familyHeading: 'Trois éditions.',
   familyAccent: 'Une même base.',
-  familyLead:
-    'Chaque édition partage le même socle : connexion sécurisée, présences, frais et paiements, annonces, messages, un assistant et l’application des parents. Chacune ajoute ce dont son type d’école a besoin, et chaque école n’active que les modules qu’elle utilise.',
+  familyLead: "Chaque produit partage le même socle : connexion sécurisée, présences, frais et paiements, annonces, messages, un assistant et l’application des parents. Chacun ajoute ce dont son type d’école a besoin, et chaque fonction s’active ou se désactive par école : chacun ne voit que ce qu’il utilise.",
   editions: {
-    campus: {
-      audience: 'Universités et établissements supérieurs',
-      range: 'Facultés, programmes, campus',
-      text: 'Pour les administrateurs, enseignants et étudiants de toutes les facultés, programmes et campus.',
-      intro:
-        'Née de notre projet de présences universitaires : un pointage impossible à truquer, une admissibilité aux examens calculée toute seule, et une plateforme d’enseignement complète autour.',
-      groups: [
+    "campus": {
+      "audience": "Universités et écoles supérieures",
+      "range": "Facultés, programmes, campus",
+      "text": "Pour les administrateurs, enseignants et étudiants de toutes les facultés, programmes et campus.",
+      "intro": "Un pointage infalsifiable, des examens fiables et une plateforme d’enseignement complète autour, reliée aux systèmes que votre université utilise déjà.",
+      "groups": [
         {
-          title: 'Des présences impossibles à truquer',
-          items: [
-            'Un code QR à l’écran qui change toutes les 15 secondes',
-            'Contrôle par selfie et localisation en option ; file d’attente hors ligne',
-            'Listes d’admissibilité aux examens à partir des présences, en un clic',
-          ],
+          "title": "Des présences infalsifiables",
+          "items": [
+            "Un code QR qui change toutes les 15 secondes, avec selfie et localisation en option",
+            "Un téléphone pointe un seul étudiant : personne ne signe pour un camarade",
+            "Pointage hors ligne, secours par SMS et USSD, tablettes de porte et lecteurs de bureau",
+            "Présences aux cours en ligne depuis Zoom, Teams et Google Meet",
+            "Admissibilité aux examens calculée pour vous, avec alertes des semaines avant"
+          ]
         },
         {
-          title: 'Enseignement et apprentissage',
-          items: [
-            'Notes de cours, annonces et forum par module',
-            'Devoirs (individuels ou en groupe), grilles d’évaluation, détection de similarité',
-            'Quiz avec banque de questions ; carnet de notes',
-          ],
+          "title": "Enseignement",
+          "items": [
+            "Notes, devoirs, quiz et forum pour chaque cours",
+            "Carnet de notes avec grilles, travaux de groupe avec évaluation entre pairs",
+            "Banque de questions et questions calculées, avec des chiffres propres à chaque étudiant",
+            "Générateur de quiz par IA, permanences, planning d’étude et cours de rattrapage"
+          ]
         },
         {
-          title: 'Semestres et programmes',
-          items: [
-            'Programmes, cursus et inscription aux modules',
-            'Assistant de création de semestre, imports et reconduction',
-            'Calendrier et placement des examens, quitus des frais',
-          ],
+          "title": "Examens finaux",
+          "items": [
+            "Sujet et barème, modération, calendrier et placement",
+            "Résultats publiés seulement après validation du jury",
+            "Temps supplémentaire et pauses définis une fois par étudiant",
+            "Un reçu pour chaque copie rendue"
+          ]
         },
         {
-          title: 'Vie étudiante',
-          items: [
-            'Cours en ligne et de rattrapage, permanences',
-            'Clubs, sports, installations et certificats',
-            'Carnet de stage, enquêtes, bien-être',
-          ],
+          "title": "Des examens en ligne fiables",
+          "items": [
+            "Caméra allumée, l’appareil de l’étudiant vérifiant qui est présent",
+            "Un téléphone comme deuxième caméra, verrouillage sur Safe Exam Browser ou l’application",
+            "Comparaison du visage avec la photo de profil et contrôle de la carte d’identité",
+            "Mur de surveillance avec vidéo en direct, journal d’incidents et retards autorisés",
+            "Marqueurs cachés, chronologie des réponses et alertes sur les réponses presque identiques",
+            "Courts contrôles oraux en vidéo après l’examen"
+          ]
         },
-      ],
+        {
+          "title": "Correction et recours",
+          "items": [
+            "Correction anonyme et question par question",
+            "Double correction à l’aveugle et recours",
+            "Statistiques sur la qualité des questions et dossier imprimable pour le jury"
+          ]
+        },
+        {
+          "title": "Vie du campus et dossiers",
+          "items": [
+            "Clubs, sports, réservation d’installations, événements et hackathons",
+            "Résidences et clés, registres d’entrée, visiteurs et objets trouvés",
+            "Boutique du campus et porte-monnaie de cantine",
+            "Relevés et diplômes vérifiables par QR, quitus de fin d’études et anciens élèves",
+            "Suivi des projets de fin d’études, carnets de stage et outils pour la faculté de droit"
+          ]
+        }
+      ]
     },
-    senior: {
-      audience: 'Écoles secondaires',
-      range: 'Forms 1 à 6',
-      text: 'O-level et A-level, avec des élèves qui se connectent sur leur propre téléphone.',
-      intro:
-        'Les élèves ont leur propre accès, les enseignants un carnet de notes qui rédige les bulletins, et le secrétariat obtient les listes ZIMSEC sans rien ressaisir.',
-      groups: [
+    "senior": {
+      "audience": "Écoles secondaires",
+      "range": "Forms 1 à 6",
+      "text": "Pour les écoles secondaires, avec des élèves qui se connectent sur leur propre téléphone.",
+      "intro": "Des appels qui fonctionnent sans réseau, un carnet de notes qui rédige les bulletins et des inscriptions aux examens sans ressaisie.",
+      "groups": [
         {
-          title: 'Pour les élèves',
-          items: [
-            'Accès personnel des élèves : emploi du temps, devoirs, quiz, notes',
-            'Plan d’étude de la semaine et notes consultables hors ligne',
-            'Travail de groupe et forums de classe',
-          ],
+          "title": "Au quotidien",
+          "items": [
+            "Appels du matin et des cours qui fonctionnent sans réseau",
+            "Parents prévenus aussitôt d’une absence ou d’un retard",
+            "Emploi du temps, devoirs, quiz et examens en ligne"
+          ]
         },
         {
-          title: 'Pour les enseignants et le secrétariat',
-          items: [
-            'Carnet de notes, bulletins avec appréciations et classements',
-            'Choix des matières pour l’O-level et l’A-level, par bloc',
-            'Listes de candidats ZIMSEC et rapports au ministère',
-          ],
+          "title": "Notes et examens",
+          "items": [
+            "Carnet de notes, résultats et bulletins",
+            "Inscriptions aux examens ZIMSEC, Cambridge et autres",
+            "Analyse des examens blancs et planning de révision"
+          ]
         },
         {
-          title: 'Examens et internat',
-          items: ['Examens en ligne avec temps supplémentaire pour les élèves désignés', 'Internat : appel du soir et sorties'],
+          "title": "Vie scolaire",
+          "items": [
+            "Préfets, maisons et orientation",
+            "Internat, clubs, sports et compétitions",
+            "Discipline et mérites, infirmerie et bibliothèque"
+          ]
         },
-      ],
+        {
+          "title": "Outils du directeur",
+          "items": [
+            "Suivi pédagogique et alertes précoces",
+            "Tableau de bord de direction",
+            "Rapports au ministère et aux jurys d’examen"
+          ]
+        }
+      ]
     },
-    junior: {
-      audience: 'Écoles primaires',
-      range: 'Maternelle à Grade 7',
-      text: 'Pensée pour le téléphone des parents, pour garder les familles informées.',
-      intro:
-        'Les parents savent tout de suite quand leur enfant est absent, voient les devoirs et les bulletins, et savent exactement qui peut venir le chercher.',
-      groups: [
+    "junior": {
+      "audience": "Écoles primaires",
+      "range": "Maternelle au Grade 7",
+      "text": "Pensé pour le téléphone des parents et pour garder les familles informées.",
+      "intro": "Les parents sont prévenus aussitôt d’une absence, suivent la journée dans le cahier de liaison et savent exactement qui peut venir chercher leur enfant.",
+      "groups": [
         {
-          title: 'Pour les familles',
-          items: [
-            'Les parents prévenus dès que leur enfant est absent',
-            'Devoirs et quiz faits ensemble à la maison',
-            'Mérites et comportement partagés avec les parents',
-          ],
+          "title": "Pour les familles",
+          "items": [
+            "Une application parents pour les présences, devoirs, résultats et frais",
+            "Échanges avec les enseignants et messages d’anniversaire",
+            "Frais payés depuis la maison"
+          ]
         },
         {
-          title: 'Bulletins',
-          items: ['Bulletins validés par le directeur avant d’être vus par les parents'],
+          "title": "La journée",
+          "items": [
+            "Cahier de liaison et carnet de lecture",
+            "Liste de sortie : qui peut venir chercher chaque enfant",
+            "Transport, infirmerie et registre des visiteurs"
+          ]
         },
         {
-          title: 'Sécurité et soins',
-          items: [
-            'Contrôle à la sortie : qui peut récupérer chaque enfant',
-            'Transport : lignes, arrêts et trajets, parents prévenus',
-            'Infirmerie avec les allergies affichées',
-            'Cartes d’identité pour toute une classe avec code QR',
-          ],
+          "title": "Bulletins",
+          "items": [
+            "Bilan des compétences en maternelle",
+            "Résultats des examens blancs du Grade 7",
+            "Bulletins validés par le directeur avant que les parents les voient"
+          ]
         },
-      ],
-    },
+        {
+          "title": "Apprendre à la maison",
+          "items": [
+            "Fermer l’école, ou certaines classes, en une étape",
+            "Cours en ligne, plan de travail quotidien et tests en ligne",
+            "Junior n’utilise jamais de caméra"
+          ]
+        }
+      ]
+    }
   },
   coreHeading: 'Commun à toutes les éditions',
   core: [
-    { icon: 'check', title: 'Présences', text: 'Des registres sur téléphone qui fonctionnent hors ligne, avec alertes aux familles et rapports pour la direction.' },
-    { icon: 'wallet', title: 'Frais et paiements', text: 'Factures, reçus, impayés, parrains, et paiement depuis la maison par EcoCash ou carte.' },
-    { icon: 'bell', title: 'Annonces et événements', text: 'Événements, sorties, sports et messages d’urgence, avec réponses.' },
-    { icon: 'chat', title: 'Messages', text: 'Dans l’application, par notification, SMS et WhatsApp ; les familles choisissent comment être prévenues.' },
     {
-      icon: 'sparkle',
-      title: 'Assistant',
-      text: 'Propulsé par Claude : soldes, devoirs et absences, avec des réponses dans l’application, sur WhatsApp ou par SMS.',
+      "icon": "check",
+      "title": "Présences",
+      "text": "Des appels qui fonctionnent sans réseau, avec alertes aux familles et rapports pour la direction."
     },
-    { icon: 'chart', title: 'Rapports', text: 'Tableau de bord de direction, alertes précoces pour les élèves en difficulté, statistiques et journal d’activité.' },
+    {
+      "icon": "wallet",
+      "title": "Frais et paiements",
+      "text": "Facturation, reçus, échéanciers, remises et relances automatiques, et paiement depuis la maison par mobile money, carte ou virement."
+    },
+    {
+      "icon": "bell",
+      "title": "Annonces et événements",
+      "text": "Événements, sorties, sports et messages d’urgence, avec réponses et écrans d’affichage."
+    },
+    {
+      "icon": "chat",
+      "title": "Messages",
+      "text": "Dans l’application, par notification, SMS et WhatsApp depuis le compte professionnel de votre école."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Assistant",
+      "text": "Propulsé par Claude : réponses sur les soldes, devoirs et absences dans l’application ou sur WhatsApp, et un générateur de quiz par IA pour les enseignants."
+    },
+    {
+      "icon": "chart",
+      "title": "Rapports",
+      "text": "Tableau de bord de direction, alertes précoces pour les élèves en difficulté, statistiques et journal d’audit."
+    }
   ],
   integrationsHeading: 'Campus se connecte à vos systèmes',
   integrations: [
-    'Moodle et Google Classroom',
-    'LTI 1.3',
-    'Authentification unique SAML et OIDC',
-    'API pour ERP et SIS',
-    'Webhooks',
-    'Synchronisation SFTP',
-    'Widgets pour votre site',
-    'Export des résultats',
-    'Plusieurs campus',
-    'Applications Android et iOS',
+    "API REST et webhooks",
+    "LTI 1.3 : Moodle, Canvas, Blackboard, Brightspace",
+    "Moodle et Google Classroom",
+    "Connexion SAML et OpenID Connect",
+    "Zoom, Teams et Google Meet",
+    "Safe Exam Browser",
+    "Échange SFTP nocturne",
+    "Widgets pour votre site",
+    "Applications Android et iPhone"
   ],
-  modulesHeading: 'Modules optionnels pour Senior et Junior',
+  modulesHeading: "Activez ce dont vous avez besoin, dans Senior et Junior",
   modules: [
-    'Emploi du temps et remplacements',
-    'Cours de rattrapage et en ligne',
-    'Bibliothèque et manuels',
-    'Clubs, sports et installations',
-    'Certificats avec vérification QR',
-    'Réunions et demandes des parents',
-    'Enquêtes et bien-être',
-    'Parrains et BEAM',
-    'Boutique d’uniformes',
-    'Stocks et équipements',
-    'Paie et RH',
-    'Admissions',
-    'Établissements multiples',
-    'Écrans d’affichage',
+    "Emploi du temps",
+    "Apprendre à la maison",
+    "Examens en ligne",
+    "Bibliothèque",
+    "Clubs, sports et compétitions",
+    "Internat",
+    "Transport",
+    "Infirmerie",
+    "Discipline et mérites",
+    "Boutique d’uniformes et magasin",
+    "Cantine",
+    "Contrôle des frais à l’entrée",
+    "Paie",
+    "Admissions et cartes d’élève",
+    "Écrans d’affichage",
+    "Enquêtes et bien-être",
+    "Registre des visiteurs",
+    "Assistant WhatsApp et aide IA",
+    "Établissements multiples",
+    "Accès personnalisé par compte"
   ],
-  modulesNote:
-    'Chaque module peut être activé ou désactivé par le directeur. Commencez par les présences, les frais et les parents ; ajoutez le reste quand vous êtes prêts, sans nouvelle installation.',
+  modulesNote: "Chaque fonction s’active ou se désactive pour votre école. Commencez par les présences, les frais et les parents, puis ajoutez le reste quand vous êtes prêts, sans nouvelle installation.",
   compareEyebrow: 'En un coup d’œil',
   compareHeading: 'Quelle édition',
   compareAccent: 'fait quoi',
@@ -505,23 +659,26 @@ const fr: typeof en = {
   included: 'Inclus',
   notIncluded: 'Non inclus',
   rows: [
-    'Présences',
-    'Frais, reçus et paiements en ligne',
-    'Application et notifications pour les parents',
-    'Assistant (application, WhatsApp, SMS)',
-    'Accès personnel des élèves',
-    'Devoirs, quiz et notes',
-    'Bulletins',
-    'Admissibilité aux examens selon les présences',
-    'Semestres et inscription aux modules',
-    'Choix des matières et listes ZIMSEC',
-    'Internat',
-    'Contrôle à la sortie et remise en sécurité',
-    'Transport et infirmerie',
-    'LMS, LTI et authentification unique',
-    'Registres hors ligne',
-    'L’image de votre école et un code école pour l’application',
-    'École de démonstration à essayer, clairement marquée DEMO',
+    "Présences",
+    "Frais, reçus et paiements en ligne",
+    "Application et notifications pour les parents",
+    "Assistant propulsé par Claude",
+    "Connexion propre aux élèves",
+    "Devoirs, quiz et notes",
+    "Bulletins",
+    "Admissibilité aux examens selon les présences",
+    "Semestres et inscriptions aux modules",
+    "Inscriptions aux examens (ZIMSEC, Cambridge et plus)",
+    "Internat et résidences",
+    "Contrôle à la sortie et remise sécurisée",
+    "Transport et infirmerie",
+    "LMS, LTI et authentification unique",
+    "Appels qui fonctionnent hors ligne",
+    "La marque de votre école et un code école pour l’application",
+    "École de démonstration à essayer, marquée DEMO",
+    "Examens en ligne avec contrôles d’intégrité",
+    "Apprendre à la maison",
+    "Sept langues, au choix de chacun"
   ],
   brandEyebrow: 'Votre école, votre image',
   brandHeading: 'Les familles voient votre école,',
@@ -549,7 +706,7 @@ const fr: typeof en = {
       standard: 'Standard, incluse',
       standardText: 'votreecole.sengeti.school',
       upgrade: 'La vôtre, en option',
-      upgradeText: 'par ex. portal.votreecole.ac.zw',
+      upgradeText: "ex. portail.votreecole.edu",
     },
     {
       title: 'Application mobile',
@@ -570,43 +727,43 @@ const fr: typeof en = {
   safeEyebrow: 'Sûr, privé et à vous',
   safe: [
     {
-      icon: 'lock',
-      title: 'Connexion sécurisée',
-      text: 'Connexion en deux étapes, comptes bloqués après des mots de passe erronés, et déconnexion de tous les appareils.',
+      "icon": "lock",
+      "title": "Connexion sécurisée",
+      "text": "Connexion en deux étapes, comptes bloqués après des mots de passe erronés et déconnexion de tous les appareils. Notre équipe doit aussi se connecter en deux étapes."
     },
     {
-      icon: 'shield',
-      title: 'Vos données restent les vôtres',
-      text: 'Les données de chaque école sont privées et séparées, sauvegardées chaque jour, et le directeur peut tout télécharger à tout moment.',
+      "icon": "shield",
+      "title": "Vos données restent les vôtres",
+      "text": "Chaque école est entièrement séparée et sauvegardée chaque jour. L’école garde la maîtrise de ses données et nous les traitons pour son compte ; le directeur peut tout télécharger à tout moment."
     },
     {
-      icon: 'eye',
-      title: 'Assistance seulement avec permission',
-      text: 'Notre équipe d’assistance ne peut consulter, en lecture seule, que lorsque le directeur l’autorise, et chaque page ouverte est enregistrée.',
+      "icon": "eye",
+      "title": "Assistance uniquement avec autorisation",
+      "text": "Notre équipe ne peut consulter, en lecture seule, que tant que l’école l’autorise. De notre côté, exports et suppressions exigent l’accord d’un second responsable."
     },
     {
-      icon: 'pin',
-      title: 'Conçu pour la région',
-      text: 'Pays, fuseau horaire et format de téléphone par école ; anglais, français et portugais.',
-    },
+      "icon": "pin",
+      "title": "Adapté à votre pays",
+      "text": "Pays, devise, examens, notation, fuseau horaire et format des numéros par école, et sept langues, au choix de chacun."
+    }
   ],
   growHeading: 'Conçu pour grandir, et juste pour les familles',
   grow: [
     {
-      icon: 'bolt',
-      title: 'Rapide pour tous à la fois',
-      text: 'Reste rapide quand tous les parents l’ouvrent le jour des bulletins : les messages partent en arrière-plan, les longues listes se chargent par pages, les pages chargées sont mises en cache.',
+      "icon": "bolt",
+      "title": "Rapide pour tous en même temps",
+      "text": "Reste rapide quand tous les parents l’ouvrent le jour des bulletins : messages envoyés en arrière-plan, longues listes chargées par pages, pages chargées mises en cache."
     },
     {
-      icon: 'check',
-      title: 'Les cookies, à votre choix',
-      text: 'Un avis clair avec Tout accepter, Tout refuser et Gérer. Seuls les cookies nécessaires à la connexion sont toujours actifs.',
+      "icon": "check",
+      "title": "Aucun pistage",
+      "text": "Aucun cookie publicitaire ou de pistage dans l’application. Seulement ceux nécessaires à la connexion."
     },
     {
-      icon: 'cap',
-      title: 'Essayez d’abord',
-      text: 'Des écoles de démonstration Junior et Senior avec des élèves et des frais fictifs. Chaque page est marquée DEMO, et aucun vrai message n’est envoyé.',
-    },
+      "icon": "cap",
+      "title": "Essayez d’abord",
+      "text": "Écoles de démonstration Junior et Senior avec élèves et frais fictifs. Chaque page est marquée DEMO, aucun vrai message n’est envoyé et les écoles de démonstration ne sont jamais facturées."
+    }
   ],
   startEyebrow: 'Pour commencer',
   startHeading: 'Opérationnel en',
@@ -630,38 +787,40 @@ const fr: typeof en = {
       text: 'Parents et élèves reçoivent leur accès et votre code école par SMS, avec un guide d’une page.',
     },
   ],
-  pricingTitle: 'Des prix simples',
-  pricingText:
-    'Une licence par élève et par trimestre, facturée d’avance, plus des frais uniques d’installation et de formation. Hébergement, sauvegardes, mises à jour et assistance sont inclus.',
+  pricingTitle: "Un tarif mensuel simple",
+  pricingText: "Une licence mensuelle pour votre école, plus des frais uniques d’installation et de formation. Les factures de renouvellement sont créées pour vous, et une facture payée renouvelle aussitôt la licence. Hébergement, sauvegardes, mises à jour et assistance compris.",
   supportTitle: 'Une assistance joignable',
-  supportText:
-    'Une personne attitrée chez Sengeti pour votre école, par WhatsApp, téléphone et e-mail, et un centre d’aide dans l’application.',
+  supportText: "Un interlocuteur attitré chez Sengeti pour votre école, par WhatsApp, téléphone et e-mail, un centre d’aide dans l’application et des tickets qui joignent automatiquement la page et l’erreur.",
   faqHeading: 'Les questions des écoles',
   faqs: [
     {
-      q: 'Beaucoup de nos parents n’ont pas de données mobiles. Cela fonctionnera-t-il quand même ?',
-      a: 'Oui. Les pages sont légères, les registres fonctionnent hors ligne, et les parents sans données reçoivent des alertes par SMS et peuvent écrire à l’assistant pour les soldes, les devoirs et les absences.',
+      "q": "Beaucoup de nos parents n’ont pas de données mobiles. Est-ce que ça marche quand même ?",
+      "a": "Oui. Les pages sont légères, les appels fonctionnent hors ligne et les parents sans données reçoivent des alertes par SMS."
     },
     {
-      q: 'Nos enseignants vont-ils vraiment l’utiliser ?',
-      a: 'La formation est incluse, et faire l’appel prend moins d’une minute sur un téléphone. Nous formons chaque groupe sur place et continuons jusqu’à ce que tout fonctionne.',
+      "q": "Nos enseignants vont-ils vraiment l’utiliser ?",
+      "a": "La formation est comprise, et faire l’appel prend moins d’une minute sur un téléphone. Nous formons chaque groupe et continuons jusqu’à ce que tout fonctionne."
     },
     {
-      q: 'Que deviennent nos données ?',
-      a: 'Elles sont privées à votre école, sauvegardées chaque jour et téléchargeables par le directeur à tout moment. Notre assistance ne peut consulter, en lecture seule, que lorsque le directeur l’autorise.',
+      "q": "Est-ce adapté à notre pays et à notre langue ?",
+      "a": "SengetiEdu est configuré pour le Zimbabwe, le Mozambique, la RD Congo, le Cameroun, le Kenya, la Namibie, le Botswana, les Émirats arabes unis, la Pologne et le Sri Lanka. Votre pays fixe les trimestres, classes, devises, examens et notations, et chacun choisit l’anglais, le français, le portugais, le polonais, l’arabe, le cinghalais ou le tamoul."
     },
     {
-      q: 'Peut-il avoir l’image de notre école ?',
-      a: 'Dès le premier jour : votre nom, votre logo et vos couleurs sur chaque écran, reçu et message. Votre propre adresse web et votre propre application sont des options.',
+      "q": "Que deviennent nos données ?",
+      "a": "Votre école en garde la maîtrise, et nous les traitons pour son compte. Elles sont séparées de toutes les autres écoles, sauvegardées chaque jour et téléchargeables par le directeur à tout moment. Notre équipe ne peut les consulter, en lecture seule, que tant que vous l’autorisez."
     },
     {
-      q: 'Comment les parents paient-ils les frais ?',
-      a: 'Depuis la maison par EcoCash ou carte, ou à l’école comme avant. Les reçus sont émis automatiquement, et l’économe voit qui a payé et qui doit encore.',
+      "q": "Peut-il ressembler à notre école ?",
+      "a": "Dès le premier jour : votre nom, votre logo et vos couleurs sur chaque écran, reçu et message, avec seulement une petite mention « Powered by SengetiEdu ». Votre propre adresse web et votre propre application sont des options."
     },
     {
-      q: 'Combien cela coûte-t-il ?',
-      a: 'Une licence par élève et par trimestre, plus des frais uniques d’installation et de formation. Hébergement, sauvegardes, mises à jour et assistance sont inclus. Demandez-nous un devis pour votre école.',
+      "q": "Comment les parents paient-ils les frais ?",
+      "a": "En ligne par mobile money, carte ou virement selon votre pays, ou à l’école comme avant. Les reçus sont émis automatiquement et l’économe voit qui a payé et qui doit encore."
     },
+    {
+      "q": "Combien ça coûte ?",
+      "a": "Une licence mensuelle pour votre école plus des frais uniques d’installation et de formation. Hébergement, sauvegardes, mises à jour et assistance compris. Demandez-nous un devis pour votre école."
+    }
   ],
   ctaHeading: 'Découvrez SengetiEdu dans votre école.',
   ctaText: 'Réservez une démonstration gratuite. Nous la configurons au nom de votre école pour que vous puissiez l’imaginer en service.',
@@ -684,10 +843,10 @@ const fr: typeof en = {
       mark: 'Contrôle de maths',
     },
     junior: {
-      alertTitle: 'Tendai est absent aujourd’hui',
-      alertText: 'Noté à 07:45 par Mme Moyo',
+      alertTitle: "Amara est absente aujourd’hui",
+      alertText: "Notée à 07:45 par Mme Daniels",
       feesLabel: 'Solde des frais',
-      pay: 'Payer avec EcoCash',
+      pay: "Payer les frais",
       noticeLabel: 'Annonce',
       notice: 'Journée sportive vendredi. Prévoir un t-shirt blanc.',
     },
@@ -695,168 +854,235 @@ const fr: typeof en = {
 };
 
 const pt: typeof en = {
-  title: 'SengetiEdu: uma plataforma escolar do pré-escolar à universidade | Sengeti Technologies',
-  description:
-    'O SengetiEdu põe presenças, ensino, resultados, propinas e famílias em cada telemóvel. Três edições para universidades, escolas secundárias e primárias, criadas no Zimbabué.',
+  title: "SengetiEdu: gestão escolar do pré-escolar à universidade | Sengeti Technologies",
+  description: "O SengetiEdu é gestão escolar com a marca da sua escola para universidades, escolas secundárias e primárias: presenças, ensino, exames, propinas e famílias em cada telemóvel. Preparado para dez países, em sete línguas.",
   eyebrow: 'Plataforma SengetiEdu',
   heading: 'Uma plataforma para cada escola,',
   headingAccent: 'do pré-escolar à universidade.',
-  lead: 'Presenças, ensino, resultados, propinas e famílias em cada telemóvel. Três edições, uma só base, criadas no Zimbabué para a realidade das escolas daqui.',
+  lead: "Presenças, ensino, exames, propinas e famílias em cada telemóvel, com o nome da sua escola. Três produtos, uma só base, prontos para dez países e sete línguas.",
   ctaDemo: 'Marcar uma demonstração gratuita',
   ctaTry: 'Experimentar a demonstração de presenças',
   jump: 'Ir para',
   familyEyebrow: 'A família',
   familyHeading: 'Três edições.',
   familyAccent: 'Uma só base.',
-  familyLead:
-    'Todas as edições partilham o mesmo núcleo: acesso seguro, presenças, propinas e pagamentos, avisos, mensagens, um assistente e a aplicação dos pais. Cada uma acrescenta o que o seu tipo de escola precisa, e cada escola liga apenas os módulos que usa.',
+  familyLead: "Todos os produtos partilham a mesma base: entrada segura, presenças, propinas e pagamentos, avisos, mensagens, um assistente e a aplicação dos pais. Cada um acrescenta o que o seu tipo de escola precisa, e cada função pode ser ligada ou desligada por escola, para que cada pessoa só veja o que usa.",
   editions: {
-    campus: {
-      audience: 'Universidades e institutos',
-      range: 'Faculdades, cursos, campus',
-      text: 'Para administradores, docentes e estudantes de todas as faculdades, cursos e campus.',
-      intro:
-        'Nasceu do nosso projeto de presenças universitárias: registo de presença impossível de falsificar, elegibilidade para exames calculada sozinha e uma plataforma de ensino completa à volta.',
-      groups: [
+    "campus": {
+      "audience": "Universidades e institutos",
+      "range": "Faculdades, cursos, campus",
+      "text": "Para administradores, docentes e estudantes de todas as faculdades, cursos e campus.",
+      "intro": "Presenças que não se podem falsificar, exames em que pode confiar e uma plataforma de ensino completa à volta, ligada aos sistemas que a sua universidade já usa.",
+      "groups": [
         {
-          title: 'Presenças impossíveis de falsificar',
-          items: [
-            'Código QR no ecrã que muda a cada 15 segundos',
-            'Verificação opcional por selfie e localização; fila offline',
-            'Listas de elegibilidade para exames a partir das presenças, num clique',
-          ],
+          "title": "Presenças impossíveis de falsificar",
+          "items": [
+            "Um código QR que muda a cada 15 segundos, com selfie e localização opcionais",
+            "Um telemóvel regista um só estudante: ninguém assina por um colega",
+            "Registo offline, alternativa por SMS e USSD, tablets à porta e leitores de secretária",
+            "Presenças nas aulas online a partir do Zoom, Teams e Google Meet",
+            "Elegibilidade para exames calculada por si, com avisos semanas antes"
+          ]
         },
         {
-          title: 'Ensino e aprendizagem',
-          items: [
-            'Apontamentos, avisos e fórum por cadeira',
-            'Trabalhos (individuais ou de grupo), grelhas de avaliação, deteção de semelhanças',
-            'Testes com banco de perguntas; pauta de notas',
-          ],
+          "title": "Ensino e aprendizagem",
+          "items": [
+            "Apontamentos, trabalhos, quizzes e um fórum para cada cadeira",
+            "Pauta com rubricas e trabalhos de grupo com avaliação entre pares",
+            "Banco de perguntas e perguntas calculadas, com números diferentes para cada estudante",
+            "Criador de quizzes com IA, horário de atendimento, plano de estudo e aulas de compensação"
+          ]
         },
         {
-          title: 'Semestres e cursos',
-          items: [
-            'Cursos, planos de estudo e inscrição nas cadeiras',
-            'Assistente de configuração do semestre, importações e transição',
-            'Calendário e distribuição de salas de exames, quitação de propinas',
-          ],
+          "title": "Exames finais",
+          "items": [
+            "Enunciado e critérios, moderação, calendário e lugares",
+            "Resultados publicados só depois de aprovados pelo júri",
+            "Tempo extra e pausas definidos uma vez por estudante",
+            "Um recibo para cada exame entregue"
+          ]
         },
         {
-          title: 'Vida estudantil',
-          items: [
-            'Aulas online e de compensação, horário de atendimento',
-            'Clubes, desporto, instalações e certificados',
-            'Diário de estágio, inquéritos, bem-estar',
-          ],
+          "title": "Exames online fiáveis",
+          "items": [
+            "Câmara ligada, com o próprio dispositivo do estudante a verificar quem está presente",
+            "Um telemóvel como segunda câmara e bloqueio no Safe Exam Browser ou na aplicação",
+            "Comparação do rosto com a foto de perfil e verificação do cartão de identificação",
+            "Mural de vigilância com vídeo em direto, registo de incidentes e entradas tardias",
+            "Marcadores ocultos, cronologia das respostas e alertas para respostas quase iguais",
+            "Breves verificações orais em vídeo depois do exame"
+          ]
         },
-      ],
+        {
+          "title": "Correção e recursos",
+          "items": [
+            "Correção anónima e pergunta a pergunta",
+            "Segunda correção às cegas e recursos",
+            "Estatísticas de qualidade das perguntas e dossiê imprimível para o júri"
+          ]
+        },
+        {
+          "title": "Vida no campus e registos",
+          "items": [
+            "Clubes, desporto, reserva de instalações, eventos e hackathons",
+            "Residências e chaves, registos de entrada, visitantes e perdidos e achados",
+            "Loja do campus e carteira da cantina",
+            "Certificados de notas e diplomas com verificação por QR, quitação final e antigos alunos",
+            "Acompanhamento de projetos finais, cadernetas de estágio e ferramentas para a faculdade de direito"
+          ]
+        }
+      ]
     },
-    senior: {
-      audience: 'Escolas secundárias',
-      range: 'Forms 1 a 6',
-      text: 'O-level e A-level, com alunos a entrar no seu próprio telemóvel.',
-      intro:
-        'Os alunos têm o seu próprio acesso, os professores uma caderneta que escreve as pautas, e a secretaria obtém as listas da ZIMSEC sem voltar a escrever nada.',
-      groups: [
+    "senior": {
+      "audience": "Escolas secundárias",
+      "range": "Forms 1 a 6",
+      "text": "Para escolas secundárias, com alunos que entram no seu próprio telemóvel.",
+      "intro": "Chamadas que funcionam sem rede, uma caderneta que escreve as pautas e inscrições em exames sem voltar a escrever nada.",
+      "groups": [
         {
-          title: 'Para os alunos',
-          items: [
-            'Acesso próprio dos alunos: horário, trabalhos de casa, testes, notas',
-            'Plano de estudo da semana e apontamentos que abrem offline',
-            'Trabalhos de grupo e fóruns de turma',
-          ],
+          "title": "Todos os dias",
+          "items": [
+            "Chamadas da manhã e das aulas que funcionam sem rede",
+            "Pais avisados de imediato de faltas e atrasos",
+            "Horário, trabalhos de casa, quizzes e exames online"
+          ]
         },
         {
-          title: 'Para professores e secretaria',
-          items: [
-            'Caderneta, pautas com comentários e classificações',
-            'Escolha de disciplinas para O-level e A-level, por bloco',
-            'Listas de candidatos da ZIMSEC e relatórios para o Ministério',
-          ],
+          "title": "Notas e exames",
+          "items": [
+            "Caderneta, resultados e pautas",
+            "Inscrições em exames ZIMSEC, Cambridge e outros",
+            "Análise de exames simulados e plano de revisão"
+          ]
         },
         {
-          title: 'Exames e internato',
-          items: ['Exames online com tempo extra para alunos indicados', 'Internato: chamada da noite e saídas'],
+          "title": "Vida escolar",
+          "items": [
+            "Monitores, casas e orientação vocacional",
+            "Internato, clubes, desporto e competições",
+            "Disciplina e méritos, enfermaria e biblioteca"
+          ]
         },
-      ],
+        {
+          "title": "Ferramentas da direção",
+          "items": [
+            "Registo pedagógico e alertas precoces",
+            "Painel da direção",
+            "Relatórios para o Ministério e os exames nacionais"
+          ]
+        }
+      ]
     },
-    junior: {
-      audience: 'Escolas primárias',
-      range: 'Pré-escolar ao Grade 7',
-      text: 'Pensada para o telemóvel dos pais, para manter as famílias a par de tudo.',
-      intro:
-        'Os pais sabem logo quando o filho falta, veem os trabalhos de casa e as pautas, e sabem exatamente quem pode ir buscar a criança.',
-      groups: [
+    "junior": {
+      "audience": "Escolas primárias",
+      "range": "Pré-escolar ao Grade 7",
+      "text": "Pensado para o telemóvel dos pais e para manter as famílias informadas.",
+      "intro": "Os pais sabem de imediato quando o filho falta, acompanham o dia no diário e sabem exatamente quem pode ir buscar a criança.",
+      "groups": [
         {
-          title: 'Para as famílias',
-          items: [
-            'Pais avisados de imediato quando o filho falta',
-            'Trabalhos de casa e testes feitos em conjunto em casa',
-            'Méritos e comportamento partilhados com os pais',
-          ],
+          "title": "Para as famílias",
+          "items": [
+            "Uma aplicação para os pais com presenças, trabalhos, resultados e propinas",
+            "Conversa com os professores e mensagens de aniversário",
+            "Propinas pagas a partir de casa"
+          ]
         },
         {
-          title: 'Pautas',
-          items: ['Pautas aprovadas pelo diretor antes de os pais as verem'],
+          "title": "O dia na escola",
+          "items": [
+            "Diário e registo de leitura",
+            "Lista de saída: quem pode ir buscar cada criança",
+            "Transporte, enfermaria e registo de visitantes"
+          ]
         },
         {
-          title: 'Segurança e cuidados',
-          items: [
-            'Controlo no portão: quem pode ir buscar cada criança',
-            'Transporte: rotas, paragens e viagens, pais avisados',
-            'Enfermaria com as alergias no ecrã',
-            'Cartões de identificação para uma turma inteira com código QR',
-          ],
+          "title": "Avaliações",
+          "items": [
+            "Relatório de competências do pré-escolar",
+            "Resultados dos simulados do Grade 7",
+            "Pautas aprovadas pela direção antes de os pais as verem"
+          ]
         },
-      ],
-    },
+        {
+          "title": "Aprender em casa",
+          "items": [
+            "Fechar a escola, ou algumas turmas, num só passo",
+            "Aulas online, plano de trabalho diário e testes online",
+            "O Junior nunca usa câmara"
+          ]
+        }
+      ]
+    }
   },
   coreHeading: 'Comum a todas as edições',
   core: [
-    { icon: 'check', title: 'Presenças', text: 'Chamadas no telemóvel que funcionam offline, com alertas às famílias e relatórios para a direção.' },
-    { icon: 'wallet', title: 'Propinas e pagamentos', text: 'Faturas, recibos, devedores, patrocinadores, e pagamento a partir de casa com EcoCash ou cartão.' },
-    { icon: 'bell', title: 'Avisos e eventos', text: 'Eventos, visitas de estudo, desporto e mensagens de emergência, com respostas.' },
-    { icon: 'chat', title: 'Mensagens', text: 'Na aplicação, notificações, SMS e WhatsApp; as famílias escolhem como querem ser avisadas.' },
     {
-      icon: 'sparkle',
-      title: 'Assistente',
-      text: 'Com a tecnologia Claude: saldos, trabalhos de casa e faltas respondidos na aplicação, no WhatsApp ou por SMS.',
+      "icon": "check",
+      "title": "Presenças",
+      "text": "Chamadas que funcionam sem rede, com alertas às famílias e relatórios para a direção."
     },
-    { icon: 'chart', title: 'Relatórios', text: 'Painel da direção, alertas precoces para alunos em risco, estatísticas e registo de atividade.' },
+    {
+      "icon": "wallet",
+      "title": "Propinas e pagamentos",
+      "text": "Faturação, recibos, planos de pagamento, descontos e lembretes automáticos, e pagamento a partir de casa por dinheiro móvel, cartão ou transferência."
+    },
+    {
+      "icon": "bell",
+      "title": "Avisos e eventos",
+      "text": "Eventos, visitas de estudo, desporto e mensagens de emergência, com respostas e ecrãs de avisos."
+    },
+    {
+      "icon": "chat",
+      "title": "Mensagens",
+      "text": "Na aplicação, por notificação, SMS e WhatsApp a partir da conta comercial da sua escola."
+    },
+    {
+      "icon": "sparkle",
+      "title": "Assistente",
+      "text": "Com tecnologia Claude: responde sobre saldos, trabalhos e faltas na aplicação ou no WhatsApp, e cria quizzes com IA para os professores."
+    },
+    {
+      "icon": "chart",
+      "title": "Relatórios",
+      "text": "Painel da direção, alertas precoces para alunos em risco, estatísticas e registo de auditoria."
+    }
   ],
   integrationsHeading: 'O Campus liga-se aos seus sistemas',
   integrations: [
-    'Moodle e Google Classroom',
-    'LTI 1.3',
-    'Acesso único SAML e OIDC',
-    'API para ERP e SIS',
-    'Webhooks',
-    'Sincronização SFTP',
-    'Widgets para o seu site',
-    'Exportação de resultados',
-    'Vários campus',
-    'Aplicações Android e iOS',
+    "API REST e webhooks",
+    "LTI 1.3: Moodle, Canvas, Blackboard, Brightspace",
+    "Moodle e Google Classroom",
+    "Entrada SAML e OpenID Connect",
+    "Zoom, Teams e Google Meet",
+    "Safe Exam Browser",
+    "Troca SFTP noturna",
+    "Widgets para o seu site",
+    "Aplicações Android e iPhone"
   ],
-  modulesHeading: 'Módulos opcionais para Senior e Junior',
+  modulesHeading: "Ligue o que precisa, no Senior e no Junior",
   modules: [
-    'Horários e substituições',
-    'Aulas de compensação e online',
-    'Biblioteca e manuais',
-    'Clubes, desporto e instalações',
-    'Certificados com verificação QR',
-    'Reuniões e pedidos dos pais',
-    'Inquéritos e bem-estar',
-    'Patrocinadores e BEAM',
-    'Loja de uniformes',
-    'Armazém e património',
-    'Salários e RH',
-    'Admissões',
-    'Várias unidades',
-    'Ecrãs de avisos',
+    "Horário",
+    "Aprender em casa",
+    "Exames online",
+    "Biblioteca",
+    "Clubes, desporto e competições",
+    "Internato",
+    "Transporte",
+    "Enfermaria",
+    "Disciplina e méritos",
+    "Loja de fardas e armazém",
+    "Cantina",
+    "Controlo de propinas à entrada",
+    "Salários",
+    "Admissões e cartões de aluno",
+    "Ecrãs de avisos",
+    "Inquéritos e bem-estar",
+    "Registo de visitantes",
+    "Assistente WhatsApp e ajuda com IA",
+    "Várias escolas",
+    "Acesso personalizado por conta"
   ],
-  modulesNote:
-    'Cada módulo pode ser ligado ou desligado pelo diretor. Comece pelas presenças, propinas e pais; acrescente o resto quando estiver pronto, sem nova instalação.',
+  modulesNote: "Cada função pode ser ligada ou desligada para a sua escola. Comece pelas presenças, propinas e pais, e acrescente o resto quando estiver pronto, sem nova instalação.",
   compareEyebrow: 'Num relance',
   compareHeading: 'Que edição',
   compareAccent: 'faz o quê',
@@ -864,23 +1090,26 @@ const pt: typeof en = {
   included: 'Incluído',
   notIncluded: 'Não incluído',
   rows: [
-    'Presenças',
-    'Propinas, recibos e pagamentos online',
-    'Aplicação e notificações para os pais',
-    'Assistente (aplicação, WhatsApp, SMS)',
-    'Acesso próprio dos alunos',
-    'Trabalhos, testes e notas',
-    'Pautas',
-    'Elegibilidade para exames a partir das presenças',
-    'Semestres e inscrição nas cadeiras',
-    'Escolha de disciplinas e listas da ZIMSEC',
-    'Internato',
-    'Controlo no portão e entrega segura',
-    'Transporte e enfermaria',
-    'LMS, LTI e acesso único',
-    'Chamadas offline',
-    'A imagem da sua escola e um código de escola para a aplicação',
-    'Escola de demonstração para experimentar, marcada como DEMO',
+    "Presenças",
+    "Propinas, recibos e pagamentos online",
+    "Aplicação e notificações para os pais",
+    "Assistente com tecnologia Claude",
+    "Entrada própria dos alunos",
+    "Trabalhos, quizzes e notas",
+    "Pautas",
+    "Elegibilidade para exames a partir das presenças",
+    "Semestres e inscrição em cadeiras",
+    "Inscrições em exames (ZIMSEC, Cambridge e mais)",
+    "Internato e residências",
+    "Controlo à saída e entrega segura",
+    "Transporte e enfermaria",
+    "LMS, LTI e entrada única",
+    "Chamadas que funcionam offline",
+    "A marca da sua escola e um código de escola para a aplicação",
+    "Escola de demonstração para experimentar, marcada DEMO",
+    "Exames online com verificações de integridade",
+    "Aprender em casa",
+    "Sete línguas, à escolha de cada pessoa"
   ],
   brandEyebrow: 'A sua escola, a sua imagem',
   brandHeading: 'As famílias veem a sua escola,',
@@ -908,7 +1137,7 @@ const pt: typeof en = {
       standard: 'Padrão, incluído',
       standardText: 'asuaescola.sengeti.school',
       upgrade: 'O seu próprio, opcional',
-      upgradeText: 'por ex. portal.asuaescola.ac.zw',
+      upgradeText: "ex. portal.asuaescola.edu",
     },
     {
       title: 'Aplicação móvel',
@@ -929,43 +1158,43 @@ const pt: typeof en = {
   safeEyebrow: 'Seguro, privado e seu',
   safe: [
     {
-      icon: 'lock',
-      title: 'Acesso seguro',
-      text: 'Acesso em dois passos, contas bloqueadas após palavras-passe erradas, e saída de todos os dispositivos.',
+      "icon": "lock",
+      "title": "Entrada segura",
+      "text": "Entrada em dois passos, contas bloqueadas após palavras-passe erradas e saída de todos os dispositivos. A nossa equipa também tem de entrar em dois passos."
     },
     {
-      icon: 'shield',
-      title: 'Os seus dados são seus',
-      text: 'Os dados de cada escola são privados e separados, com cópia de segurança diária, e o diretor pode descarregar tudo a qualquer momento.',
+      "icon": "shield",
+      "title": "Os seus dados são seus",
+      "text": "Cada escola está totalmente separada e tem cópias de segurança diárias. A escola controla os seus dados e nós tratamo-los em seu nome; a direção pode descarregar tudo a qualquer momento."
     },
     {
-      icon: 'eye',
-      title: 'Apoio só com autorização',
-      text: 'A nossa equipa de apoio só pode consultar, sem alterar, enquanto o diretor o permitir, e cada página aberta fica registada.',
+      "icon": "eye",
+      "title": "Suporte só com autorização",
+      "text": "A nossa equipa só pode consultar, apenas em leitura, enquanto a escola o permitir. Do nosso lado, exportações e eliminações precisam da aprovação de um segundo responsável."
     },
     {
-      icon: 'pin',
-      title: 'Feito para a região',
-      text: 'País, fuso horário e formato de telefone por escola; inglês, francês e português.',
-    },
+      "icon": "pin",
+      "title": "Feito para o seu país",
+      "text": "País, moeda, exames, classificação, fuso horário e formato dos números por escola, e sete línguas, à escolha de cada pessoa."
+    }
   ],
   growHeading: 'Feito para crescer, e justo para as famílias',
   grow: [
     {
-      icon: 'bolt',
-      title: 'Rápido para todos ao mesmo tempo',
-      text: 'Mantém-se rápido quando todos os pais o abrem no dia das pautas: as mensagens saem em segundo plano, as listas longas carregam por páginas e as páginas mais usadas ficam em cache.',
+      "icon": "bolt",
+      "title": "Rápido para todos ao mesmo tempo",
+      "text": "Continua rápido quando todos os pais o abrem no dia das pautas: mensagens enviadas em segundo plano, listas longas carregadas por páginas, páginas mais vistas em cache."
     },
     {
-      icon: 'check',
-      title: 'Cookies, à sua escolha',
-      text: 'Um aviso claro com Aceitar todos, Rejeitar todos e Gerir. Só os cookies necessários para entrar estão sempre ativos.',
+      "icon": "check",
+      "title": "Sem rastreio",
+      "text": "Sem cookies de publicidade ou de rastreio na aplicação. Só os necessários para entrar."
     },
     {
-      icon: 'cap',
-      title: 'Experimente primeiro',
-      text: 'Escolas de demonstração Junior e Senior com alunos e propinas de exemplo. Todas as páginas estão marcadas como DEMO e nenhuma mensagem real é enviada.',
-    },
+      "icon": "cap",
+      "title": "Experimente primeiro",
+      "text": "Escolas de demonstração Junior e Senior com alunos e propinas de exemplo. Todas as páginas dizem DEMO, não são enviadas mensagens reais e as escolas de demonstração nunca são faturadas."
+    }
   ],
   startEyebrow: 'Como começar',
   startHeading: 'A funcionar em',
@@ -989,38 +1218,40 @@ const pt: typeof en = {
       text: 'Pais e alunos recebem o acesso e o código da escola por SMS, com um guia de uma página.',
     },
   ],
-  pricingTitle: 'Preços simples',
-  pricingText:
-    'Uma licença por aluno por período, faturada antecipadamente, mais uma taxa única de configuração e formação. Alojamento, cópias de segurança, atualizações e apoio estão incluídos.',
+  pricingTitle: "Preço mensal simples",
+  pricingText: "Uma licença mensal para a sua escola, mais uma taxa única de instalação e formação. As faturas de renovação são criadas por si, e uma fatura paga renova a licença de imediato. Alojamento, cópias de segurança, atualizações e suporte incluídos.",
   supportTitle: 'Apoio a que pode chegar',
-  supportText:
-    'Uma pessoa da Sengeti dedicada à sua escola, por WhatsApp, telefone e e-mail, e um centro de ajuda dentro da aplicação.',
+  supportText: "Uma pessoa da Sengeti dedicada à sua escola, por WhatsApp, telefone e e-mail, um centro de ajuda dentro da aplicação e pedidos de suporte que juntam automaticamente a página e o erro.",
   faqHeading: 'Perguntas que as escolas fazem',
   faqs: [
     {
-      q: 'Muitos dos nossos pais não têm dados móveis. Funciona na mesma?',
-      a: 'Sim. As páginas são leves, as chamadas funcionam offline, e os pais sem dados recebem alertas por SMS e podem enviar mensagens ao assistente sobre saldos, trabalhos de casa e faltas.',
+      "q": "Muitos pais não têm dados móveis. Funciona na mesma?",
+      "a": "Sim. As páginas são leves, as chamadas funcionam offline e os pais sem dados recebem alertas por SMS."
     },
     {
-      q: 'Os nossos professores vão mesmo usá-lo?',
-      a: 'A formação está incluída, e fazer a chamada demora menos de um minuto no telemóvel. Formamos cada grupo presencialmente e continuamos até tudo funcionar.',
+      "q": "Os professores vão mesmo usá-lo?",
+      "a": "A formação está incluída, e fazer a chamada demora menos de um minuto no telemóvel. Formamos cada grupo e continuamos até tudo funcionar."
     },
     {
-      q: 'O que acontece aos nossos dados?',
-      a: 'São privados da sua escola, com cópia de segurança diária, e o diretor pode descarregá-los a qualquer momento. O nosso apoio só pode consultar, sem alterar, enquanto o diretor o permitir.',
+      "q": "Funciona no nosso país e na nossa língua?",
+      "a": "O SengetiEdu está preparado para o Zimbabué, Moçambique, RD Congo, Camarões, Quénia, Namíbia, Botsuana, Emirados Árabes Unidos, Polónia e Sri Lanca. O seu país define os períodos, turmas, moedas, exames e classificações, e cada pessoa escolhe inglês, francês, português, polaco, árabe, cingalês ou tâmil."
     },
     {
-      q: 'Pode ter a imagem da nossa escola?',
-      a: 'Desde o primeiro dia: o seu nome, logótipo e cores em todos os ecrãs, recibos e mensagens. O seu próprio endereço web e a sua própria aplicação são opcionais.',
+      "q": "O que acontece aos nossos dados?",
+      "a": "A sua escola controla-os, e nós tratamo-los em seu nome. Ficam separados de todas as outras escolas, com cópias de segurança diárias, e a direção pode descarregá-los a qualquer momento. A nossa equipa só os pode consultar, em leitura, enquanto o permitir."
     },
     {
-      q: 'Como é que os pais pagam as propinas?',
-      a: 'A partir de casa com EcoCash ou cartão, ou na escola como antes. Os recibos são emitidos automaticamente, e o tesoureiro vê quem pagou e quem deve.',
+      "q": "Pode ter o aspeto da nossa escola?",
+      "a": "Desde o primeiro dia: o seu nome, logótipo e cores em cada ecrã, recibo e mensagem, com apenas uma pequena linha «Powered by SengetiEdu». O seu próprio endereço web e a sua própria aplicação são opções extra."
     },
     {
-      q: 'Quanto custa?',
-      a: 'Uma licença por aluno por período, mais uma taxa única de configuração e formação. Alojamento, cópias de segurança, atualizações e apoio estão incluídos. Peça-nos um orçamento para a sua escola.',
+      "q": "Como pagam os pais as propinas?",
+      "a": "Online por dinheiro móvel, cartão ou transferência, consoante o país, ou na escola como antes. Os recibos são emitidos automaticamente e a tesouraria vê quem pagou e quem deve."
     },
+    {
+      "q": "Quanto custa?",
+      "a": "Uma licença mensal para a sua escola mais uma taxa única de instalação e formação. Alojamento, cópias de segurança, atualizações e suporte incluídos. Peça-nos um orçamento para a sua escola."
+    }
   ],
   ctaHeading: 'Veja o SengetiEdu na sua escola.',
   ctaText: 'Marque uma demonstração gratuita. Configuramo-la com o nome da sua escola para que a possa imaginar em uso.',
@@ -1043,10 +1274,10 @@ const pt: typeof en = {
       mark: 'Teste de Matemática',
     },
     junior: {
-      alertTitle: 'O Tendai faltou hoje',
-      alertText: 'Registado às 07:45 pela Sra. Moyo',
+      alertTitle: "A Amara faltou hoje",
+      alertText: "Marcada às 07:45 pela Sra. Daniels",
       feesLabel: 'Saldo das propinas',
-      pay: 'Pagar com EcoCash',
+      pay: "Pagar propinas",
       noticeLabel: 'Aviso',
       notice: 'Dia do desporto na sexta. Tragam uma T-shirt branca.',
     },
@@ -1067,11 +1298,14 @@ export const editionMatrix: [boolean, boolean, boolean][] = [
   [true, false, false],
   [true, false, false],
   [false, true, false],
-  [false, true, true],
   [true, true, true],
+  [false, true, true],
   [false, true, true],
   [true, false, false],
   [true, true, true],
+  [true, true, true],
+  [true, true, true],
+  [true, false, false],
   [false, true, true],
   [true, true, true],
 ];

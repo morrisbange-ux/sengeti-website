@@ -3,7 +3,7 @@
  *
  * To advertise a job, add it to `roles` in each language, for example:
  *   { id: 'web-developer', title: 'Web developer', type: 'Full-time', location: 'Mutare or remote',
- *     summary: 'Build web systems for clients across the region.', datePosted: '2026-11-01',
+ *     summary: 'Build web systems for clients around the world.', datePosted: '2026-11-01',
  *     employmentType: 'FULL_TIME' }
  * `datePosted` (YYYY-MM-DD) and `employmentType` (FULL_TIME, PART_TIME, CONTRACTOR, INTERN) are
  * used for Google's job listings. Keep the same roles, in the same order, in en, fr and pt.
@@ -22,12 +22,12 @@ type Role = {
 const en = {
   title: 'Careers | Sengeti Technologies',
   description:
-    'Work at Sengeti Technologies in Mutare, Zimbabwe: real software and automation projects, room to learn and work that makes a difference locally.',
+    'Work at Sengeti Technologies: real software and automation projects for schools and organisations around the world, with room to learn and grow.',
   nav: 'Careers',
   eyebrow: 'Careers',
   heading: 'Build useful things',
   headingAccent: 'with us.',
-  lead: 'We are a small, growing team in Mutare building software and automation for organisations in Zimbabwe and the region. If you enjoy solving real problems, we would like to hear from you.',
+  lead: 'We are a small, growing team building software and automation for organisations around the world. If you enjoy solving real problems, we would like to hear from you.',
   whyHeading: 'Why work at Sengeti',
   why: [
     { icon: 'code', title: 'Real projects', text: 'You work on systems that clients use every day, not exercises. Your work ships and you see the result.' },
@@ -58,12 +58,12 @@ const en = {
 const fr: typeof en = {
   title: 'Carrières | Sengeti Technologies',
   description:
-    "Travailler chez Sengeti Technologies à Mutare, au Zimbabwe : de vrais projets de logiciels et d'automatisation, de quoi apprendre et un travail utile localement.",
+    "Travailler chez Sengeti Technologies : de vrais projets de logiciels et d'automatisation pour des écoles et des organisations du monde entier, avec de quoi apprendre et progresser.",
   nav: 'Carrières',
   eyebrow: 'Carrières',
   heading: 'Construisez des choses utiles',
   headingAccent: 'avec nous.',
-  lead: "Nous sommes une petite équipe en croissance à Mutare qui conçoit des logiciels et des automatisations pour des organisations au Zimbabwe et dans la région. Si vous aimez résoudre de vrais problèmes, nous serions ravis d'avoir de vos nouvelles.",
+  lead: "Nous sommes une petite équipe en croissance qui conçoit des logiciels et des automatisations pour des organisations partout dans le monde. Si vous aimez résoudre de vrais problèmes, nous serions ravis d'avoir de vos nouvelles.",
   whyHeading: 'Pourquoi travailler chez Sengeti',
   why: [
     { icon: 'code', title: 'De vrais projets', text: 'Vous travaillez sur des systèmes que des clients utilisent chaque jour, pas sur des exercices. Votre travail est mis en service et vous en voyez le résultat.' },
@@ -94,12 +94,12 @@ const fr: typeof en = {
 const pt: typeof en = {
   title: 'Carreiras | Sengeti Technologies',
   description:
-    'Trabalhe na Sengeti Technologies em Mutare, no Zimbabué: projetos reais de software e automatização, espaço para aprender e trabalho com impacto local.',
+    'Trabalhe na Sengeti Technologies: projetos reais de software e automatização para escolas e organizações em todo o mundo, com espaço para aprender e crescer.',
   nav: 'Carreiras',
   eyebrow: 'Carreiras',
   heading: 'Construa coisas úteis',
   headingAccent: 'connosco.',
-  lead: 'Somos uma equipa pequena e em crescimento em Mutare, que cria software e automatização para organizações no Zimbabué e na região. Se gosta de resolver problemas reais, gostaríamos de o conhecer.',
+  lead: 'Somos uma equipa pequena e em crescimento que cria software e automatização para organizações em todo o mundo. Se gosta de resolver problemas reais, gostaríamos de o conhecer.',
   whyHeading: 'Porquê trabalhar na Sengeti',
   why: [
     { icon: 'code', title: 'Projetos reais', text: 'Trabalha em sistemas que os clientes usam todos os dias, não em exercícios. O seu trabalho entra em produção e vê o resultado.' },
