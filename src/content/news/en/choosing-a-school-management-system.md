@@ -1,6 +1,6 @@
 ---
-title: 'Choosing a school management system: 8 questions to ask'
-description: Before your school signs up for any school management system, ask these eight questions about data costs, offline registers, fees, exam boards, parents and who owns your records.
+title: 'Choosing a school management system in Zimbabwe: 8 questions to ask'
+description: Before your school signs up for any school management system, ask these eight questions about data costs, offline registers, fees, ZIMSEC, parents and who owns your records.
 date: 2026-11-10
 type: article
 ---
@@ -13,15 +13,15 @@ Most parents will meet the system on a phone, often with a small bundle. Ask how
 
 ## 2. Can teachers take the register offline?
 
-Connections drop and power cuts happen in the middle of lessons. A good system lets a teacher mark the register on a phone without a signal and sends it when the connection returns. Ask to see it done with mobile data switched off.
+Connections drop and load-shedding happens in the middle of lessons. A good system lets a teacher mark the register on a phone without a signal and sends it when the connection returns. Ask to see it done with mobile data switched off.
 
 ## 3. How are fees, receipts and arrears handled?
 
-Fees are where most schools feel the pain. Check that the system issues invoices and receipts, tracks who owes what, handles sponsors and bursaries, and lets parents pay from home with the payment methods they already use, such as mobile money or a card. Ask how a parent sees their balance.
+Fees are where most schools feel the pain. Check that the system issues invoices and receipts, tracks who owes what, handles sponsors and bursaries, and lets parents pay from home with the payment methods they already use, such as EcoCash or a card. Ask how a parent sees their balance.
 
-## 4. Does it fit your country's curriculum and calendar?
+## 4. Does it fit the Zimbabwean curriculum and calendar?
 
-Terms, classes and grades, exam board entries (ZIMSEC, Cambridge or your national board), subject choices and ministry returns should be built in, not worked around. A system designed for another country's school year will cost the office time every term.
+Terms, forms and grades, ZIMSEC candidate lists, O-level and A-level subject choices, and Ministry returns should be built in, not worked around. A system designed for another country's school year will cost the office time every term.
 
 ## 5. Will it look like our school?
 

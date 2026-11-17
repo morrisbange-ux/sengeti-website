@@ -1,6 +1,6 @@
 ---
 title: 'Propinas em atraso: 6 formas práticas de receber mais, a tempo'
-description: As propinas em atraso apertam o orçamento de qualquer escola. Seis passos práticos, da fatura clara ao pagamento a partir de casa com dinheiro móvel, para receber mais sem estragar a relação com as famílias.
+description: As propinas em atraso apertam o orçamento de qualquer escola. Seis passos práticos, da fatura clara ao pagamento a partir de casa com EcoCash, para receber mais sem estragar a relação com as famílias.
 date: 2026-11-10
 type: article
 ---
@@ -13,7 +13,7 @@ As famílias planeiam com o que sabem. Uma fatura que chega antes do período, m
 
 ## 2. Facilitar o pagamento a partir de casa
 
-Cada ida à secretaria ou ao banco é uma razão para adiar. Deixe os pais pagar a partir de casa com os meios que já usam, como o dinheiro móvel ou um cartão, e envie logo um recibo para saberem que o pagamento chegou.
+Cada ida à secretaria ou ao banco é uma razão para adiar. Deixe os pais pagar a partir de casa com os meios que já usam, como o EcoCash ou um cartão, e envie logo um recibo para saberem que o pagamento chegou.
 
 ## 3. Deixar os pais ver o saldo a qualquer momento
 
@@ -33,4 +33,4 @@ Famílias com dificuldades respondem melhor a uma mensagem privada e a uma propo
 
 ## Como o SengetiEdu ajuda
 
-O [SengetiEdu](/pt/products/sengetiedu) inclui faturas, recibos, listas de devedores, patrocinadores, mensagens às famílias por SMS e WhatsApp, consulta do saldo por SMS, e pagamento a partir de casa com dinheiro móvel ou cartão, tudo com o nome da sua escola. [Marque uma demo gratuita](/pt/school-demo) e mostramos-lhe os ecrãs de propinas com o nome da sua escola.
+O [SengetiEdu](/pt/products/sengetiedu) inclui faturas, recibos, listas de devedores, patrocinadores, mensagens às famílias por SMS e WhatsApp, consulta do saldo por SMS, e pagamento a partir de casa com EcoCash ou cartão, tudo com o nome da sua escola. [Marque uma demo gratuita](/pt/school-demo) e mostramos-lhe os ecrãs de propinas com o nome da sua escola.

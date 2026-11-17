@@ -33,12 +33,12 @@ const en = {
   ],
   lawHeading: 'Privacy and the law',
   lawText:
-    "We handle personal information in line with the data protection laws of each country we serve, such as Zimbabwe's Cyber and Data Protection Act, Kenya's Data Protection Act and the GDPR in Poland. Each school or organisation controls its own data, and we process it on its behalf. We do not sell personal information, and we sign confidentiality agreements on request.",
+    "We handle personal information in line with Zimbabwe's Cyber and Data Protection Act and the data protection laws of the countries we serve. We do not sell personal information, and we sign confidentiality agreements on request.",
   privacyLink: 'Read our Privacy Policy',
   faqHeading: 'Security questions',
   faqs: [
     { q: 'Who owns the data in the systems you build?', a: 'You do. Your data and the software we build for you belong to your organisation. When a contract ends, we return or delete your data as you prefer.' },
-    { q: 'Where is our data stored?', a: 'On secure cloud servers, which may be located in another country. Wherever it is stored, it is encrypted, backed up and protected to the same standard.' },
+    { q: 'Where is our data stored?', a: 'On secure cloud servers, which may be located outside Zimbabwe. Wherever it is stored, it is encrypted, backed up and protected to the same standard.' },
     { q: 'Can our staff see each other’s information?', a: 'Only if you want them to. We set up roles so each person sees only what they need, and every change is recorded.' },
     { q: 'Do you use our data to train AI?', a: 'No. Data used in our AI solutions is kept private and access-controlled, and is never used to train public AI models.' },
     { q: 'Will you sign a confidentiality agreement?', a: 'Yes. We are happy to sign a confidentiality or non-disclosure agreement before you share sensitive information with us.' },
@@ -78,12 +78,12 @@ const fr: typeof en = {
   ],
   lawHeading: 'Vie privée et loi',
   lawText:
-    "Nous traitons les informations personnelles conformément aux lois sur la protection des données de chaque pays que nous servons, comme le Cyber and Data Protection Act au Zimbabwe, le Data Protection Act au Kenya et le RGPD en Pologne. Chaque école ou organisation garde la maîtrise de ses données, et nous les traitons pour son compte. Nous ne vendons pas d'informations personnelles et nous signons des accords de confidentialité sur demande.",
+    "Nous traitons les informations personnelles conformément à la loi zimbabwéenne sur la cybersécurité et la protection des données (Cyber and Data Protection Act) et aux lois sur la protection des données des pays que nous servons. Nous ne vendons pas d'informations personnelles et nous signons des accords de confidentialité sur demande.",
   privacyLink: 'Lire notre politique de confidentialité',
   faqHeading: 'Questions sur la sécurité',
   faqs: [
     { q: 'À qui appartiennent les données des systèmes que vous construisez ?', a: "À vous. Vos données et le logiciel que nous construisons pour vous appartiennent à votre organisation. À la fin d'un contrat, nous vous rendons ou supprimons vos données, comme vous le souhaitez." },
-    { q: 'Où nos données sont-elles stockées ?', a: "Sur des serveurs cloud sécurisés, qui peuvent se trouver dans un autre pays. Où qu'elles soient, elles sont chiffrées, sauvegardées et protégées avec le même niveau d'exigence." },
+    { q: 'Où nos données sont-elles stockées ?', a: "Sur des serveurs cloud sécurisés, qui peuvent se trouver hors du Zimbabwe. Où qu'elles soient, elles sont chiffrées, sauvegardées et protégées avec le même niveau d'exigence." },
     { q: 'Nos employés peuvent-ils voir les informations des uns et des autres ?', a: 'Seulement si vous le souhaitez. Nous configurons des rôles pour que chacun ne voie que ce dont il a besoin, et chaque modification est enregistrée.' },
     { q: "Utilisez-vous nos données pour entraîner une IA ?", a: "Non. Les données utilisées dans nos solutions d'IA restent privées, à accès contrôlé, et ne servent jamais à entraîner des modèles d'IA publics." },
     { q: 'Signez-vous un accord de confidentialité ?', a: 'Oui. Nous signons volontiers un accord de confidentialité avant que vous ne partagiez des informations sensibles avec nous.' },
@@ -123,12 +123,12 @@ const pt: typeof en = {
   ],
   lawHeading: 'Privacidade e lei',
   lawText:
-    'Tratamos informação pessoal de acordo com as leis de proteção de dados de cada país que servimos, como a Cyber and Data Protection Act do Zimbabué, a Data Protection Act do Quénia e o RGPD na Polónia. Cada escola ou organização controla os seus dados, e nós tratamo-los em seu nome. Não vendemos informação pessoal e assinamos acordos de confidencialidade a pedido.',
+    'Tratamos informação pessoal de acordo com a Lei de Cibersegurança e Proteção de Dados do Zimbabué (Cyber and Data Protection Act) e com as leis de proteção de dados dos países que servimos. Não vendemos informação pessoal e assinamos acordos de confidencialidade a pedido.',
   privacyLink: 'Ler a nossa Política de Privacidade',
   faqHeading: 'Perguntas sobre segurança',
   faqs: [
     { q: 'A quem pertencem os dados dos sistemas que constroem?', a: 'A si. Os seus dados e o software que construímos para si pertencem à sua organização. Quando um contrato termina, devolvemos ou apagamos os seus dados, como preferir.' },
-    { q: 'Onde ficam guardados os nossos dados?', a: 'Em servidores cloud seguros, que podem estar localizados noutro país. Onde quer que estejam, são encriptados, copiados e protegidos com o mesmo rigor.' },
+    { q: 'Onde ficam guardados os nossos dados?', a: 'Em servidores cloud seguros, que podem estar localizados fora do Zimbabué. Onde quer que estejam, são encriptados, copiados e protegidos com o mesmo rigor.' },
     { q: 'Os nossos funcionários podem ver a informação uns dos outros?', a: 'Só se quiser. Configuramos perfis para que cada pessoa veja apenas o que precisa, e cada alteração fica registada.' },
     { q: 'Usam os nossos dados para treinar IA?', a: 'Não. Os dados usados nas nossas soluções de IA são privados, com acesso controlado, e nunca são usados para treinar modelos de IA públicos.' },
     { q: 'Assinam um acordo de confidencialidade?', a: 'Sim. Assinamos de bom grado um acordo de confidencialidade antes de partilhar connosco informação sensível.' },

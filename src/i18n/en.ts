@@ -4,7 +4,7 @@
  */
 const en = {
   langCode: 'en',
-  locale: 'en_GB',
+  locale: 'en_ZW',
   langName: 'English',
 
   nav: {
@@ -47,7 +47,7 @@ const en = {
     company: 'Company',
     getInTouch: 'Get in touch',
     followUs: 'Follow us',
-    madeIn: 'Software for schools and teams worldwide.',
+    madeIn: 'Built in Zimbabwe.',
     rights: 'All rights reserved.',
     legal: 'Legal',
     privacy: 'Privacy Policy',
@@ -58,15 +58,15 @@ const en = {
   home: {
     title: 'Sengeti Technologies | Process automation and custom software',
     description:
-      'Sengeti Technologies helps organisations replace slow, manual work with reliable digital systems: process automation, systems integration and custom software for organisations around the world.',
+      'Sengeti Technologies helps organisations replace slow, manual work with reliable digital systems: process automation, systems integration and custom software, from Zimbabwe to the region.',
     eyebrow: 'Automation · Software · Cloud',
     heading: 'We automate the work that',
     headingAccent: 'slows business down.',
-    lead: 'Process automation, systems integration and custom software for organisations around the world. Reliable, affordable and shaped around the way your team already works.',
+    lead: 'Process automation, systems integration and custom software for organisations in Zimbabwe and beyond. Reliable, affordable and shaped around the way your team already works.',
     primaryCta: 'See our services',
     secondaryCta: 'Talk to us',
     stackLabel: 'We connect with the tools you already use',
-    stack: ['WhatsApp', 'Email and SMS', 'Excel and Google Sheets', 'Accounting software', 'Mobile money and card payments', 'Web and Android apps'],
+    stack: ['WhatsApp', 'Email and SMS', 'Excel and Google Sheets', 'Accounting software', 'EcoCash and card payments', 'Web and Android apps'],
     problemsHeading: 'Where organisations lose time every day',
     problemsLead: "Most teams don't need more staff. They need less manual work. These are the patterns we see again and again:",
     problems: [
@@ -86,7 +86,7 @@ const en = {
     caseStudiesHeading: 'Our work',
     whyHeading: 'Why Sengeti',
     why: [
-      { title: 'Close to your team', text: 'We work alongside the people who use the system, in their language and on their schedule.' },
+      { title: 'Local and accessible', text: 'A Zimbabwean team that knows how organisations in the region run, day to day.' },
       { title: 'Practical and affordable', text: 'Solutions sized to your budget, with value you can see quickly.' },
       { title: 'Mobile first', text: 'Built for phones and patchy connections, and works offline where it matters.' },
       { title: 'Secure by design', text: 'Two-step sign-in, backups, and data kept private and separate.' },
@@ -99,9 +99,9 @@ const en = {
   about: {
     title: 'About us | Sengeti Technologies',
     description:
-      'Sengeti Technologies is a technology company that helps organisations around the world replace slow, manual work with reliable digital systems. Founded by Morris N. Bangezhano.',
+      'Sengeti Technologies is a Zimbabwean technology company that helps organisations replace slow, manual work with reliable digital systems. Founded by Morris N. Bangezhano.',
     heading: 'Problem finders. Problem automators.',
-    lead: 'Sengeti Technologies is a technology company that helps organisations around the world replace slow, manual work with reliable digital systems.',
+    lead: 'Sengeti Technologies is a Zimbabwean technology company that helps organisations replace slow, manual work with reliable digital systems.',
     storyHeading: 'Who we are',
     story: [
       'We start where the work happens: the paper forms, the spreadsheets, the copy-paste between systems, the approvals that wait in someone’s inbox. Then we automate it.',
@@ -248,8 +248,8 @@ const en = {
         a: "Yes. We use encrypted connections, two-step sign-in, regular backups, and keep each organisation's data private and separate. See our Privacy Policy for details.",
       },
       {
-        q: 'Do you work with organisations in other countries?',
-        a: 'Yes. We work with organisations around the world. Our team works in English, French and Portuguese, and SengetiEdu runs in seven languages.',
+        q: 'Do you support organisations outside Zimbabwe?',
+        a: 'Yes. We work with organisations in Zimbabwe and neighbouring countries, in English, French and Portuguese.',
       },
       {
         q: 'How much does it cost?',
@@ -262,7 +262,7 @@ const en = {
 
   contact: {
     title: 'Contact | Sengeti Technologies',
-    description: 'Contact Sengeti Technologies by WhatsApp, phone, email or the contact form, wherever you are.',
+    description: 'Contact Sengeti Technologies in Mutare, Zimbabwe, by WhatsApp, phone, email or the contact form.',
     heading: 'Contact us',
     lead: "Tell us about the process that eats your time. The first conversation is free.",
     formHeading: 'Send a message',
@@ -298,7 +298,7 @@ const en = {
       { value: 'Android', label: 'and web apps' },
       { value: 'Cloud', label: 'hosted and backed up' },
       { value: '2-step', label: 'secure sign-in' },
-      { value: 'EN · FR · PT', label: 'support in your language' },
+      { value: 'EN · FR · PT', label: 'support across the region' },
     ],
   },
 
@@ -377,7 +377,7 @@ const en = {
       {
         id: 'contact',
         keywords: ['contact', 'email', 'phone', 'call', 'where', 'location', 'office', 'mutare', 'address'],
-        text: 'Our head office is in Mutare, Zimbabwe, and we work with organisations around the world. You can reach us by WhatsApp, phone or email.',
+        text: 'We are based in Mutare, Zimbabwe, and work across the region. You can reach us by WhatsApp, phone or email.',
         link: { label: 'Contact details', href: '/contact' },
       },
       {
@@ -412,8 +412,8 @@ const en = {
       },
       {
         id: 'countries',
-        keywords: ['country', 'countries', 'mozambique', 'kenya', 'botswana', 'namibia', 'congo', 'cameroon', 'emirates', 'dubai', 'poland', 'sri lanka', 'abroad', 'global', 'french', 'portuguese', 'language', 'region'],
-        text: 'Yes, we work with organisations around the world. SengetiEdu is set up for schools in ten countries and runs in seven languages.',
+        keywords: ['country', 'countries', 'mozambique', 'zambia', 'botswana', 'south africa', 'malawi', 'angola', 'french', 'portuguese', 'language', 'region'],
+        text: 'Yes, we work with organisations in Zimbabwe and neighbouring countries, in English, French and Portuguese.',
       },
       {
         id: 'demo',
@@ -458,7 +458,7 @@ const en = {
     ai: {
       title: 'AI solutions | Sengeti Technologies',
       description:
-        'Practical artificial intelligence for organisations around the world: AI assistants and WhatsApp chatbots, document processing, smart reports, forecasting and knowledge search.',
+        'Practical artificial intelligence for organisations in Zimbabwe and the region: AI assistants and WhatsApp chatbots, document processing, smart reports, forecasting and knowledge search.',
       eyebrow: 'Artificial intelligence',
       heading: 'Practical AI that',
       headingAccent: 'does real work.',
@@ -523,7 +523,7 @@ const en = {
       capabilities: [
         { icon: 'wallet', title: 'Finance and accounting', text: 'Ledgers, expenses, budgets and bank reconciliation, with statements ready when you need them.' },
         { icon: 'box', title: 'Inventory and warehouses', text: 'Live stock levels across branches, re-order alerts and stock counts on a phone.' },
-        { icon: 'receipt', title: 'Sales and invoicing', text: 'Quotations, invoices and receipts, with mobile money and card payments recorded automatically.' },
+        { icon: 'receipt', title: 'Sales and invoicing', text: 'Quotations, invoices and receipts, with EcoCash and card payments recorded automatically.' },
         { icon: 'cart', title: 'Purchasing and suppliers', text: 'Purchase requests, approvals and orders, with a full record of every supplier.' },
         { icon: 'users', title: 'HR and payroll', text: 'Staff records, leave, payroll and payslips, with approvals that move by themselves.' },
         { icon: 'chat', title: 'Customers', text: 'Customer history, follow-ups and reminders, including on WhatsApp.' },
@@ -535,7 +535,7 @@ const en = {
         { title: 'Start with what you need', text: 'Begin with one or two modules and add more as you grow.' },
         { title: 'Branches and currencies', text: 'Run several branches and work in more than one currency.' },
         { title: 'Works on phones', text: 'Approve, check stock and record sales from a phone, even on a slow connection.' },
-        { title: 'Connects to what you use', text: 'Bring in your Excel data and connect WhatsApp, mobile money and your existing tools.' },
+        { title: 'Connects to what you use', text: 'Bring in your Excel data and connect WhatsApp, EcoCash and your existing tools.' },
         { title: 'Local support and training', text: 'We train your team and stay on hand after launch.' },
         { title: 'Affordable', text: 'Priced for growing organisations, not just large corporations.' },
       ],
@@ -568,7 +568,7 @@ const en = {
     automation: {
       title: 'Process automation | Sengeti Technologies',
       description:
-        'Process and workflow automation for organisations around the world: approvals, data entry, reports, reminders and integrations that run by themselves.',
+        'Process and workflow automation for organisations in Zimbabwe and the region: approvals, data entry, reports, reminders and integrations that run by themselves.',
       eyebrow: 'Process automation',
       heading: 'Let the routine work',
       headingAccent: 'run itself.',
@@ -624,7 +624,7 @@ const en = {
         { icon: 'web-mobile', title: 'Web applications', text: 'Business systems, dashboards and portals that run in any browser, on any device.' },
         { icon: 'phone', title: 'Mobile apps', text: 'Android and iPhone apps that keep working offline and sync when the connection returns.' },
         { icon: 'users', title: 'Customer and staff portals', text: 'Self-service portals for students, clients, members or staff, with secure sign-in.' },
-        { icon: 'plug', title: 'APIs and integrations', text: 'Connect to mobile money, card payments, banks, SMS gateways, WhatsApp and the systems you already use.' },
+        { icon: 'plug', title: 'APIs and integrations', text: 'Connect to EcoCash, banks, SMS gateways, WhatsApp and the systems you already use.' },
         { icon: 'cloud', title: 'Cloud hosting', text: 'Reliable hosting, backups and monitoring, so your software stays fast and available.' },
         { icon: 'shield', title: 'Support and maintenance', text: 'Updates, fixes and new features after launch, from a team that knows your system.' },
       ],

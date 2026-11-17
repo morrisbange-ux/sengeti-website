@@ -13,7 +13,7 @@ export const homeExtras: Record<'en' | 'fr' | 'pt', HomeExtras> = {
   en: {
     badgeTag: 'New',
     badge: 'SengetiEdu is here: book a free school demo',
-    trust: ['First conversation free', 'Built for phones and slow connections', 'Ready for 10 countries and 7 languages'],
+    trust: ['First conversation free', 'Built for phones and slow connections', 'English, French and Portuguese'],
     kickers: {
       solutions: 'Solutions',
       problems: 'The problem',
@@ -29,7 +29,7 @@ export const homeExtras: Record<'en' | 'fr' | 'pt', HomeExtras> = {
   fr: {
     badgeTag: 'Nouveau',
     badge: 'SengetiEdu est là : réservez une démo gratuite',
-    trust: ['Premier échange gratuit', 'Pensé pour le mobile et les connexions lentes', 'Prêt pour 10 pays et 7 langues'],
+    trust: ['Premier échange gratuit', 'Pensé pour le mobile et les connexions lentes', 'Anglais, français et portugais'],
     kickers: {
       solutions: 'Solutions',
       problems: 'Le problème',
@@ -45,7 +45,7 @@ export const homeExtras: Record<'en' | 'fr' | 'pt', HomeExtras> = {
   pt: {
     badgeTag: 'Novo',
     badge: 'O SengetiEdu chegou: marque uma demo gratuita',
-    trust: ['Primeira conversa grátis', 'Feito para telemóveis e ligações lentas', 'Preparado para 10 países e 7 línguas'],
+    trust: ['Primeira conversa grátis', 'Feito para telemóveis e ligações lentas', 'Inglês, francês e português'],
     kickers: {
       solutions: 'Soluções',
       problems: 'O problema',

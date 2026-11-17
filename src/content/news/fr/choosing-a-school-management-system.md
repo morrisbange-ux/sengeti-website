@@ -17,7 +17,7 @@ Les connexions coupent et les délestages tombent en plein cours. Un bon systèm
 
 ## 3. Comment sont gérés les frais, les reçus et les impayés ?
 
-C’est souvent là que les écoles souffrent le plus. Vérifiez que le système émet factures et reçus, suit qui doit quoi, gère les parrains et les bourses, et permet aux parents de payer depuis chez eux avec les moyens qu’ils utilisent déjà, comme le mobile money ou une carte. Demandez comment un parent voit son solde.
+C’est souvent là que les écoles souffrent le plus. Vérifiez que le système émet factures et reçus, suit qui doit quoi, gère les parrains et les bourses, et permet aux parents de payer depuis chez eux avec les moyens qu’ils utilisent déjà, comme EcoCash ou une carte. Demandez comment un parent voit son solde.
 
 ## 4. Est-il adapté au programme et au calendrier de votre pays ?
 

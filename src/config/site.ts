@@ -13,7 +13,7 @@ export const site = {
   country: 'Zimbabwe',
   countryCode: 'ZW',
   // Countries the business serves, used for Google's structured data.
-  areaServed: ['Zimbabwe', 'Mozambique', 'Democratic Republic of the Congo', 'Cameroon', 'Kenya', 'Namibia', 'Botswana', 'United Arab Emirates', 'Poland', 'Sri Lanka'],
+  areaServed: ['Zimbabwe', 'Mozambique', 'Zambia', 'Botswana', 'South Africa'],
 
   email: 'info@sengetitechnologies.com',
   // Phone number as people should read it, with country code.
@@ -47,12 +47,7 @@ export const site = {
   // PLACEHOLDER: headline numbers for the home page, e.g. { value: 12, suffix: '+', label: 'projects delivered' }.
   // Use real figures only. The section stays hidden while this list is empty.
   // Labels are written in each language: { en: '...', fr: '...', pt: '...' }.
-  stats: [
-    { value: 10, label: { en: 'countries SengetiEdu is set up for', fr: 'pays pour lesquels SengetiEdu est configuré', pt: 'países para os quais o SengetiEdu está preparado' } },
-    { value: 7, label: { en: 'app languages, Arabic included', fr: 'langues dans l’application, arabe compris', pt: 'línguas na aplicação, incluindo árabe' } },
-    { value: 3, label: { en: 'school products, from ECD to university', fr: 'produits scolaires, de la maternelle à l’université', pt: 'produtos escolares, do pré-escolar à universidade' } },
-    { value: 15, suffix: ' s', label: { en: 'between new QR codes, so check-ins can’t be faked', fr: 'entre deux codes QR, pour des présences infalsifiables', pt: 'entre códigos QR, para presenças impossíveis de falsificar' } },
-  ] as { value: number; suffix?: string; label: { en: string; fr: string; pt: string } }[],
+  stats: [] as { value: number; suffix?: string; label: { en: string; fr: string; pt: string } }[],
 
   // How quickly the team replies, shown on the Support page. Confirm these before launch.
   responseTimes: { urgentHours: 4, normalDays: 1 },

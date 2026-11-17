@@ -1,6 +1,6 @@
 ---
 title: 'Impayés de frais scolaires : 6 moyens concrets d’encaisser plus, à temps'
-description: Les impayés pèsent sur le budget de chaque école. Six étapes concrètes, de la facture claire au paiement depuis la maison avec le mobile money, pour encaisser plus sans abîmer la relation avec les familles.
+description: Les impayés pèsent sur le budget de chaque école. Six étapes concrètes, de la facture claire au paiement depuis la maison avec EcoCash, pour encaisser plus sans abîmer la relation avec les familles.
 date: 2026-11-10
 type: article
 ---
@@ -13,7 +13,7 @@ Les familles s’organisent avec ce qu’elles savent. Une facture qui arrive av
 
 ## 2. Permettre de payer depuis la maison
 
-Chaque déplacement au secrétariat ou à la banque est une raison de reporter. Laissez les parents payer depuis chez eux avec les moyens qu’ils utilisent déjà, comme le mobile money ou une carte, et envoyez immédiatement un reçu pour qu’ils sachent que le paiement est arrivé.
+Chaque déplacement au secrétariat ou à la banque est une raison de reporter. Laissez les parents payer depuis chez eux avec les moyens qu’ils utilisent déjà, comme EcoCash ou une carte, et envoyez immédiatement un reçu pour qu’ils sachent que le paiement est arrivé.
 
 ## 3. Laisser les parents voir leur solde à tout moment
 
@@ -33,4 +33,4 @@ Les familles en difficulté réagissent mieux à un message privé et à une pro
 
 ## Comment SengetiEdu aide
 
-[SengetiEdu](/fr/products/sengetiedu) comprend factures, reçus, listes de débiteurs, parrains, messages aux familles par SMS et WhatsApp, consultation du solde par SMS, et paiement depuis la maison avec le mobile money ou une carte, le tout au nom de votre école. [Réservez une démo gratuite](/fr/school-demo) et nous vous montrerons les écrans de frais au nom de votre école.
+[SengetiEdu](/fr/products/sengetiedu) comprend factures, reçus, listes de débiteurs, parrains, messages aux familles par SMS et WhatsApp, consultation du solde par SMS, et paiement depuis la maison avec EcoCash ou une carte, le tout au nom de votre école. [Réservez une démo gratuite](/fr/school-demo) et nous vous montrerons les écrans de frais au nom de votre école.

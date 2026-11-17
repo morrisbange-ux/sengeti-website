@@ -30,15 +30,15 @@ function seeded(seed: number) {
 }
 const rand = seeded(2026);
 
-// A mix of first names and surnames from the countries SengetiEdu is set up for.
+// Generic first names and surnames common in Zimbabwe and neighbouring countries.
 const first = [
-  'Tendai', 'Amara', 'Kofi', 'Aisha', 'Zofia', 'Nimal', 'Wanjiru', 'Lucas', 'Fatima', 'Kavya',
-  'Rudo', 'Jakub', 'Grace', 'Omar', 'Chanda', 'Dilani', 'Mpho', 'Ines', 'Brian', 'Leila',
-  'Neo', 'Hana', 'Ama', 'Arjun', 'João', 'Maya', 'Tatenda', 'Sara', 'Kwame', 'Ana',
+  'Tendai', 'Rudo', 'Tatenda', 'Nyasha', 'Farai', 'Chipo', 'Tafadzwa', 'Kudzai', 'Rumbidzai', 'Tinashe',
+  'Thandiwe', 'Blessing', 'Takudzwa', 'Ruvimbo', 'Munashe', 'Anesu', 'Vimbai', 'Simba', 'Chiedza', 'Sipho',
+  'Lindiwe', 'Mpho', 'Chanda', 'Mwila', 'Thabo', 'Neo', 'Nomsa', 'Tawanda', 'Fadzai', 'Ana',
 ];
 const last = [
-  'Moyo', 'Kowalski', 'Perera', 'Otieno', 'Mbeki', 'Haddad', 'Silva', 'Nowak', 'Fernando', 'Kamau', 'Ncube', 'Tshabalala',
-  'Kabila', 'Nkemelu', 'Shikongo', 'Molefe', 'Al Mansoori', 'Wisniewska', 'Rajapaksa', 'Mwangi', 'Cossa', 'Sibanda', 'Etoundi', 'Banda',
+  'Moyo', 'Ncube', 'Dube', 'Sibanda', 'Mutasa', 'Banda', 'Phiri', 'Mwale', 'Nkosi', 'Mhlanga', 'Gumbo', 'Chirwa',
+  'Nyathi', 'Tembo', 'Sithole', 'Makoni', 'Chuma', 'Marufu', 'Mabhena', 'Zulu', 'Mudzingwa', 'Chikore', 'Mashava', 'Cossa',
 ];
 // i mod 30 and 7i mod 24 only repeat together after 120 students, so every name is unique.
 const students = Array.from({ length: TOTAL }, (_, i) => {

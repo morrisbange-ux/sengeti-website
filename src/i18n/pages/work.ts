@@ -2,7 +2,7 @@
 const en = {
   nav: 'Our work',
   title: 'Our work | Sengeti Technologies',
-  description: 'Projects by Sengeti Technologies: automation, custom software and websites for organisations around the world.',
+  description: 'Projects by Sengeti Technologies: automation, custom software and websites for organisations in Zimbabwe and the region.',
   eyebrow: 'Portfolio',
   heading: 'Work we are',
   headingAccent: 'proud of.',
@@ -23,7 +23,7 @@ const en = {
 const fr: typeof en = {
   nav: 'Nos réalisations',
   title: 'Nos réalisations | Sengeti Technologies',
-  description: "Les projets de Sengeti Technologies : automatisation, logiciels sur mesure et sites web pour les organisations du monde entier.",
+  description: "Les projets de Sengeti Technologies : automatisation, logiciels sur mesure et sites web pour les organisations du Zimbabwe et de la région.",
   eyebrow: 'Portfolio',
   heading: 'Des réalisations',
   headingAccent: 'dont nous sommes fiers.',
@@ -44,7 +44,7 @@ const fr: typeof en = {
 const pt: typeof en = {
   nav: 'Trabalhos',
   title: 'Os nossos trabalhos | Sengeti Technologies',
-  description: 'Projetos da Sengeti Technologies: automatização, software à medida e sites para organizações em todo o mundo.',
+  description: 'Projetos da Sengeti Technologies: automatização, software à medida e sites para organizações no Zimbabué e na região.',
   eyebrow: 'Portefólio',
   heading: 'Trabalho de que',
   headingAccent: 'nos orgulhamos.',

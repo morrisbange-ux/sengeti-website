@@ -17,7 +17,7 @@ As ligações caem e os cortes de energia acontecem a meio das aulas. Um bom sis
 
 ## 3. Como são tratadas as propinas, os recibos e as dívidas?
 
-É aqui que a maioria das escolas sente mais dificuldade. Confirme que o sistema emite faturas e recibos, acompanha quem deve o quê, trata patrocinadores e bolsas, e deixa os pais pagar a partir de casa com os meios que já usam, como o dinheiro móvel ou um cartão. Pergunte como um pai vê o seu saldo.
+É aqui que a maioria das escolas sente mais dificuldade. Confirme que o sistema emite faturas e recibos, acompanha quem deve o quê, trata patrocinadores e bolsas, e deixa os pais pagar a partir de casa com os meios que já usam, como o EcoCash ou um cartão. Pergunte como um pai vê o seu saldo.
 
 ## 4. Está adaptado ao currículo e ao calendário do seu país?
 
