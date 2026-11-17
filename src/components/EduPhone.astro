@@ -12,8 +12,10 @@ interface Props {
   lang: Lang;
   /** Show the edition tabs above the phone. */
   tabs?: boolean;
+  /** Float glass cards, orbit rings and a 3D tilt around the phone (home hero). */
+  showcase?: boolean;
 }
-const { lang, tabs = true } = Astro.props;
+const { lang, tabs = true, showcase = false } = Astro.props;
 const p = sengetiEdu[lang].phone;
 const editions = ['campus', 'senior', 'junior'] as const;
 const uid = `edu-${Math.random().toString(36).slice(2, 8)}`;
@@ -38,7 +40,7 @@ const qr = Array.from({ length: N * N }, (_, i) => {
 const qrPath = qr.map((on, i) => (on ? `M${i % N} ${Math.floor(i / N)}h1v1h-1z` : '')).join('');
 ---
 
-<div class="edu" data-edu-phone data-active="campus">
+<div class:list={['edu', { showcase }]} data-edu-phone data-active="campus">
   {
     tabs && (
       <div class="tabs" role="tablist" aria-label="SengetiEdu">
@@ -60,6 +62,39 @@ const qrPath = qr.map((on, i) => (on ? `M${i % N} ${Math.floor(i / N)}h1v1h-1z` 
   }
   <div class="stage">
     <div class="halo" aria-hidden="true"></div>
+    {
+      showcase && (
+        <svg class="orbits" viewBox="0 0 400 400" aria-hidden="true">
+          <circle class="o1" cx="200" cy="200" r="150" pathLength="100" />
+          <circle class="o2" cx="200" cy="200" r="190" pathLength="100" />
+          <g class="sat s1"><circle cx="200" cy="50" r="4" /></g>
+          <g class="sat s2"><circle cx="200" cy="10" r="3" /></g>
+        </svg>
+      )
+    }
+    {
+      showcase && (
+        <div class="floaters" aria-hidden="true">
+          <span class="chip c-campus">
+            <span class="ci">
+              <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+            </span>
+            <span><strong>42</strong>/56 {p.campus.present}</span>
+          </span>
+          <span class="chip c-senior">
+            <svg class="mini-gauge" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" pathLength="100" /><circle class="v" cx="18" cy="18" r="14" pathLength="100" /></svg>
+            <span><small>{p.senior.markLabel}</small><strong>78%</strong></span>
+          </span>
+          <span class="chip c-junior">
+            <span class="ci bell-ci">
+              <svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4l2-2Zm4 4h4" /></svg>
+            </span>
+            <span>{p.junior.alertTitle}</span>
+          </span>
+        </div>
+      )
+    }
+    <div class="floor" aria-hidden="true"></div>
     <div class="phone force-dark" id={`${uid}-phone`} role="img" aria-label={p.label}>
       <span class="btn-side power" aria-hidden="true"></span>
       <span class="btn-side vol1" aria-hidden="true"></span>
@@ -161,6 +196,7 @@ const qrPath = qr.map((on, i) => (on ? `M${i % N} ${Math.floor(i / N)}h1v1h-1z` 
         <span class="home-bar"></span>
       </div>
       <span class="glare" aria-hidden="true"></span>
+      <span class="sheen" aria-hidden="true"></span>
     </div>
   </div>
 </div>
@@ -887,6 +923,332 @@ const qrPath = qr.map((on, i) => (on ? `M${i % N} ${Math.floor(i / N)}h1v1h-1z` 
     font-size: 11px;
   }
 
+  /* ---------- Showcase: depth, tilt, orbits and floating cards ---------- */
+
+  .phone {
+    transform: perspective(1400px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+
+  .showcase .phone {
+    animation: bob 7s ease-in-out infinite;
+  }
+
+  .showcase.tilting .phone {
+    transition: transform 0.15s linear;
+  }
+
+  @keyframes bob {
+    50% {
+      translate: 0 -12px;
+    }
+  }
+
+  /* The glare slides across the glass as the phone tilts. */
+  .glare {
+    background:
+      linear-gradient(
+        115deg,
+        rgb(255 255 255 / 0.12) calc(0% + var(--gx, 0%)),
+        rgb(255 255 255 / 0.03) calc(28% + var(--gx, 0%)),
+        transparent calc(42% + var(--gx, 0%))
+      );
+  }
+
+  /* A slow band of light passes over the screen every few seconds. */
+  .sheen {
+    position: absolute;
+    inset: 9px;
+    border-radius: 38px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .sheen::before {
+    content: '';
+    position: absolute;
+    inset: -20% -60%;
+    background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / 0.16) 49%, rgb(255 255 255 / 0.05) 52%, transparent 58%);
+    transform: translateX(-70%);
+    animation: glass 9s 2s ease-in-out infinite;
+  }
+
+  @keyframes glass {
+    0%,
+    72% {
+      transform: translateX(-70%);
+    }
+    100% {
+      transform: translateX(70%);
+    }
+  }
+
+  /* A soft pool of light under the phone. */
+  .floor {
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 70%;
+    height: 34px;
+    translate: -50% 0;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(255 49 48 / 0.45), rgb(0 0 0 / 0.35) 55%, transparent);
+    filter: blur(10px);
+    animation: floor 7s ease-in-out infinite;
+  }
+
+  .edu:not(.showcase) .floor {
+    display: none;
+  }
+
+  @keyframes floor {
+    50% {
+      scale: 0.86 0.8;
+      opacity: 0.7;
+    }
+  }
+
+  .orbits {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150%;
+    max-width: none;
+    translate: -50% -50%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .orbits circle {
+    fill: none;
+    stroke: rgb(var(--tint) / 0.12);
+    stroke-width: 1;
+  }
+
+  .orbits .o1 {
+    stroke-dasharray: 0.6 1.6;
+    transform-origin: 200px 200px;
+    animation: turn 60s linear infinite;
+  }
+
+  .orbits .o2 {
+    stroke: rgb(255 49 48 / 0.18);
+    stroke-dasharray: 20 6 2 6;
+    transform-origin: 200px 200px;
+    animation: turn 90s linear infinite reverse;
+  }
+
+  .sat {
+    transform-origin: 200px 200px;
+  }
+
+  .sat circle {
+    fill: #ff3130;
+    stroke: none;
+    filter: drop-shadow(0 0 6px #ff3130);
+  }
+
+  .s1 {
+    animation: turn 14s linear infinite;
+  }
+
+  .s2 {
+    animation: turn 22s linear infinite reverse;
+  }
+
+  .s2 circle {
+    fill: #ff9a6b;
+    filter: drop-shadow(0 0 6px #ff7a3d);
+  }
+
+  @keyframes turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Glass cards that float around the phone; the one for the edition on screen lights up. */
+  .floaters {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    transform: perspective(1400px) rotateX(calc(var(--rx, 0deg) * 1.6)) rotateY(calc(var(--ry, 0deg) * 1.6));
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .showcase.tilting .floaters {
+    transition: transform 0.15s linear;
+  }
+
+  .chip {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    max-width: 210px;
+    padding: 9px 13px 9px 9px;
+    border-radius: 16px;
+    border: 1px solid rgb(var(--tint) / 0.14);
+    background: rgb(var(--bg-rgb) / 0.55);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 18px 40px -18px rgb(0 0 0 / 0.6);
+    color: var(--text);
+    font-size: 0.78rem;
+    line-height: 1.3;
+    font-weight: 600;
+    opacity: 0.72;
+    scale: 0.94;
+    animation: drift 6s ease-in-out infinite;
+    transition:
+      opacity 0.5s,
+      scale 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.5s,
+      box-shadow 0.5s;
+  }
+
+  .chip strong {
+    color: var(--white);
+    font-family: var(--font-display);
+  }
+
+  .chip small {
+    display: block;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .c-campus {
+    --c: var(--ed-campus);
+    left: -30%;
+    top: 30%;
+  }
+
+  .c-senior {
+    --c: var(--ed-senior);
+    right: -26%;
+    top: 56%;
+    animation-delay: -2s;
+  }
+
+  .c-junior {
+    --c: var(--ed-junior);
+    left: -28%;
+    bottom: 9%;
+    animation-delay: -4s;
+  }
+
+  [data-active='campus'] .c-campus,
+  [data-active='senior'] .c-senior,
+  [data-active='junior'] .c-junior {
+    opacity: 1;
+    scale: 1.04;
+    border-color: color-mix(in srgb, var(--c) 60%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 0 0 4px color-mix(in srgb, var(--c) 14%, transparent),
+      0 22px 50px -18px color-mix(in srgb, var(--c) 70%, transparent);
+  }
+
+  @keyframes drift {
+    50% {
+      translate: 0 -10px;
+    }
+  }
+
+  .ci {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    background: linear-gradient(180deg, #3ddc84, #15a34a);
+    box-shadow: 0 6px 14px -6px rgb(21 163 74 / 0.8);
+  }
+
+  .bell-ci {
+    background: linear-gradient(180deg, #ff5a4f, #d11f1f);
+    box-shadow: 0 6px 14px -6px rgb(255 49 48 / 0.8);
+  }
+
+  .ci svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mini-gauge {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    rotate: -90deg;
+  }
+
+  .mini-gauge circle {
+    fill: none;
+    stroke: rgb(var(--tint) / 0.12);
+    stroke-width: 4;
+  }
+
+  .mini-gauge .v {
+    stroke: var(--ed-senior);
+    stroke-linecap: round;
+    stroke-dasharray: 78 100;
+  }
+
+  :root[data-theme='light'] .chip {
+    background: rgb(255 255 255 / 0.72);
+    box-shadow:
+      inset 0 1px 0 #fff,
+      0 18px 40px -18px rgb(11 11 12 / 0.25);
+  }
+
+  /* Small screens: the cards tuck in closer and the orbit shrinks. */
+  @media (max-width: 960px) {
+    .c-campus {
+      left: -6%;
+    }
+    .c-senior {
+      right: -8%;
+    }
+    .c-junior {
+      left: -10%;
+    }
+  }
+
+  /* On phones the cards would cover the screen, so the phone stands alone. */
+  @media (max-width: 600px) {
+    .floaters {
+      display: none;
+    }
+    .orbits {
+      width: 125%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .showcase .phone,
+    .chip,
+    .floor,
+    .sheen::before,
+    .orbits *,
+    .sat {
+      animation: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .view {
       transition: none;
@@ -903,7 +1265,25 @@ const qrPath = qr.map((on, i) => (on ? `M${i % N} ${Math.floor(i / N)}h1v1h-1z` 
   // Moves to the next edition every few seconds until someone picks one.
   const CYCLE = 5000;
   const editions = ['campus', 'senior', 'junior'];
+  const tiltable = matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches;
   for (const root of document.querySelectorAll<HTMLElement>('[data-edu-phone]')) {
+    // The showcase phone turns gently towards the pointer anywhere in the hero.
+    if (root.classList.contains('showcase') && tiltable) {
+      const area = root.closest('section') ?? root;
+      area.addEventListener('pointermove', (e) => {
+        const r = root.getBoundingClientRect();
+        const dx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (r.width * 1.4)));
+        const dy = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (r.height * 1.1)));
+        root.style.setProperty('--ry', `${(dx * 14).toFixed(2)}deg`);
+        root.style.setProperty('--rx', `${(-dy * 10).toFixed(2)}deg`);
+        root.style.setProperty('--gx', `${(dx * 30).toFixed(1)}%`);
+        root.classList.add('tilting');
+      });
+      area.addEventListener('pointerleave', () => {
+        root.classList.remove('tilting');
+        ['--rx', '--ry', '--gx'].forEach((v) => root.style.removeProperty(v));
+      });
+    }
     const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-edition]')];
     root.style.setProperty('--cycle', `${CYCLE}ms`);
     const show = (edition: string) => {

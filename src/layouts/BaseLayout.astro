@@ -3,6 +3,7 @@ import '@fontsource/poppins/latin-600.css';
 import '@fontsource/poppins/latin-700.css';
 import poppins700 from '@fontsource/poppins/files/poppins-latin-700-normal.woff2?url';
 import '../styles/global.css';
+import '../styles/motion.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ChatWidget from '../components/ChatWidget.astro';
@@ -123,6 +124,9 @@ const jsonLd = [organization, ...schema];
     }
   </head>
   <body>
+    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor-light" aria-hidden="true"></div>
     <div class="scroll-progress" aria-hidden="true"></div>
     <a class="skip-link" href="#main">{dict.nav.skip}</a>
     <Header lang={lang} path={path} />
@@ -152,8 +156,79 @@ const jsonLd = [organization, ...schema];
         items.forEach((el) => el.classList.add('is-visible'));
       }
 
-      // Moves the spotlight on cards with the pointer (mouse and trackpad only).
-      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Header gets its glowing edge once the page has scrolled.
+      const header = document.querySelector('.site-header');
+      const onScroll = () => header?.classList.toggle('scrolled', scrollY > 12);
+      addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // Every interactive card gets a lit edge that follows the pointer.
+      document.querySelectorAll('.card-hover').forEach((card) => {
+        const edge = document.createElement('span');
+        edge.className = 'edge';
+        edge.setAttribute('aria-hidden', 'true');
+        card.append(edge);
+      });
+
+      if (finePointer && !calm) {
+        // A soft light trails the pointer, eased so it glides rather than jumps.
+        const light = document.querySelector<HTMLElement>('.cursor-light');
+        let tx = -999, ty = -999, x = -999, y = -999, raf = 0;
+        const glide = () => {
+          x += (tx - x) * 0.14;
+          y += (ty - y) * 0.14;
+          light?.style.setProperty('--cx', `${x}px`);
+          light?.style.setProperty('--cy', `${y}px`);
+          raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(glide) : 0;
+        };
+        document.addEventListener('pointermove', (e) => {
+          if (x === -999) { x = e.clientX; y = e.clientY; }
+          tx = e.clientX;
+          ty = e.clientY;
+          light?.classList.add('on');
+          if (!raf) raf = requestAnimationFrame(glide);
+        }, { passive: true });
+        document.documentElement.addEventListener('pointerleave', () => light?.classList.remove('on'));
+
+        // Cards: spotlight position and a gentle 3D tilt towards the pointer.
+        let lastCard: HTMLElement | null = null;
+        document.addEventListener('pointermove', (e) => {
+          const card = (e.target as Element).closest?.<HTMLElement>('.card-hover');
+          if (lastCard && lastCard !== card) {
+            lastCard.classList.remove('tilting');
+            lastCard.style.removeProperty('--rx');
+            lastCard.style.removeProperty('--ry');
+          }
+          lastCard = card;
+          if (!card) return;
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+          card.style.setProperty('--my', `${e.clientY - r.top}px`);
+          // Big cards tilt less, so text never swims.
+          const k = Math.min(1, 380 / Math.max(r.width, r.height)) * 5;
+          card.style.setProperty('--rx', `${((0.5 - py) * k).toFixed(2)}deg`);
+          card.style.setProperty('--ry', `${((px - 0.5) * k).toFixed(2)}deg`);
+          card.classList.add('tilting');
+        }, { passive: true });
+
+        // Buttons lean a little towards the pointer, like a magnet.
+        document.querySelectorAll<HTMLElement>('.btn').forEach((btn) => {
+          btn.addEventListener('pointermove', (e) => {
+            const r = btn.getBoundingClientRect();
+            btn.style.setProperty('--bx', `${((e.clientX - r.left) / r.width - 0.5) * 8}px`);
+            btn.style.setProperty('--by', `${((e.clientY - r.top) / r.height - 0.5) * 6}px`);
+          });
+          btn.addEventListener('pointerleave', () => {
+            btn.style.removeProperty('--bx');
+            btn.style.removeProperty('--by');
+          });
+        });
+      } else if (finePointer) {
         document.addEventListener('pointermove', (e) => {
           const card = (e.target as Element).closest?.<HTMLElement>('.card-hover');
           if (!card) return;

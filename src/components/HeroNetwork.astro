@@ -1,0 +1,282 @@
+---
+/**
+ * A living network behind the home hero: points drift, nearby points link up, and red
+ * pulses of "work" travel along the links, the picture of an automated business.
+ * The pointer pulls the network towards it. Decorative only; it pauses off screen,
+ * in background tabs, and draws a single still frame for reduced motion.
+ */
+---
+
+<canvas class="net" aria-hidden="true" data-net></canvas>
+
+<style>
+  .net {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    /* Fades out behind the headline so the words stay crisp. */
+    mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.25) 0%, rgb(0 0 0 / 0.55) 35%, #000 60%);
+    -webkit-mask-image: linear-gradient(90deg, rgb(0 0 0 / 0.25) 0%, rgb(0 0 0 / 0.55) 35%, #000 60%);
+    opacity: 0;
+    animation: net-in 1.6s 0.3s ease forwards;
+  }
+
+  @keyframes net-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .net {
+      mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.35), rgb(0 0 0 / 0.35) 50%, #000 75%);
+      -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.35), rgb(0 0 0 / 0.35) 50%, #000 75%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .net {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  type Node = { x: number; y: number; vx: number; vy: number; r: number; hub: boolean; flash: number };
+  type Pulse = { a: number; b: number; t: number; speed: number };
+
+  for (const canvas of document.querySelectorAll<HTMLCanvasElement>('[data-net]')) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) continue;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const host = canvas.parentElement!;
+    let w = 0, h = 0, dpr = 1;
+    let nodes: Node[] = [];
+    const pulses: Pulse[] = [];
+    const pointer = { x: -9999, y: -9999, on: false };
+    let link = 150;
+
+    const light = () => document.documentElement.dataset.theme === 'light';
+
+    const resize = () => {
+      const r = host.getBoundingClientRect();
+      dpr = Math.min(2, devicePixelRatio || 1);
+      w = r.width;
+      h = r.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      link = w < 700 ? 110 : 150;
+      const count = Math.max(26, Math.min(78, Math.round((w * h) / 15000)));
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: (Math.random() - 0.5) * 0.28,
+        r: Math.random() * 1.4 + 0.8,
+        hub: Math.random() < 0.12,
+        flash: 0,
+      }));
+      pulses.length = 0;
+    };
+
+    const step = () => {
+      for (const n of nodes) {
+        // The pointer gently pulls nearby points towards it.
+        if (pointer.on) {
+          const dx = pointer.x - n.x, dy = pointer.y - n.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 220 * 220 && d2 > 1) {
+            const f = 0.012 * (1 - Math.sqrt(d2) / 220);
+            n.vx += dx * f * 0.05;
+            n.vy += dy * f * 0.05;
+          }
+        }
+        n.vx *= 0.985;
+        n.vy *= 0.985;
+        // Keep a minimum drift so the network never freezes.
+        const sp = Math.hypot(n.vx, n.vy);
+        if (sp < 0.08) {
+          n.vx += (Math.random() - 0.5) * 0.04;
+          n.vy += (Math.random() - 0.5) * 0.04;
+        }
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < -20) n.x = w + 20;
+        if (n.x > w + 20) n.x = -20;
+        if (n.y < -20) n.y = h + 20;
+        if (n.y > h + 20) n.y = -20;
+      }
+      // Now and then, a new piece of work sets off along a link.
+      if (pulses.length < 14 && Math.random() < 0.09) {
+        const a = Math.floor(Math.random() * nodes.length);
+        let best = -1, bestD = Infinity;
+        for (let j = 0; j < nodes.length; j++) {
+          if (j === a) continue;
+          const d = Math.hypot(nodes[a].x - nodes[j].x, nodes[a].y - nodes[j].y);
+          if (d < link && d < bestD && Math.random() < 0.7) { best = j; bestD = d; }
+        }
+        if (best >= 0) pulses.push({ a, b: best, t: 0, speed: 0.008 + Math.random() * 0.012 });
+      }
+    };
+
+    const draw = () => {
+      const lt = light();
+      ctx.clearRect(0, 0, w, h);
+      const line = lt ? '20 20 26' : '255 255 255';
+      const lineA = lt ? 0.22 : 0.16;
+
+      // Links between neighbours.
+      ctx.lineWidth = 1;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 > link * link) continue;
+          const k = 1 - Math.sqrt(d2) / link;
+          ctx.strokeStyle = `rgb(${line} / ${(k * lineA).toFixed(3)})`;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+
+      // Bright red links from the pointer to the points it is near.
+      if (pointer.on) {
+        for (const n of nodes) {
+          const d = Math.hypot(pointer.x - n.x, pointer.y - n.y);
+          if (d > 180) continue;
+          const k = 1 - d / 180;
+          ctx.strokeStyle = `rgb(255 49 48 / ${(k * 0.55).toFixed(3)})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(pointer.x, pointer.y);
+          ctx.lineTo(n.x, n.y);
+          ctx.stroke();
+        }
+      }
+
+      // Points; a few larger hubs glow red, and a point flashes when work arrives.
+      for (const n of nodes) {
+        if (n.flash > 0.02) {
+          ctx.strokeStyle = `rgb(255 49 48 / ${(n.flash * 0.8).toFixed(3)})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 4 + (1 - n.flash) * 16, 0, Math.PI * 2);
+          ctx.stroke();
+          if (!calm) n.flash *= 0.94;
+        }
+        if (n.hub) {
+          const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 14);
+          g.addColorStop(0, 'rgb(255 49 48 / 0.55)');
+          g.addColorStop(1, 'rgb(255 49 48 / 0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, 14, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ff3130';
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = `rgb(${line} / ${lt ? 0.4 : 0.45})`;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Pulses with a short comet tail.
+      for (let i = pulses.length - 1; i >= 0; i--) {
+        const p = pulses[i];
+        const a = nodes[p.a], b = nodes[p.b];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (!calm) p.t += p.speed;
+        if (p.t >= 1 || d > link * 1.15) {
+          // On arrival the target lights up and may pass the work on.
+          if (p.t >= 1) nodes[p.b].flash = 1;
+          pulses.splice(i, 1);
+          continue;
+        }
+        const x = a.x + (b.x - a.x) * p.t;
+        const y = a.y + (b.y - a.y) * p.t;
+        const tt = Math.max(0, p.t - 0.18);
+        const tx = a.x + (b.x - a.x) * tt;
+        const ty = a.y + (b.y - a.y) * tt;
+        const grad = ctx.createLinearGradient(tx, ty, x, y);
+        grad.addColorStop(0, 'rgb(255 49 48 / 0)');
+        grad.addColorStop(1, 'rgb(255 90 70 / 0.95)');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        const g = ctx.createRadialGradient(x, y, 0, x, y, 9);
+        g.addColorStop(0, 'rgb(255 170 150 / 1)');
+        g.addColorStop(0.35, 'rgb(255 49 48 / 0.7)');
+        g.addColorStop(1, 'rgb(255 49 48 / 0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, 9, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
+    resize();
+    let visible = true;
+    let raf = 0;
+    const loop = () => {
+      raf = 0;
+      if (!visible || document.hidden) return;
+      step();
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (!raf && !calm) raf = requestAnimationFrame(loop);
+    };
+
+    if (calm) {
+      // One still frame with a few pulses mid-way, so the picture still reads.
+      for (let i = 0; i < 160; i++) step();
+      pulses.forEach((p) => (p.t = 0.5));
+      draw();
+    } else {
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible) start();
+      }).observe(canvas);
+      document.addEventListener('visibilitychange', start);
+      start();
+    }
+
+    let rt = 0;
+    new ResizeObserver(() => {
+      clearTimeout(rt);
+      rt = window.setTimeout(() => {
+        resize();
+        if (calm) draw();
+      }, 150);
+    }).observe(host);
+
+    // Redraw the still frame when the theme changes.
+    new MutationObserver(() => calm && draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches && !calm) {
+      host.addEventListener('pointermove', (e) => {
+        const r = canvas.getBoundingClientRect();
+        pointer.x = e.clientX - r.left;
+        pointer.y = e.clientY - r.top;
+        pointer.on = true;
+      });
+      host.addEventListener('pointerleave', () => (pointer.on = false));
+    }
+  }
+</script>

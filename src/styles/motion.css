@@ -1,0 +1,508 @@
+/*
+ * Motion and depth layer: the living background, film grain, pointer light, 3D cards,
+ * glossy icons and richer reveals. Everything decorative here is pointer-events: none,
+ * and all of it switches off for people who ask for reduced motion.
+ */
+
+/* ---------- Living background ---------- */
+
+/* Slow aurora behind every page. Fixed, so it costs one layer, not a repaint per scroll. */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora i {
+  position: absolute;
+  width: 62vmax;
+  height: 62vmax;
+  border-radius: 50%;
+  opacity: var(--aurora-a, 0.5);
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.aurora i:nth-child(1) {
+  left: -22vmax;
+  top: -26vmax;
+  background: radial-gradient(closest-side, rgb(255 49 48 / 0.32), transparent);
+  animation: aurora-a 38s ease-in-out infinite alternate;
+}
+
+.aurora i:nth-child(2) {
+  right: -26vmax;
+  top: 20vh;
+  background: radial-gradient(closest-side, rgb(255 122 61 / 0.18), transparent);
+  animation: aurora-b 46s ease-in-out infinite alternate;
+}
+
+.aurora i:nth-child(3) {
+  left: 10vw;
+  bottom: -40vmax;
+  background: radial-gradient(closest-side, rgb(160 30 90 / 0.2), transparent);
+  animation: aurora-c 52s ease-in-out infinite alternate;
+}
+
+:root[data-theme='light'] .aurora {
+  --aurora-a: 0.55;
+}
+
+@keyframes aurora-a {
+  to {
+    transform: translate3d(28vw, 22vh, 0) scale(1.2);
+  }
+}
+
+@keyframes aurora-b {
+  to {
+    transform: translate3d(-32vw, 30vh, 0) scale(0.85);
+  }
+}
+
+@keyframes aurora-c {
+  to {
+    transform: translate3d(24vw, -36vh, 0) scale(1.15);
+  }
+}
+
+/* Fine film grain over everything: gives the dark surfaces a printed, premium feel. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+:root[data-theme='light'] .grain {
+  opacity: 0.09;
+  filter: invert(1);
+}
+
+/* A soft red light that trails the pointer across the page (mouse and trackpad only). */
+.cursor-light {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9997;
+  width: 560px;
+  height: 560px;
+  margin: -280px 0 0 -280px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(255 60 50 / 0.13), rgb(255 60 50 / 0.04) 55%, transparent);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 0.6s;
+  translate: var(--cx, -999px) var(--cy, -999px);
+  will-change: translate;
+}
+
+.cursor-light.on {
+  opacity: 1;
+}
+
+:root[data-theme='light'] .cursor-light {
+  mix-blend-mode: multiply;
+  background: radial-gradient(closest-side, rgb(255 49 48 / 0.08), rgb(255 49 48 / 0.025) 55%, transparent);
+}
+
+/* Header: a glowing hairline appears once the page scrolls. */
+.site-header {
+  transition: box-shadow 0.4s, background-color 0.4s;
+}
+
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 49 48 / 0.7) 30%, rgb(255 140 100 / 0.8) 50%, rgb(255 49 48 / 0.7) 70%, transparent);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transition: opacity 0.5s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.site-header.scrolled {
+  box-shadow: 0 12px 40px -20px rgb(0 0 0 / 0.6);
+}
+
+.site-header.scrolled::after {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Reveals ---------- */
+
+/* Sections arrive out of a soft blur, not just a fade. */
+.js [data-reveal] {
+  filter: blur(6px);
+  transform: translateY(28px) scale(0.985);
+  transition:
+    opacity 0.7s ease,
+    filter 0.8s ease,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--d, 0) * 80ms);
+}
+
+.js [data-reveal].is-visible {
+  filter: none;
+}
+
+/* Section headings: the accent words sweep in with a light. */
+.section-head h2 {
+  background-size: 100% 100%;
+}
+
+/* ---------- Eyebrows ---------- */
+
+.eyebrow {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.eyebrow::before {
+  animation: dot-pulse 2.6s ease-in-out infinite;
+}
+
+/* A slow light passes over the label now and then. */
+.eyebrow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 35%, rgb(255 255 255 / 0.22) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: sheen 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes dot-pulse {
+  50% {
+    box-shadow: 0 0 0 6px rgb(255 49 48 / 0);
+  }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(255 49 48 / 0.45);
+  }
+}
+
+@keyframes sheen {
+  0%,
+  70% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.3s,
+    translate 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.2s;
+  translate: var(--bx, 0) var(--by, 0);
+}
+
+/* The primary button has a living edge: a light that circles it. */
+.btn-primary {
+  --ring: conic-gradient(from var(--spin, 0deg), transparent 0 70%, rgb(255 210 190 / 0.95) 82%, transparent 92%);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: var(--ring);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: spin-ring 3.2s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.btn-primary:hover::before,
+.btn-primary:focus-visible::before {
+  opacity: 1;
+}
+
+@property --spin {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spin-ring {
+  to {
+    --spin: 360deg;
+  }
+}
+
+.btn :is(svg) {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---------- Cards ---------- */
+
+/* Cards tilt towards the pointer, and their edge lights up where the pointer is. */
+.card-hover {
+  transform-style: preserve-3d;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.4s,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover:hover {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-6px);
+  border-color: rgb(255 49 48 / 0.28);
+  box-shadow:
+    var(--shadow),
+    0 30px 60px -30px rgb(255 49 48 / 0.55),
+    0 0 0 1px rgb(255 49 48 / 0.08);
+}
+
+.card-hover.tilting {
+  transition:
+    border-color 0.3s,
+    box-shadow 0.4s,
+    transform 0.12s linear;
+}
+
+/* The lit edge: a gradient ring masked to the border, centred on the pointer. */
+.card-hover > .edge-light,
+.card-hover::after {
+  pointer-events: none;
+}
+
+.card.card-hover {
+  background:
+    radial-gradient(600px circle at var(--mx, 50%) var(--my, -20%), rgb(255 49 48 / 0.06), transparent 40%),
+    linear-gradient(180deg, var(--surface-2), var(--surface));
+}
+
+.card-hover .edge {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgb(255 90 70 / 0.95), rgb(255 49 48 / 0.25) 40%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 0.35s;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.card-hover:hover .edge {
+  opacity: 1;
+}
+
+/* ---------- Icons ---------- */
+
+/* Icon tiles: a glossy red chip with a top highlight and a soft glow. */
+.icon {
+  position: relative;
+  isolation: isolate;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    inset 0 0 0 1px rgb(255 49 48 / 0.22),
+    0 10px 24px -12px rgb(255 49 48 / 0.6);
+  transition:
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s;
+}
+
+.icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(120% 80% at 30% 0%, rgb(255 255 255 / 0.18), transparent 55%),
+    radial-gradient(100% 100% at 100% 100%, rgb(255 49 48 / 0.22), transparent 60%);
+  pointer-events: none;
+}
+
+.icon::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  z-index: -2;
+  border-radius: calc(12px + 6px);
+  background: radial-gradient(closest-side, rgb(255 49 48 / 0.35), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.card-hover:hover .icon,
+a:hover > .icon {
+  transform: translateZ(30px) rotate(-6deg) scale(1.06);
+}
+
+.card-hover:hover .icon::after {
+  opacity: 1;
+}
+
+/* Line icons draw themselves the first time their section appears. */
+.js [data-reveal] .icon svg path[pathLength],
+.js [data-reveal] .draw svg path[pathLength] {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.25s;
+}
+
+.js [data-reveal].is-visible .icon svg path[pathLength],
+.js [data-reveal].is-visible .draw svg path[pathLength] {
+  stroke-dashoffset: 0;
+}
+
+/* ---------- Bands and panels ---------- */
+
+/* The closing call-to-action band: a beam of light runs around its edge. */
+.cta-band {
+  --beam: conic-gradient(from var(--spin, 0deg), transparent 0 60%, rgb(255 49 48 / 0.9) 75%, rgb(255 190 160) 80%, rgb(255 49 48 / 0.9) 85%, transparent 95%);
+}
+
+.cta-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: var(--beam);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: spin-ring 8s linear infinite;
+  pointer-events: none;
+}
+
+/* Two slow orbs of light float inside the band. */
+.cta-band > .orb {
+  position: absolute;
+  z-index: -1;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+/* Chips: lift and glow on hover. */
+.chips li {
+  transition:
+    border-color 0.3s,
+    color 0.3s,
+    background-color 0.3s,
+    transform 0.3s;
+}
+
+.chips li:hover {
+  border-color: rgb(255 49 48 / 0.45);
+  color: var(--white);
+  background: rgb(255 49 48 / 0.08);
+  transform: translateY(-2px);
+}
+
+/* Section seams: a fading hairline with a spark in the middle. */
+.seam {
+  position: relative;
+  height: 1px;
+  max-width: var(--max);
+  margin-inline: auto;
+  background: linear-gradient(90deg, transparent, rgb(var(--tint) / 0.12) 20%, rgb(var(--tint) / 0.12) 80%, transparent);
+}
+
+.seam::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -1px;
+  width: 140px;
+  height: 3px;
+  margin-left: -70px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  filter: blur(0.5px);
+  animation: seam-run 6s ease-in-out infinite;
+}
+
+@keyframes seam-run {
+  0%,
+  100% {
+    transform: translateX(-38vw);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(38vw);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora i,
+  .eyebrow::before,
+  .eyebrow::after,
+  .btn-primary::before,
+  .cta-band::after,
+  .seam::after {
+    animation: none !important;
+  }
+  .cursor-light {
+    display: none;
+  }
+  .js [data-reveal] {
+    filter: none;
+  }
+  .js [data-reveal] .icon svg path[pathLength],
+  .js [data-reveal] .draw svg path[pathLength] {
+    stroke-dashoffset: 0;
+  }
+  .card-hover:hover {
+    transform: none;
+  }
+  .btn {
+    translate: none;
+  }
+}
+
+/* Phones and tablets: lighter effects. */
+@media (hover: none), (max-width: 700px) {
+  .aurora i {
+    filter: blur(60px);
+  }
+  .cursor-light {
+    display: none;
+  }
+}
